@@ -19,11 +19,9 @@ class PlaningActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            PlanYourJourneyTheme{
-                PlaningScreen(
-                    viewModel,
-                    decimalFormatter)
-            }
+            PlaningScreen(
+                viewModel,
+                decimalFormatter)
         }
     }
 }

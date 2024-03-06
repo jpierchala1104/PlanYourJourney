@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.planyourjourney.services.ChartService
 import com.example.planyourjourney.services.dataClasses.Coordinates
 import com.example.planyourjourney.services.dataClasses.WeatherJson
 import com.example.planyourjourney.services.WeatherRepository
@@ -17,16 +18,7 @@ import com.example.planyourjourney.services.dataClasses.Settings
 import com.patrykandpatrick.vico.core.axis.AxisPosition
 import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
-import com.patrykandpatrick.vico.core.entry.FloatEntry
-import com.patrykandpatrick.vico.core.entry.diff.ExtraStore
-import com.patrykandpatrick.vico.core.entry.diff.MutableExtraStore
-import com.patrykandpatrick.vico.core.entry.entryModelOf
-import com.patrykandpatrick.vico.core.entry.entryOf
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.TextStyle
-import java.util.Locale
 
 class PlaningViewModel(application: Application) : AndroidViewModel(application) {
     private val context = application
@@ -49,44 +41,31 @@ class PlaningViewModel(application: Application) : AndroidViewModel(application)
         coordinates.longitude = coords.first().longitude
     }
 
-    val chartEntryModelProducer = ChartEntryModelProducer()
-    lateinit var bottomAxisValueFormatter: AxisValueFormatter<AxisPosition.Horizontal.Bottom>
+    private val chartService = ChartService()
 
     fun getWeather(location: Coordinates) {
         viewModelScope.launch {
             try {
                 val weatherAtLocation = repository.getWeather(location)
                 _weather.value = weatherAtLocation
-                prepareChart()
-                prepareBottomAxisFormatter()
             } catch (e: Exception) {
                 Log.e("Repo", e.toString())
             }
         }
     }
 
-    private fun prepareChart() {
-        val dataPoints = arrayListOf<FloatEntry>()
-        for (i in 0 until _weather.value!!.hourly!!.time.size) {
-            dataPoints
-                .add(
-                    FloatEntry(
-                        x = i.toFloat(),
-                        y = _weather.value!!.hourly!!.temperature2m[i].toFloat()
-                    )
-                )
-        }
-        chartEntryModelProducer.setEntries(listOf(dataPoints))
+    fun getChartEntryModelProducer(
+        chartDoubleValues: ArrayList<Double> = arrayListOf(),
+        chartIntValues: ArrayList<Int> = arrayListOf()
+    ): ChartEntryModelProducer{
+        return chartService.getChartEntryModelProducer(
+            chartSize = _weather.value!!.hourly!!.time.size,
+            chartDoubleValues = chartDoubleValues,
+            chartIntValues = chartIntValues)
     }
 
-    private fun prepareBottomAxisFormatter() {
-        bottomAxisValueFormatter = AxisValueFormatter { x, _ ->
-            val beforeT = _weather.value!!.hourly!!.time[x.toInt()].substringBefore("T")
-            val date = LocalDate.parse(beforeT)
-            val afterT = _weather.value!!.hourly!!.time[x.toInt()].substringAfter("T")
-            if(afterT == "00:00")"${date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)}\n$afterT"
-            else "\n$afterT"
-        }
+    fun getBottomAxisFormatter(): AxisValueFormatter<AxisPosition.Horizontal.Bottom> {
+        return chartService.getBottomAxisFormatter(_weather.value!!.hourly!!.time)
     }
 
     fun getCoordinatesFromLocationName(locationName: String) {

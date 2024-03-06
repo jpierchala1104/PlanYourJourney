@@ -9,7 +9,7 @@ interface WeatherForecastService {
     suspend fun getWeather(
         @Query("latitude") latitude: Double ,
         @Query("longitude") longitude: Double,
-        @Query("hourly") parameters: String = "temperature_2m,relative_humidity_2m,precipitation_probability,precipitation,rain,wind_speed_10m",
+        @Query("hourly") parameters: String = "temperature_2m,relative_humidity_2m,precipitation_probability,rain,snowfall,cloud_cover,wind_speed_10m",
         @Query("timezone") timezone: String = "auto"
     ): WeatherJson
 }

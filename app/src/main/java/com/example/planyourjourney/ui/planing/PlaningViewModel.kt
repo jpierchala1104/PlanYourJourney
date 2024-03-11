@@ -17,7 +17,8 @@ import com.example.planyourjourney.services.dataClasses.SearchInputType
 import com.example.planyourjourney.services.dataClasses.Settings
 import com.patrykandpatrick.vico.core.axis.AxisPosition
 import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
-import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
+import com.patrykandpatrick.vico.core.marker.MarkerLabelFormatter
+import com.patrykandpatrick.vico.core.model.CartesianChartModelProducer
 import kotlinx.coroutines.launch
 
 class PlaningViewModel(application: Application) : AndroidViewModel(application) {
@@ -41,6 +42,8 @@ class PlaningViewModel(application: Application) : AndroidViewModel(application)
         coordinates.longitude = coords.first().longitude
     }
 
+    // TODO: change to event and state
+
     private val chartService = ChartService()
 
     fun getWeather(location: Coordinates) {
@@ -57,8 +60,8 @@ class PlaningViewModel(application: Application) : AndroidViewModel(application)
     fun getChartEntryModelProducer(
         chartDoubleValues: ArrayList<Double> = arrayListOf(),
         chartIntValues: ArrayList<Int> = arrayListOf()
-    ): ChartEntryModelProducer{
-        return chartService.getChartEntryModelProducer(
+    ): CartesianChartModelProducer {
+        return chartService.getCartesianChartModelProducer(
             chartSize = _weather.value!!.hourly!!.time.size,
             chartDoubleValues = chartDoubleValues,
             chartIntValues = chartIntValues)
@@ -66,6 +69,14 @@ class PlaningViewModel(application: Application) : AndroidViewModel(application)
 
     fun getBottomAxisFormatter(): AxisValueFormatter<AxisPosition.Horizontal.Bottom> {
         return chartService.getBottomAxisFormatter(_weather.value!!.hourly!!.time)
+    }
+
+    fun getStartAxisFormatter(unit: String): AxisValueFormatter<AxisPosition.Vertical.Start>{
+        return chartService.getStartAxisFormatter(unit)
+    }
+
+    fun getMarkerLabelFormatter(unit: String = ""): MarkerLabelFormatter{
+        return chartService.getMarkerLabelFormatter(_weather.value!!.hourly!!.time, unit)
     }
 
     fun getCoordinatesFromLocationName(locationName: String) {

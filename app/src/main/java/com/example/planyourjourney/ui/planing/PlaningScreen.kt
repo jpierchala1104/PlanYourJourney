@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,20 +28,30 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.planyourjourney.R
 import com.example.planyourjourney.services.DecimalFormatter
+import com.example.planyourjourney.services.WeatherUnits
 import com.example.planyourjourney.services.dataClasses.SearchInputType
 import com.example.planyourjourney.services.dataClasses.WeatherJson
 import com.example.planyourjourney.ui.components.AppToolbar
 import com.example.planyourjourney.ui.components.rememberMarker
 import com.example.planyourjourney.ui.theme.PlanYourJourneyTheme
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
+import com.patrykandpatrick.vico.compose.axis.rememberAxisLabelComponent
 import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
-import com.patrykandpatrick.vico.compose.chart.Chart
+import com.patrykandpatrick.vico.compose.chart.CartesianChartHost
+import com.patrykandpatrick.vico.compose.chart.edges.rememberFadingEdges
+import com.patrykandpatrick.vico.compose.chart.layer.rememberLineCartesianLayer
+import com.patrykandpatrick.vico.compose.chart.layer.rememberLineSpec
 import com.patrykandpatrick.vico.compose.chart.layout.fullWidth
-import com.patrykandpatrick.vico.compose.chart.line.lineChart
-import com.patrykandpatrick.vico.compose.chart.scroll.rememberChartScrollState
-import com.patrykandpatrick.vico.compose.component.textComponent
+import com.patrykandpatrick.vico.compose.chart.rememberCartesianChart
+import com.patrykandpatrick.vico.compose.chart.scroll.rememberVicoScrollState
+import com.patrykandpatrick.vico.compose.chart.zoom.rememberVicoZoomState
+import com.patrykandpatrick.vico.compose.component.shape.shader.color
 import com.patrykandpatrick.vico.core.axis.AxisItemPlacer
+import com.patrykandpatrick.vico.core.axis.AxisPosition
+import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
+import com.patrykandpatrick.vico.core.axis.vertical.VerticalAxis
 import com.patrykandpatrick.vico.core.chart.layout.HorizontalLayout
+import com.patrykandpatrick.vico.core.component.shape.shader.DynamicShaders
 
 @Composable
 fun PlaningScreen(
@@ -82,7 +93,9 @@ fun PlaningScreen(
                     //SearchInputType.Map -> Map(viewModel, Modifier.fillMaxSize())
                 }
 
-                Button(onClick = { viewModel.getWeather(viewModel.coordinates) }) {
+                Button(onClick = {
+                    viewModel.getWeather(viewModel.coordinates)
+                }) {
                     Text(text = "Check weather at location")
                 }
             }
@@ -163,6 +176,7 @@ fun LocationNameTextField(
     modifier: Modifier = Modifier,
     viewModel: PlaningViewModel
 ) {
+    // TODO: change to textField state and getCoordinatesFromLocationName on button click instead
     var locationName by remember { mutableStateOf("") }
     OutlinedTextField(
         modifier = modifier,
@@ -201,29 +215,39 @@ fun TemperatureChart(
     viewModel: PlaningViewModel
 ) {
     val temperatureValues = viewModel.weather.value!!.hourly!!.temperature2m
-    val scrollState = rememberChartScrollState()
-    val marker = rememberMarker()
-    Chart(
+    val scrollState = rememberVicoScrollState()
+    val zoomState = rememberVicoZoomState()
+    val marker = rememberMarker(
+        markerLabelFormatter = viewModel.getMarkerLabelFormatter(WeatherUnits.DEGREES_CELSIUS.units))
+    CartesianChartHost(
+        scrollState = scrollState,
+        zoomState = zoomState,
         modifier = modifier.wrapContentHeight(),
-        chart = lineChart(spacing = 56.dp),
-        chartModelProducer = viewModel.getChartEntryModelProducer(temperatureValues),
-        chartScrollState = scrollState,
-        startAxis = rememberStartAxis(
-            itemPlacer = AxisItemPlacer.Vertical.default(maxItemCount = 6)
-        ),
-        bottomAxis = rememberBottomAxis(
-            valueFormatter = viewModel.getBottomAxisFormatter(),
-
-            itemPlacer = AxisItemPlacer.Horizontal.default(
-                addExtremeLabelPadding = true
+        chart = rememberCartesianChart(
+            rememberLineCartesianLayer(
+                spacing = 8.dp,
+                lines = listOf(rememberLineSpec(DynamicShaders.color(MaterialTheme.colorScheme.primary)))),
+            startAxis = rememberStartAxis(
+                itemPlacer = remember { AxisItemPlacer.Vertical.count(count = {6})},
+                valueFormatter = viewModel.getStartAxisFormatter(WeatherUnits.DEGREES_CELSIUS.units)
             ),
-            label = textComponent(
-                lineCount = 2
-            )
+            bottomAxis = rememberBottomAxis(
+                valueFormatter = viewModel.getBottomAxisFormatter(),
+
+                itemPlacer = AxisItemPlacer.Horizontal.default(
+                    spacing = 6,
+                    addExtremeLabelPadding = true
+                ),
+                label = rememberAxisLabelComponent(
+                    lineCount = 2
+                ),
+
+            ),
+            fadingEdges = rememberFadingEdges()
         ),
+        modelProducer = viewModel.getChartEntryModelProducer(temperatureValues),
         horizontalLayout = HorizontalLayout.fullWidth(),
-        marker = marker,
-        isZoomEnabled = true
+        marker = marker
     )
 }
 
@@ -232,7 +256,15 @@ fun WeatherCard(
     modifier: Modifier,
     viewModel: PlaningViewModel
 ) {
-    viewModel.weather.value!!.hourly!!.time
+    val indexes = viewModel.weather.value!!.hourly!!.time.withIndex().filter{
+            times ->
+                times.value.substringAfter("T") == "00:00" ||
+                times.value.substringAfter("T") == "08:00" ||
+                times.value.substringAfter("T") == "12:00" ||
+                times.value.substringAfter("T") == "18:00"
+    }.map{ it.index }
+
+    //val temperature
     Column(
         modifier = modifier
     ){

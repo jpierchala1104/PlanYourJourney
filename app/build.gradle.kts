@@ -69,10 +69,9 @@ dependencies {
     implementation("com.google.maps.android:maps-compose:4.3.0")
 
     //Vico Charts
-    implementation("com.patrykandpatrick.vico:compose:1.14.0")
-    implementation("com.patrykandpatrick.vico:compose-m2:1.14.0")
-    implementation("com.patrykandpatrick.vico:compose-m3:1.14.0")
-    implementation("com.patrykandpatrick.vico:core:1.14.0")
+    implementation("com.patrykandpatrick.vico:compose:2.0.0-alpha.11")
+    implementation("com.patrykandpatrick.vico:compose-m3:2.0.0-alpha.11")
+    implementation("com.patrykandpatrick.vico:core:2.0.0-alpha.11")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")

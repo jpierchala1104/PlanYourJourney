@@ -3,7 +3,6 @@ package com.example.planyourjourney.feature_planing.presentation.planning
 import android.app.Application
 import android.location.Geocoder
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
@@ -13,7 +12,6 @@ import com.example.planyourjourney.feature_planing.domain.model.Coordinates
 import com.example.planyourjourney.feature_planing.domain.util.SearchInputType
 import com.example.planyourjourney.feature_planing.domain.use_case.GetWeatherUseCase
 import com.example.planyourjourney.feature_planing.domain.util.Resource
-import com.example.planyourjourney.feature_planing.presentation.util.WeatherUnits
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -41,12 +39,20 @@ class PlaningViewModel @Inject constructor(
     private val _weatherLocationName = mutableStateOf("")
     val weatherLocationName: State<String> = _weatherLocationName
 
-    private val uiEventChanel = Channel<UiEvent>()
-    val uiEvents = uiEventChanel.receiveAsFlow()
+    private val uiEventChannel = Channel<UiEvent>()
+    val uiEvents = uiEventChannel.receiveAsFlow()
 
     private val geocoder = Geocoder(context)
 
     private val chartService = ChartService()
+
+    // TODO: List of locations, another screen for showing (or a list of locations with basic info like today's weather card) charts or cards,
+    //  and another screen for changing settings
+    //  DataStores for saving settings and RoomDatabase for  storing weather.
+    //  Could also make another screen for showing just the charts of one location when picking a location
+
+    // TODO: state should have only location and coords, list of hourly weather should be in location list or specific location weather info.
+    //  need to figure out where the API request gonna happen
 
     fun onEvent(event: PlaningEvent) {
         when (event) {
@@ -100,13 +106,13 @@ class PlaningViewModel @Inject constructor(
 //                    )
                 }
             }
-            //is PlaningEvent.ToggleSettingsSection -> TODO()
+//            is PlaningEvent.ToggleSettingsSection -> TODO()
         }
     }
 
     private fun getWeather() {
         viewModelScope.launch {
-            getWeatherUseCase.invoke(_weatherCoordinates.value).collect { result ->
+            getWeatherUseCase.invoke(_weatherCoordinates.value, _state.value.settings.weatherUnits).collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         result.data?.let { weather ->
@@ -115,14 +121,14 @@ class PlaningViewModel @Inject constructor(
                             )
                         }
                         prepareCharts()
-                        uiEventChanel.send(UiEvent.WeatherLoaded)
+                        uiEventChannel.send(UiEvent.WeatherLoaded)
                     }
 
                     is Resource.Error -> {
                         _state.value = _state.value.copy(
                             isWeatherLoaded = false, isLoading = false
                         )
-                        uiEventChanel.send(UiEvent.LoadingError(result.message!!))
+                        uiEventChannel.send(UiEvent.LoadingError(result.message!!))
                     }
 
                     is Resource.Loading -> {
@@ -162,10 +168,10 @@ class PlaningViewModel @Inject constructor(
                         chartDoubleValues = _state.value.hourlyWeatherList.map { it.temperature2m }),
                     markerLabelFormatter = chartService.getMarkerLabelFormatter(
                         hourlyWeather = _state.value.hourlyWeatherList,
-                        unit = WeatherUnits.DEGREES_CELSIUS.units
+                        unit = _state.value.settings.weatherUnits.temperatureUnits.displayUnits
                     ),
                     startAxisValueFormatter = chartService.getStartAxisFormatter(
-                        unit = WeatherUnits.DEGREES_CELSIUS.units
+                        unit = _state.value.settings.weatherUnits.temperatureUnits.displayUnits
                     ),
                     bottomAxisValueFormatter = chartService.getBottomAxisFormatter(
                         hourlyWeather = _state.value.hourlyWeatherList
@@ -181,10 +187,10 @@ class PlaningViewModel @Inject constructor(
                         chartIntValues = _state.value.hourlyWeatherList.map { it.relativeHumidity2m }),
                     markerLabelFormatter = chartService.getMarkerLabelFormatter(
                         hourlyWeather = _state.value.hourlyWeatherList,
-                        unit = WeatherUnits.PERCENTAGES.units
+                        unit = _state.value.settings.weatherUnits.percentageUnits.displayUnits
                     ),
                     startAxisValueFormatter = chartService.getStartAxisFormatter(
-                        unit = WeatherUnits.PERCENTAGES.units
+                        unit = _state.value.settings.weatherUnits.percentageUnits.displayUnits
                     ),
                     bottomAxisValueFormatter = chartService.getBottomAxisFormatter(
                         hourlyWeather = _state.value.hourlyWeatherList
@@ -201,10 +207,10 @@ class PlaningViewModel @Inject constructor(
                             chartIntValues = _state.value.hourlyWeatherList.map { it.precipitationProbability }),
                         markerLabelFormatter = chartService.getMarkerLabelFormatter(
                             hourlyWeather = _state.value.hourlyWeatherList,
-                            unit = WeatherUnits.PERCENTAGES.units
+                            unit = _state.value.settings.weatherUnits.percentageUnits.displayUnits
                         ),
                         startAxisValueFormatter = chartService.getStartAxisFormatter(
-                            unit = WeatherUnits.PERCENTAGES.units
+                            unit = _state.value.settings.weatherUnits.percentageUnits.displayUnits
                         ),
                         bottomAxisValueFormatter = chartService.getBottomAxisFormatter(
                             hourlyWeather = _state.value.hourlyWeatherList
@@ -216,14 +222,14 @@ class PlaningViewModel @Inject constructor(
             chartStateList = chartStateList.plus(
                 ChartState(
                     chartTitle = "Rain",
-                    modelProducer = chartService.getCartesianLineChartModelProducer(chartSize = _state.value.hourlyWeatherList.size,
+                    modelProducer = chartService.getCartesianColumnChartModelProducer(chartSize = _state.value.hourlyWeatherList.size,
                         chartDoubleValues = _state.value.hourlyWeatherList.map { it.rain }),
                     markerLabelFormatter = chartService.getMarkerLabelFormatter(
                         hourlyWeather = _state.value.hourlyWeatherList,
-                        unit = WeatherUnits.MILLIMETERS.units
+                        unit = _state.value.settings.weatherUnits.precipitationUnits.displayUnits
                     ),
                     startAxisValueFormatter = chartService.getStartAxisFormatter(
-                        unit = WeatherUnits.MILLIMETERS.units
+                        unit = _state.value.settings.weatherUnits.precipitationUnits.displayUnits
                     ),
                     bottomAxisValueFormatter = chartService.getBottomAxisFormatter(
                         hourlyWeather = _state.value.hourlyWeatherList
@@ -235,14 +241,14 @@ class PlaningViewModel @Inject constructor(
             chartStateList = chartStateList.plus(
                 ChartState(
                     chartTitle = "Snowfall",
-                    modelProducer = chartService.getCartesianLineChartModelProducer(chartSize = _state.value.hourlyWeatherList.size,
+                    modelProducer = chartService.getCartesianColumnChartModelProducer(chartSize = _state.value.hourlyWeatherList.size,
                         chartDoubleValues = _state.value.hourlyWeatherList.map { it.snowfall }),
                     markerLabelFormatter = chartService.getMarkerLabelFormatter(
                         hourlyWeather = _state.value.hourlyWeatherList,
-                        unit = WeatherUnits.MILLIMETERS.units
+                        unit = _state.value.settings.weatherUnits.precipitationUnits.displayUnits
                     ),
                     startAxisValueFormatter = chartService.getStartAxisFormatter(
-                        unit = WeatherUnits.MILLIMETERS.units
+                        unit = _state.value.settings.weatherUnits.precipitationUnits.displayUnits
                     ),
                     bottomAxisValueFormatter = chartService.getBottomAxisFormatter(
                         hourlyWeather = _state.value.hourlyWeatherList
@@ -258,10 +264,10 @@ class PlaningViewModel @Inject constructor(
                         chartIntValues = _state.value.hourlyWeatherList.map { it.cloudCover }),
                     markerLabelFormatter = chartService.getMarkerLabelFormatter(
                         hourlyWeather = _state.value.hourlyWeatherList,
-                        unit = WeatherUnits.PERCENTAGES.units
+                        unit = _state.value.settings.weatherUnits.percentageUnits.displayUnits
                     ),
                     startAxisValueFormatter = chartService.getStartAxisFormatter(
-                        unit = WeatherUnits.PERCENTAGES.units
+                        unit = _state.value.settings.weatherUnits.percentageUnits.displayUnits
                     ),
                     bottomAxisValueFormatter = chartService.getBottomAxisFormatter(
                         hourlyWeather = _state.value.hourlyWeatherList
@@ -277,10 +283,10 @@ class PlaningViewModel @Inject constructor(
                         chartDoubleValues = _state.value.hourlyWeatherList.map { it.windSpeed10m }),
                     markerLabelFormatter = chartService.getMarkerLabelFormatter(
                         hourlyWeather = _state.value.hourlyWeatherList,
-                        unit = WeatherUnits.KILOMETERS_PER_HOUR.units
+                        unit = _state.value.settings.weatherUnits.windSpeedUnits.displayUnits
                     ),
                     startAxisValueFormatter = chartService.getStartAxisFormatter(
-                        unit = WeatherUnits.KILOMETERS_PER_HOUR.units
+                        unit = _state.value.settings.weatherUnits.windSpeedUnits.displayUnits
                     ),
                     bottomAxisValueFormatter = chartService.getBottomAxisFormatter(
                         hourlyWeather = _state.value.hourlyWeatherList

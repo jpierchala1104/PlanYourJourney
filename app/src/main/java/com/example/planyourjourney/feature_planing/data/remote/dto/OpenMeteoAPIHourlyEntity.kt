@@ -1,4 +1,4 @@
-package com.example.planyourjourney.feature_planing.data.data_source.dto
+package com.example.planyourjourney.feature_planing.data.remote.dto
 
 import com.google.gson.annotations.SerializedName
 

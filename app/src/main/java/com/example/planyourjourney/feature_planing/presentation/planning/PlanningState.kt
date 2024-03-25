@@ -3,6 +3,7 @@ package com.example.planyourjourney.feature_planing.presentation.planning
 import com.example.planyourjourney.feature_planing.domain.model.Coordinates
 import com.example.planyourjourney.feature_planing.domain.model.HourlyWeather
 import com.example.planyourjourney.feature_planing.domain.model.Settings
+import com.example.planyourjourney.feature_planing.domain.model.WeatherUnits
 import com.example.planyourjourney.feature_planing.domain.util.Language
 import com.example.planyourjourney.feature_planing.domain.util.OutputType
 import com.example.planyourjourney.feature_planing.domain.util.SearchInputType
@@ -35,7 +36,9 @@ data class PlanningState(
         // searchInputType = SearchInputType. -> LocationName, LatitudeAndLongitude and GoogleMaps
         searchInputType = SearchInputType.LocationName,
         // outputType = OutputType. -> Chart and Card
-        outputType = OutputType.Chart
+        outputType = OutputType.Chart,
+        // weatherUnits = TemperatureUnits, PrecipitationUnits, WindSpeedUnits and Percentages
+        weatherUnits = WeatherUnits()
     ),
     val chartStateList: List<ChartState> = listOf()
 //    val isSettingsSectionVisible: Boolean = false

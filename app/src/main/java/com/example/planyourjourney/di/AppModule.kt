@@ -1,7 +1,9 @@
 package com.example.planyourjourney.di
 
-import com.example.planyourjourney.feature_planing.data.data_source.OpenMeteoAPI
-import com.example.planyourjourney.feature_planing.data.repository.WeatherRepositoryImpl
+import android.app.Application
+import androidx.room.Room
+import com.example.planyourjourney.feature_planing.data.local.WeatherDatabase
+import com.example.planyourjourney.feature_planing.data.remote.OpenMeteoAPI
 import com.example.planyourjourney.feature_planing.domain.repository.WeatherRepository
 import com.example.planyourjourney.feature_planing.domain.use_case.GetWeatherUseCase
 import dagger.Module
@@ -38,5 +40,15 @@ object AppModule {
     @Singleton
     fun provideGetWeatherUseCase(repository: WeatherRepository): GetWeatherUseCase {
         return GetWeatherUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideWeatherDatabase(app: Application): WeatherDatabase{
+        return Room.databaseBuilder(
+            app,
+            WeatherDatabase::class.java,
+            "weatherdb.db"
+        ).build()
     }
 }

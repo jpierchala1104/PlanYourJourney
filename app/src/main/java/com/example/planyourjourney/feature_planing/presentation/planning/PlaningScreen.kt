@@ -10,67 +10,35 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.planyourjourney.R
-import com.example.planyourjourney.feature_planing.presentation.util.DecimalFormatter
-import com.example.planyourjourney.feature_planing.presentation.util.WeatherUnits
-import com.example.planyourjourney.feature_planing.domain.model.Coordinates
-import com.example.planyourjourney.feature_planing.domain.util.SearchInputType
 import com.example.planyourjourney.core.presentation.AppToolbar
-import com.example.planyourjourney.core.presentation.rememberMarker
 import com.example.planyourjourney.feature_planing.domain.util.OutputType
+import com.example.planyourjourney.feature_planing.domain.util.SearchInputType
 import com.example.planyourjourney.feature_planing.presentation.planning.components.ChartSection
 import com.example.planyourjourney.feature_planing.presentation.planning.components.CoordinatesInputSection
 import com.example.planyourjourney.feature_planing.presentation.planning.components.LocationNameInputSection
-import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
-import com.patrykandpatrick.vico.compose.axis.rememberAxisLabelComponent
-import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
-import com.patrykandpatrick.vico.compose.chart.CartesianChartHost
-import com.patrykandpatrick.vico.compose.chart.edges.rememberFadingEdges
-import com.patrykandpatrick.vico.compose.chart.layer.rememberLineCartesianLayer
-import com.patrykandpatrick.vico.compose.chart.layer.rememberLineSpec
-import com.patrykandpatrick.vico.compose.chart.layout.fullWidth
-import com.patrykandpatrick.vico.compose.chart.rememberCartesianChart
-import com.patrykandpatrick.vico.compose.chart.scroll.rememberVicoScrollState
-import com.patrykandpatrick.vico.compose.chart.zoom.rememberVicoZoomState
-import com.patrykandpatrick.vico.compose.component.shape.shader.color
-import com.patrykandpatrick.vico.core.axis.AxisItemPlacer
-import com.patrykandpatrick.vico.core.chart.layout.HorizontalLayout
-import com.patrykandpatrick.vico.core.component.shape.shader.DynamicShaders
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectIndexed
+import com.example.planyourjourney.feature_planing.presentation.util.DecimalFormatter
 
 @Composable
 fun PlaningScreen(
@@ -161,7 +129,9 @@ fun PlaningScreen(
                 if (state.isLoading) {
                     CircularProgressIndicator(
                         color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.wrapContentSize().size(56.dp),
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .size(56.dp),
                         strokeWidth = 6.dp,
                         trackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
                     )

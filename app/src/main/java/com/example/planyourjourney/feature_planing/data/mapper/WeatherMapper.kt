@@ -1,8 +1,13 @@
 package com.example.planyourjourney.feature_planing.data.mapper
 
 import com.example.planyourjourney.feature_planing.data.local.HourlyWeatherEntity
+import com.example.planyourjourney.feature_planing.data.local.LocationEntity
+import com.example.planyourjourney.feature_planing.data.local.LocationWithHourlyWeather
 import com.example.planyourjourney.feature_planing.data.remote.dto.OpenMeteoAPIEntity
+import com.example.planyourjourney.feature_planing.domain.model.Coordinates
 import com.example.planyourjourney.feature_planing.domain.model.HourlyWeather
+import com.example.planyourjourney.feature_planing.domain.model.Location
+import com.example.planyourjourney.feature_planing.domain.model.LocationWeather
 import java.time.LocalDateTime
 
 fun OpenMeteoAPIEntity.toHourlyWeatherList(): List<HourlyWeather> {
@@ -22,9 +27,19 @@ fun OpenMeteoAPIEntity.toHourlyWeatherList(): List<HourlyWeather> {
     return hourlyWeatherList
 }
 
+fun OpenMeteoAPIEntity.toLocationWeather(): LocationWeather {
+    return LocationWeather(
+        location = Location(
+            locationId = null,
+            locationName = null,
+            coordinates = Coordinates(latitude!!, longitude!!)
+        ), hourlyWeatherList = this.toHourlyWeatherList()
+    )
+}
+
 fun HourlyWeatherEntity.toHourlyWeather(): HourlyWeather {
     return HourlyWeather(
-        time = time,
+        time = LocalDateTime.parse(time),
         temperature2m = temperature2m,
         relativeHumidity2m = relativeHumidity2m,
         precipitationProbability = precipitationProbability,
@@ -37,7 +52,7 @@ fun HourlyWeatherEntity.toHourlyWeather(): HourlyWeather {
 
 fun HourlyWeather.toHourlyWeatherEntity(): HourlyWeatherEntity {
     return HourlyWeatherEntity(
-        time = time,
+        time = time.toString(),
         temperature2m = temperature2m,
         relativeHumidity2m = relativeHumidity2m,
         precipitationProbability = precipitationProbability,
@@ -45,5 +60,32 @@ fun HourlyWeather.toHourlyWeatherEntity(): HourlyWeatherEntity {
         snowfall = snowfall,
         cloudCover = cloudCover,
         windSpeed10m = windSpeed10m
+    )
+}
+
+fun LocationWithHourlyWeather.toLocationWeather(): LocationWeather {
+    return LocationWeather(location = location.toLocation(),
+        hourlyWeatherList = hourlyWeather.map { it.toHourlyWeather() })
+}
+
+fun LocationWeather.toLocationWithHourlyWeather(): LocationWithHourlyWeather {
+    return LocationWithHourlyWeather(location = location.toLocationEntity(),
+        hourlyWeather = hourlyWeatherList.map { it.toHourlyWeatherEntity() })
+}
+
+fun LocationEntity.toLocation(): Location {
+    return Location(
+        locationId = locationId,
+        locationName = locationName,
+        coordinates = Coordinates(latitude, longitude)
+    )
+}
+
+fun Location.toLocationEntity(): LocationEntity {
+    return LocationEntity(
+        locationId = locationId,
+        locationName = locationName,
+        latitude = coordinates.latitude,
+        longitude = coordinates.longitude
     )
 }

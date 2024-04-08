@@ -1,4 +1,4 @@
-package com.example.planyourjourney.feature_planing.presentation.util
+package com.example.planyourjourney.feature_planing.domain.util
 
 enum class WindSpeedUnits(val displayUnits: String, val queryUnits: String){
     KILOMETERS_PER_HOUR("km/h", "kmh"),

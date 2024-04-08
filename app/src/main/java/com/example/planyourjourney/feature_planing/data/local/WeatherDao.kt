@@ -17,7 +17,7 @@ interface WeatherDao {
     @Query("DELETE FROM hourlyweatherentity")
     suspend fun clearHourlyWeathers()
 
-    @Query("DELETE FROM hourlyweatherentity WHERE locationWeatherId=:locationId")
+    @Query("DELETE FROM hourlyweatherentity WHERE locationweatherid=:locationId")
     suspend fun clearHourlyWeathersAtLocation(locationId: Int)
 
     // Location Table
@@ -29,12 +29,18 @@ interface WeatherDao {
     @Query("DELETE FROM locationentity")
     suspend fun clearLocations()
 
-    @Query("DELETE FROM locationentity WHERE locationId=:locationId")
+    @Query("DELETE FROM locationentity WHERE locationid=:locationId")
     suspend fun clearLocation(locationId: Int)
 
+    @Query("SELECT * FROM locationentity")
+    suspend fun getLocations(): List<LocationEntity>
+
+    @Query("SELECT locationid FROM locationentity WHERE latitude=:latitude AND longitude=:longitude")
+    suspend fun getLocationId(latitude: Double, longitude: Double): Int?
+
     @Transaction
-    @Query("SELECT * FROM locationentity WHERE locationId=:locationId")
-    suspend fun getHourlyWeatherAtLocation(locationId: Int): List<LocationWithHourlyWeather>
+    @Query("SELECT * FROM locationentity WHERE locationid=:locationId")
+    suspend fun getHourlyWeatherAtLocation(locationId: Int): LocationWithHourlyWeather
 
     @Transaction
     @Query("SELECT * FROM locationentity")

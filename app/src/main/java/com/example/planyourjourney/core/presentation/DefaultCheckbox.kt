@@ -1,4 +1,4 @@
-package com.example.planyourjourney.feature_planing.presentation.Settings.components
+package com.example.planyourjourney.core.presentation
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer

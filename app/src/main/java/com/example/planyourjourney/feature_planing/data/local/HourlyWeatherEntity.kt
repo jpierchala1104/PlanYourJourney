@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 data class HourlyWeatherEntity(
     @PrimaryKey val hourlyWeatherId: Int? = null,
     val locationWeatherId: Int? = null,
-    val time: LocalDateTime,
+    val time: String,
     val temperature2m: Double,
     val relativeHumidity2m: Int,
     val precipitationProbability: Int,

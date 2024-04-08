@@ -1,9 +1,8 @@
 package com.example.planyourjourney.feature_planing.domain.model
 
-import com.example.planyourjourney.feature_planing.domain.util.Language
-import com.example.planyourjourney.feature_planing.domain.util.OutputType
-import com.example.planyourjourney.feature_planing.domain.util.SearchInputType
-import com.example.planyourjourney.feature_planing.presentation.util.WeatherUnits
+import com.example.planyourjourney.feature_planing.presentation.util.Language
+import com.example.planyourjourney.feature_planing.presentation.util.OutputType
+import com.example.planyourjourney.feature_planing.presentation.util.SearchInputType
 
 data class Settings(
     val language: Language,

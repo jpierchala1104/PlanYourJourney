@@ -1,4 +1,4 @@
-package com.example.planyourjourney.feature_planing.presentation.planning.components
+package com.example.planyourjourney.feature_planing.presentation.weather_details.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight

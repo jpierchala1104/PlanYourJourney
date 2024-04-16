@@ -3,6 +3,7 @@ package com.example.planyourjourney.feature_planing.domain.repository
 import com.example.planyourjourney.feature_planing.domain.model.HourlyWeather
 import com.example.planyourjourney.feature_planing.domain.model.Location
 import com.example.planyourjourney.feature_planing.domain.model.LocationWeather
+import com.example.planyourjourney.feature_planing.domain.model.Settings
 import com.example.planyourjourney.feature_planing.domain.model.WeatherUnits
 import com.example.planyourjourney.feature_planing.domain.util.APIFetchResult
 import com.example.planyourjourney.feature_planing.domain.util.Resource
@@ -20,4 +21,6 @@ interface WeatherRepository {
     suspend fun insertHourlyWeathers(hourlyWeather: List<HourlyWeather>)
     suspend fun deleteHourlyWeathers()
     suspend fun deleteHourlyWeathersAtLocation(locationId: Int)
+    suspend fun saveSettings(settings: Settings)
+    suspend fun getSettings(): Flow<Settings>
 }

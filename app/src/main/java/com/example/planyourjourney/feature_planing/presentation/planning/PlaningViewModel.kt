@@ -67,6 +67,7 @@ class PlaningViewModel @Inject constructor(
     // TODO: can make a unit converter, wouldn't need to call the API for every unit change
 
     init {
+        getSettings()
         getLocations()
     }
 
@@ -80,12 +81,12 @@ class PlaningViewModel @Inject constructor(
                     isLoading = true
                 )
 
-                if (_state.value.settings.searchInputType == SearchInputType.LocationName) {
+                if (_state.value.searchInputType == SearchInputType.LocationName) {
                     getCoordinatesFromLocationName()
                 }
 
                 if (Build.VERSION.SDK_INT < 33 ||
-                    _state.value.settings.searchInputType == SearchInputType.LatitudeAndLongitude
+                    _state.value.searchInputType == SearchInputType.LatitudeAndLongitude
                 ) {
                     val location = Location(
                         locationId = null,
@@ -141,6 +142,14 @@ class PlaningViewModel @Inject constructor(
                     getLocations()
                 }
             }
+
+            is PlaningEvent.SearchInputTypeChanged -> {
+                viewModelScope.launch {
+                    _state.value = state.value.copy(
+                        searchInputType = event.searchInputType
+                    )
+                }
+            }
         }
     }
 
@@ -178,11 +187,28 @@ class PlaningViewModel @Inject constructor(
                     }
 
                     is APIFetchResult.Error -> {
+                        val locationListCopy = state.value.locationList.toList()
+                        locationListCopy
+                            .first {
+                                it.coordinates.latitude == location.coordinates.latitude &&
+                                        it.coordinates.longitude == location.coordinates.longitude
+                            }.isLoaded = false
+                        _state.value = state.value.copy(
+                            locationList = locationListCopy
+                        )
                         uiEventChannel.send(UiEvent.LoadingError(result.message!!))
                     }
 
                     is APIFetchResult.Loading -> {
-
+                        val locationListCopy = state.value.locationList.toList()
+                        locationListCopy
+                            .first {
+                                it.coordinates.latitude == location.coordinates.latitude &&
+                                        it.coordinates.longitude == location.coordinates.longitude
+                            }.isLoaded = result.isLoading
+                        _state.value = state.value.copy(
+                            locationList = locationListCopy
+                        )
                     }
                 }
             }
@@ -233,6 +259,16 @@ class PlaningViewModel @Inject constructor(
             _weatherCoordinates.value.longitude = coords.first().longitude
         } else {
             Log.e("Geocoder", "Geocoder didn't find location")
+        }
+    }
+
+    private fun getSettings(){
+        viewModelScope.launch {
+            planingUseCases.getSettingsUseCase.invoke().collect{ settings ->
+                _state.value = state.value.copy(
+                    settings = settings
+                )
+            }
         }
     }
 

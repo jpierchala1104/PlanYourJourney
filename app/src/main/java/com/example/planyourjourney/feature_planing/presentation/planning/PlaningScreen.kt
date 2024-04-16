@@ -94,6 +94,7 @@ fun PlaningScreen(
                     modifier = Modifier
                         .size(32.dp)
                         .clickable {
+                            // TODO: build the project and finish navigate to settings
                         }
                 )
             }
@@ -124,10 +125,11 @@ fun PlaningScreen(
 //                    }
 //                }
 //            }
+            // TODO: Add selection for searchtype with radio buttons
             Column(
                 Modifier.padding(10.dp)
             ) {
-                when (viewModel.state.value.settings.searchInputType) {
+                when (viewModel.state.value.searchInputType) {
                     SearchInputType.LatitudeAndLongitude -> CoordinatesInputSection(
                         coordinates = weatherCoordinates,
                         onValueChange = {

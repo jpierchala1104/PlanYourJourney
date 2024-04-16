@@ -5,6 +5,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
     id("dagger.hilt.android.plugin")
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.0.0-RC1"
 }
 
 android {
@@ -88,8 +89,9 @@ dependencies {
     implementation("androidx.navigation:navigation-runtime-ktx:2.7.7")
     kapt("androidx.hilt:hilt-compiler:1.2.0")
 
-    // DataStores
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    // Proto DataStores
+    implementation("androidx.datastore:datastore:1.0.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 
     // Room
     implementation("androidx.room:room-runtime:2.6.1")

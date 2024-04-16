@@ -31,6 +31,7 @@ class WeatherDetailsViewModel @Inject constructor(
     private val chartService = ChartService()
 
     init {
+        getSettings()
         viewModelScope.launch {
             val locationId = savedStateHandle.get<Int>("locationId") ?: return@launch
             getLocationWeather(
@@ -240,5 +241,15 @@ class WeatherDetailsViewModel @Inject constructor(
         _state.value = state.value.copy(
             chartStateList = chartStateList, isWeatherLoaded = true, isLoading = false
         )
+    }
+
+    private fun getSettings(){
+        viewModelScope.launch {
+            weatherDetailsUseCases.getSettingsUseCase.invoke().collect{ settings ->
+                _state.value = state.value.copy(
+                    settings = settings
+                )
+            }
+        }
     }
 }

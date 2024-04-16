@@ -9,7 +9,9 @@ import com.example.planyourjourney.feature_planing.data.mapper.toLocationWeather
 import com.example.planyourjourney.feature_planing.domain.model.HourlyWeather
 import com.example.planyourjourney.feature_planing.domain.model.Location
 import com.example.planyourjourney.feature_planing.domain.model.LocationWeather
+import com.example.planyourjourney.feature_planing.domain.model.Settings
 import com.example.planyourjourney.feature_planing.domain.model.WeatherUnits
+import com.example.planyourjourney.feature_planing.domain.repository.SettingsOperations
 import com.example.planyourjourney.feature_planing.domain.repository.WeatherRepository
 import com.example.planyourjourney.feature_planing.domain.util.APIFetchResult
 import com.example.planyourjourney.feature_planing.domain.util.Resource
@@ -22,7 +24,9 @@ import javax.inject.Singleton
 
 @Singleton
 class WeatherRepositoryImpl @Inject constructor(
-    private val api: OpenMeteoAPI, db: WeatherDatabase
+    private val api: OpenMeteoAPI,
+    db: WeatherDatabase,
+    private val dataStore: SettingsOperations
 ) : WeatherRepository {
 
     private val dao = db.dao
@@ -66,7 +70,7 @@ class WeatherRepositoryImpl @Inject constructor(
                 latitude = location.coordinates.latitude,
                 longitude = location.coordinates.longitude
             )
-
+            // TODO: if its goes to catch will this still try to insert? - test and fix that
             dao.insertHourlyWeathers(remoteLocationWeather!!.hourlyWeatherList.map { hourlyWeather ->
                 // TODO: If the id isn't saved the problem is here!!!
                 hourlyWeather.toHourlyWeatherEntity().copy(locationWeatherId = locationId)
@@ -124,5 +128,13 @@ class WeatherRepositoryImpl @Inject constructor(
 
     override suspend fun deleteHourlyWeathersAtLocation(locationId: Int) {
         dao.clearHourlyWeathersAtLocation(locationId)
+    }
+
+    override suspend fun saveSettings(settings: Settings) {
+        dataStore.saveSettings(settings)
+    }
+
+    override suspend fun getSettings(): Flow<Settings> {
+        return dataStore.readSettingsState()
     }
 }

@@ -22,6 +22,7 @@ class WeatherViewModel @Inject constructor(
     private var recentlyDeletedLocation: Location? = null
 
     init {
+        getSettings()
         getLocationsWithWeather()
     }
 
@@ -78,6 +79,16 @@ class WeatherViewModel @Inject constructor(
                         }
                     }
                 }
+        }
+    }
+
+    private fun getSettings(){
+        viewModelScope.launch {
+            weatherUseCases.getSettingsUseCase.invoke().collect{ settings ->
+                _state.value = state.value.copy(
+                    settings = settings
+                )
+            }
         }
     }
 }

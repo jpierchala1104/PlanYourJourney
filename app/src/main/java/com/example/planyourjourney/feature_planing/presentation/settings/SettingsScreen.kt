@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.planyourjourney.R
 import com.example.planyourjourney.core.presentation.AppToolbar
+import com.example.planyourjourney.feature_planing.presentation.destinations.PlaningScreenDestination
 import com.example.planyourjourney.feature_planing.presentation.destinations.WeatherScreenDestination
 import com.example.planyourjourney.feature_planing.presentation.settings.components.SettingsSection
 import com.ramcosta.composedestinations.annotation.Destination
@@ -39,9 +41,7 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
-    val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-    val context = LocalContext.current
 
     Scaffold(
         snackbarHost = {
@@ -68,12 +68,15 @@ fun SettingsScreen(
 //                )
 //                Spacer(modifier = Modifier.size(8.dp))
 //                Icon(
-//                    imageVector = Icons.Filled.Settings,
+//                    imageVector = Icons.Filled.Add,
 //                    contentDescription = null,
 //                    tint = Color.White,
 //                    modifier = Modifier
 //                        .size(32.dp)
 //                        .clickable {
+//                            navigator.navigate(
+//                                PlaningScreenDestination()
+//                            )
 //                        }
 //                )
             }

@@ -1,10 +1,19 @@
 package com.example.planyourjourney.feature_planing.presentation.planning
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -13,11 +22,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -38,11 +50,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.planyourjourney.R
 import com.example.planyourjourney.core.presentation.AppToolbar
+import com.example.planyourjourney.feature_planing.presentation.destinations.SettingsScreenDestination
 import com.example.planyourjourney.feature_planing.presentation.destinations.WeatherDetailsScreenDestination
 import com.example.planyourjourney.feature_planing.presentation.destinations.WeatherScreenDestination
 import com.example.planyourjourney.feature_planing.presentation.planning.components.CoordinatesInputSection
 import com.example.planyourjourney.feature_planing.presentation.planning.components.LocationItem
 import com.example.planyourjourney.feature_planing.presentation.planning.components.LocationNameInputSection
+import com.example.planyourjourney.feature_planing.presentation.planning.components.SearchTypeSelectionSection
 import com.example.planyourjourney.feature_planing.presentation.util.DecimalFormatter
 import com.example.planyourjourney.feature_planing.presentation.util.SearchInputType
 import com.ramcosta.composedestinations.annotation.Destination
@@ -94,7 +108,9 @@ fun PlaningScreen(
                     modifier = Modifier
                         .size(32.dp)
                         .clickable {
-                            // TODO: build the project and finish navigate to settings
+                            navigator.navigate(
+                                SettingsScreenDestination()
+                            )
                         }
                 )
             }
@@ -125,7 +141,50 @@ fun PlaningScreen(
 //                    }
 //                }
 //            }
-            // TODO: Add selection for searchtype with radio buttons
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.primary),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+                IconButton(
+                    onClick = {
+                        viewModel.onEvent(PlaningEvent.ToggleSearchInputTypeSelection)
+                    }
+                ) {
+                    if (state.isSearchInputTypeSelectionSectionVisible)
+                    {
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowUp,
+                            contentDescription = null
+                        )
+                    }
+                    else {
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowDown,
+                            contentDescription = null
+                        )
+                    }
+                }
+            }
+            AnimatedVisibility(
+                visible = state.isSearchInputTypeSelectionSectionVisible,
+                enter = fadeIn() + slideInVertically(),
+                exit = fadeOut() + slideOutVertically()
+            ) {
+                SearchTypeSelectionSection(
+                    onSearchInputTypeChange = {
+                        viewModel.onEvent(PlaningEvent.SearchInputTypeChanged(it))
+                    }
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
             Column(
                 Modifier.padding(10.dp)
             ) {

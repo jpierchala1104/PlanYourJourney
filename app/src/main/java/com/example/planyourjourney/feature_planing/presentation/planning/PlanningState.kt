@@ -12,5 +12,6 @@ data class PlanningState(
     val isLoading: Boolean = false,
     val isLocationLoaded: Boolean = false,
     val isCoordinatesValueOrLocationNameChanged: Boolean = false,
-    val settings: Settings = Settings()
+    val settings: Settings = Settings(),
+    val isSearchInputTypeSelectionSectionVisible: Boolean = false
 )

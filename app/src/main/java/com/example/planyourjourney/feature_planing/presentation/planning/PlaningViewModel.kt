@@ -150,6 +150,13 @@ class PlaningViewModel @Inject constructor(
                     )
                 }
             }
+
+            PlaningEvent.ToggleSearchInputTypeSelection -> {
+                _state.value = state.value.copy(
+                    isSearchInputTypeSelectionSectionVisible = !state.value
+                        .isSearchInputTypeSelectionSectionVisible
+                )
+            }
         }
     }
 

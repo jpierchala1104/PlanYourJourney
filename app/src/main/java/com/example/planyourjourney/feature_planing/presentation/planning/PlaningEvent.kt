@@ -11,4 +11,5 @@ sealed class PlaningEvent {
     data class DeleteLocation(val location: Location) : PlaningEvent()
     data object RestoreLocation : PlaningEvent()
     data class SearchInputTypeChanged(val searchInputType: SearchInputType) : PlaningEvent()
+    data object ToggleSearchInputTypeSelection : PlaningEvent()
 }

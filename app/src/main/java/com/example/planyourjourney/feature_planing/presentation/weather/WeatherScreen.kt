@@ -34,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.planyourjourney.R
 import com.example.planyourjourney.core.presentation.AppToolbar
 import com.example.planyourjourney.feature_planing.presentation.destinations.PlaningScreenDestination
+import com.example.planyourjourney.feature_planing.presentation.destinations.SettingsScreenDestination
 import com.example.planyourjourney.feature_planing.presentation.destinations.WeatherDetailsScreenDestination
 import com.example.planyourjourney.feature_planing.presentation.weather.components.WeatherCard
 import com.ramcosta.composedestinations.annotation.Destination
@@ -78,6 +79,9 @@ fun WeatherScreen(
                     modifier = Modifier
                         .size(32.dp)
                         .clickable {
+                            navigator.navigate(
+                                SettingsScreenDestination()
+                            )
                         }
                 )
             }

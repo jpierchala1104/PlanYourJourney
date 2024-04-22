@@ -31,6 +31,10 @@ class WeatherRepositoryImpl @Inject constructor(
 
     private val dao = db.dao
 
+    // TODO: function to update weather from api to database,
+    //  figure out how to fetch from API without spamming it,
+    //  also function to convert the units in database?
+
     override suspend fun getWeatherAtLocation(
         location: Location
     ): Flow<Resource<LocationWeather>> {
@@ -59,6 +63,7 @@ class WeatherRepositoryImpl @Inject constructor(
                 ).toLocationWeather()
             } catch (e: IOException) {
                 e.printStackTrace()
+                // TODO: can this text be in other languages
                 emit(APIFetchResult.Error("Couldn't load data"))
                 null
             } catch (e: HttpException) {

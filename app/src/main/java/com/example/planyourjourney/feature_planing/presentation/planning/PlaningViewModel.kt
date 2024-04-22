@@ -8,7 +8,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.planyourjourney.feature_planing.presentation.util.ChartService
 import com.example.planyourjourney.feature_planing.domain.model.Coordinates
 import com.example.planyourjourney.feature_planing.domain.model.Location
 import com.example.planyourjourney.feature_planing.domain.use_case.PlaningUseCases
@@ -58,11 +57,8 @@ class PlaningViewModel @Inject constructor(
         fetchFromAPI(location)
         getLocations()
     }
-
-    // TODO: List of locations, another screen for showing (or a list of locations with basic info like today's weather card) charts or cards,
-    //  and another screen for changing settings
-    //  DataStores for saving settings and RoomDatabase for  storing weather.
-    //  Could also make another screen for showing just the charts of one location when picking a location
+    // TODO: figure out how and when edit/call and save updates from weather API  
+    // TODO: either make DAO queries to edit the weather or delete and insert new weather from api 
 
     // TODO: can make a unit converter, wouldn't need to call the API for every unit change
 
@@ -73,7 +69,6 @@ class PlaningViewModel @Inject constructor(
 
     fun onEvent(event: PlaningEvent) {
         when (event) {
-            //is PlaningEvent.WeatherVariablesChange -> TODO()
             is PlaningEvent.AddLocation -> {
                 if (!_state.value.isCoordinatesValueOrLocationNameChanged) return
 
@@ -95,7 +90,6 @@ class PlaningViewModel @Inject constructor(
                     )
                     saveLocation(location)
                     fetchFromAPI(location)
-                    // TODO: need to figure out how to return if fetchFromAPI Error
                     getLocations()
                 }
 

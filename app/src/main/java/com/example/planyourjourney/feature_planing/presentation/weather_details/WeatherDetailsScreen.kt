@@ -107,12 +107,14 @@ fun WeatherDetailsScreen(
                 .padding(innerPadding)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = "Pick Weather Variables",
+                    text = stringResource(id = R.string.pick_weather_variables),
                     style = MaterialTheme.typography.bodyLarge
                 )
                 IconButton(

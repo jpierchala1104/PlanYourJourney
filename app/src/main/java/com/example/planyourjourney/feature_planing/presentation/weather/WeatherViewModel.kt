@@ -21,6 +21,7 @@ class WeatherViewModel @Inject constructor(
 
     private var recentlyDeletedLocation: Location? = null
 
+
     init {
         getSettings()
         getLocationsWithWeather()
@@ -28,7 +29,9 @@ class WeatherViewModel @Inject constructor(
 
     fun onEvent(event: WeatherEvent){
         when(event){
-            is WeatherEvent.RefreshWeather -> TODO()
+            is WeatherEvent.RefreshWeather -> {
+                // TODO: refresh weather thingy in repository
+            }
             is WeatherEvent.DeleteLocation -> {
                 viewModelScope.launch {
                     weatherUseCases.deleteWeatherAtLocationUseCase(event.location)

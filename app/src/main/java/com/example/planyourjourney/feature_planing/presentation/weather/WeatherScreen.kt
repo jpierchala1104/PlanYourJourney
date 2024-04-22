@@ -39,6 +39,7 @@ import com.example.planyourjourney.feature_planing.presentation.destinations.Wea
 import com.example.planyourjourney.feature_planing.presentation.weather.components.WeatherCard
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,6 +53,12 @@ fun WeatherScreen(
     val scaffoldState = rememberBottomSheetScaffoldState()
     val context = LocalContext.current
 
+    // TODO: add delete button to the weather card list item,
+    //  make a refresh action? either a button so it doesn't try to refresh by accident?
+    //  maybe a checker when was the weather last updated and set it to 4 hours or something,
+
+
+    // TODO: Need Styling, can't see all buttons, can't back up because there is no back arrow
     Scaffold(
         topBar = {
             AppToolbar(
@@ -141,7 +148,8 @@ fun WeatherScreen(
                             WeatherCard(
                                 scope = scope,
                                 locationWeather = location,
-                                weatherUnits = state.settings.weatherUnits
+                                weatherUnits = state.settings.weatherUnits,
+                                locale = Locale(state.settings.language.localeCode)
                             )
                         }
                     }

@@ -43,6 +43,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -62,6 +63,7 @@ import com.example.planyourjourney.feature_planing.presentation.util.SearchInput
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 @Composable
 @Destination(start = true)
@@ -76,6 +78,7 @@ fun PlaningScreen(
     val decimalFormatter = DecimalFormatter()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
+    //LocalConfiguration.current.setLocale(Locale(state.settings.language.localeCode))
 
     Scaffold(
         snackbarHost = {
@@ -144,14 +147,15 @@ fun PlaningScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.primary),
+                    .padding(8.dp,0.dp,0.dp,0.dp)
+                    .background(MaterialTheme.colorScheme.background),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "",
+                    text = stringResource(id = R.string.search_input_type),
                     style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 IconButton(
                     onClick = {
@@ -162,13 +166,15 @@ fun PlaningScreen(
                     {
                         Icon(
                             imageVector = Icons.Default.KeyboardArrowUp,
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
                     else {
                         Icon(
                             imageVector = Icons.Default.KeyboardArrowDown,
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 }
@@ -179,14 +185,19 @@ fun PlaningScreen(
                 exit = fadeOut() + slideOutVertically()
             ) {
                 SearchTypeSelectionSection(
+                    searchInputType = state.searchInputType,
                     onSearchInputTypeChange = {
                         viewModel.onEvent(PlaningEvent.SearchInputTypeChanged(it))
                     }
                 )
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            HorizontalDivider(
+                Modifier
+                    .fillMaxWidth()
+                    .size(8.dp)
+            )
             Column(
-                Modifier.padding(10.dp)
+                Modifier.padding(8.dp)
             ) {
                 when (viewModel.state.value.searchInputType) {
                     SearchInputType.LatitudeAndLongitude -> CoordinatesInputSection(
@@ -210,7 +221,7 @@ fun PlaningScreen(
                 Button(onClick = {
                     viewModel.onEvent(PlaningEvent.AddLocation)
                 }) {
-                    Text(text = "Add Location")
+                    Text(text = stringResource(id = R.string.add_location))
                 }
             }
             HorizontalDivider(
@@ -234,10 +245,9 @@ fun PlaningScreen(
                 } else {
                     if (!state.isLocationLoaded || state.locationList.isEmpty()) {
                         Text(
-                            text = "No location added"
+                            text = stringResource(id = R.string.locations_empty)
                         )
                     } else {
-                        // TODO: show location list
                         LazyColumn(
                             modifier = Modifier.fillMaxSize()
                         ) {
@@ -259,8 +269,8 @@ fun PlaningScreen(
                                         viewModel.onEvent(PlaningEvent.DeleteLocation(location))
                                         scope.launch {
                                             val result = snackbarHostState.showSnackbar(
-                                                message = "Location deleted",
-                                                actionLabel = "Undo",
+                                                message = context.getString(R.string.location_deleted),
+                                                actionLabel = context.getString(R.string.undo),
                                                 duration = SnackbarDuration.Long
                                             )
                                             if (result == SnackbarResult.ActionPerformed) {

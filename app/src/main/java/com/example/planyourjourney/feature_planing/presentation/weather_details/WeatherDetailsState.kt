@@ -2,9 +2,6 @@ package com.example.planyourjourney.feature_planing.presentation.weather_details
 
 import com.example.planyourjourney.feature_planing.domain.model.LocationWeather
 import com.example.planyourjourney.feature_planing.domain.model.Settings
-import com.example.planyourjourney.feature_planing.domain.model.WeatherUnits
-import com.example.planyourjourney.feature_planing.presentation.util.Language
-import com.example.planyourjourney.feature_planing.presentation.util.SearchInputType
 import com.example.planyourjourney.feature_planing.presentation.util.WeatherVariables
 import com.patrykandpatrick.vico.core.axis.AxisPosition
 import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
@@ -31,7 +28,7 @@ data class WeatherDetailsState(
 )
 
 data class ChartState(
-    val chartTitle: String,
+    val chartTitleResourceId: Int,
     val modelProducer: CartesianChartModelProducer,
     val markerLabelFormatter: MarkerLabelFormatter = DefaultMarkerLabelFormatter(),
     val startAxisValueFormatter: AxisValueFormatter<AxisPosition.Vertical.Start>,

@@ -11,6 +11,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.planyourjourney.feature_planing.presentation.weather_details.ChartState
 
@@ -27,8 +28,10 @@ fun ChartSection(
             ) {
                 val chart = chartStateList[i]
                 DefaultChart(
-                    modifier = Modifier.height(300.dp).padding(5.dp),
-                    chartTitle = chart.chartTitle,
+                    modifier = Modifier
+                        .height(300.dp)
+                        .padding(5.dp),
+                    chartTitle = stringResource(id = chart.chartTitleResourceId),
                     modelProducer = chart.modelProducer,
                     markerLabelFormatter = chart.markerLabelFormatter,
                     startAxisValueFormatter = chart.startAxisValueFormatter,

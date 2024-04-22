@@ -1,6 +1,6 @@
 package com.example.planyourjourney.feature_planing.presentation.util
 
-import com.example.planyourjourney.feature_planing.domain.model.HourlyWeather
+import com.example.planyourjourney.feature_planing.presentation.weather_details.ChartState
 import com.patrykandpatrick.vico.core.axis.AxisPosition
 import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
 import com.patrykandpatrick.vico.core.marker.MarkerLabelFormatter
@@ -9,54 +9,55 @@ import com.patrykandpatrick.vico.core.model.ColumnCartesianLayerModel
 import com.patrykandpatrick.vico.core.model.LineCartesianLayerModel
 import com.patrykandpatrick.vico.core.model.columnSeries
 import com.patrykandpatrick.vico.core.model.lineSeries
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 
-class ChartService {
-    fun getCartesianLineChartModelProducer(
+class ChartService (private val locale: Locale){
+    private fun getCartesianLineChartModelProducer(
         chartSize: Int,
-        chartDoubleValues: List<Double> = arrayListOf(),
-        chartIntValues: List<Int> = arrayListOf()
+        chartValues: List<Double> = arrayListOf()
     ): CartesianChartModelProducer {
         val cartesianChartModelProducer = CartesianChartModelProducer.build()
         cartesianChartModelProducer.tryRunTransaction {
             lineSeries {
                 series((0 until chartSize).toList(),
-                    chartDoubleValues.ifEmpty { chartIntValues })
+                    chartValues)
             }
         }
         return cartesianChartModelProducer
     }
 
-    fun getCartesianColumnChartModelProducer(
+    private fun getCartesianColumnChartModelProducer(
         chartSize: Int,
-        chartDoubleValues: List<Double> = arrayListOf(),
-        chartIntValues: List<Int> = arrayListOf()
+        chartValues: List<Double> = arrayListOf()
     ): CartesianChartModelProducer {
         val cartesianChartModelProducer = CartesianChartModelProducer.build()
         cartesianChartModelProducer.tryRunTransaction {
             columnSeries {
                 series((0 until chartSize).toList(),
-                    chartDoubleValues.ifEmpty { chartIntValues })
+                    chartValues)
             }
         }
         return cartesianChartModelProducer
     }
 
-    fun getBottomAxisFormatter(hourlyWeather: List<HourlyWeather>): AxisValueFormatter<AxisPosition.Horizontal.Bottom> {
+    private fun getBottomAxisFormatter(
+        localDateTimeList: List<LocalDateTime>
+    ): AxisValueFormatter<AxisPosition.Horizontal.Bottom> {
         val bottomAxisValueFormatter: AxisValueFormatter<AxisPosition.Horizontal.Bottom> =
             AxisValueFormatter { x, _, _ ->
-                val dateTime = hourlyWeather[x.toInt()].time
+                val dateTime = localDateTimeList[x.toInt()]
                 "${if (dateTime.hour == 0) dateTime.dayOfWeek.getDisplayName(
                     TextStyle.SHORT,
-                    Locale.ENGLISH
+                    locale
                 ) else "" }\n${dateTime.hour}:00"
             }
         return bottomAxisValueFormatter
     }
 
-    fun getStartAxisFormatter(unit: String): AxisValueFormatter<AxisPosition.Vertical.Start> {
+    private fun getStartAxisFormatter(unit: String): AxisValueFormatter<AxisPosition.Vertical.Start> {
         val startAxisValueFormatter: AxisValueFormatter<AxisPosition.Vertical.Start> =
             AxisValueFormatter { x, _, _ ->
                 "${x.toInt()}$unit"
@@ -64,15 +65,15 @@ class ChartService {
         return startAxisValueFormatter
     }
 
-    fun getMarkerLabelFormatter(
-        hourlyWeather: List<HourlyWeather>,
+    private fun getMarkerLabelFormatter(
+        localDateTimeList: List<LocalDateTime>,
         unit: String,
         isLineCartesianChart: Boolean = true
     ): MarkerLabelFormatter {
         val markerLabelFormatter = MarkerLabelFormatter { markedEntries, _ ->
-            val markedEntryTime = hourlyWeather[markedEntries.first().entry.x.toInt()].time
+            val markedEntryTime = localDateTimeList[markedEntries.first().entry.x.toInt()]
             //formatted output
-            "${markedEntryTime.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.ENGLISH)}\n" +
+            "${markedEntryTime.dayOfWeek.getDisplayName(TextStyle.FULL, locale)}\n" +
             "${markedEntryTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))} ${markedEntryTime.hour}:00\n" +
             if(isLineCartesianChart){
                 "${(markedEntries.first().entry as LineCartesianLayerModel.Entry).y}$unit"
@@ -81,5 +82,56 @@ class ChartService {
             }
         }
         return markerLabelFormatter
+    }
+
+    fun getLineChartState(
+        chartTitleResourceId: Int,
+        chartValuesList: List<Double>,
+        localDateTimeList: List<LocalDateTime>,
+        unit: String
+    ): ChartState{
+        return ChartState(
+            chartTitleResourceId = chartTitleResourceId,
+            modelProducer = getCartesianLineChartModelProducer(
+                chartSize = chartValuesList.size,
+                chartValues = chartValuesList
+            ),
+            markerLabelFormatter = getMarkerLabelFormatter(
+                localDateTimeList = localDateTimeList,
+                unit = unit
+            ),
+            startAxisValueFormatter = getStartAxisFormatter(
+                unit = unit
+            ),
+            bottomAxisValueFormatter = getBottomAxisFormatter(
+                localDateTimeList = localDateTimeList
+            )
+        )
+    }
+
+    fun getColumnChartState(
+        chartTitleResourceId: Int,
+        chartValuesList: List<Double>,
+        localDateTimeList: List<LocalDateTime>,
+        unit: String
+    ): ChartState{
+        return ChartState(
+            chartTitleResourceId = chartTitleResourceId,
+            modelProducer = getCartesianColumnChartModelProducer(
+                chartSize = chartValuesList.size,
+                chartValues = chartValuesList
+            ),
+            markerLabelFormatter = getMarkerLabelFormatter(
+                localDateTimeList = localDateTimeList,
+                unit = unit,
+                isLineCartesianChart = false
+            ),
+            startAxisValueFormatter = getStartAxisFormatter(
+                unit = unit
+            ),
+            bottomAxisValueFormatter = getBottomAxisFormatter(
+                localDateTimeList = localDateTimeList
+            )
+        )
     }
 }

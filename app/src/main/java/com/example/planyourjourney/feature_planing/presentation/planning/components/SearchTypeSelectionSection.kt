@@ -8,27 +8,28 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.planyourjourney.R
 import com.example.planyourjourney.core.presentation.DefaultRadioButton
 import com.example.planyourjourney.feature_planing.presentation.util.SearchInputType
 
 @Composable
 fun SearchTypeSelectionSection(
     modifier: Modifier = Modifier,
-    searchInputType: SearchInputType = SearchInputType.LocationName,
+    searchInputType: SearchInputType,
     onSearchInputTypeChange: (SearchInputType) -> Unit
 ) {
     Column(modifier = modifier) {
-        Text(text = "Search Input Type", style = MaterialTheme.typography.headlineMedium)
         Row {
             DefaultRadioButton(
-                text = SearchInputType.LocationName.name,
+                text = stringResource(id = R.string.location_name),
                 selected = searchInputType == SearchInputType.LocationName,
                 onSelect = { onSearchInputTypeChange(SearchInputType.LocationName) }
             )
             Spacer(modifier = Modifier.width(8.dp))
             DefaultRadioButton(
-                text = SearchInputType.LatitudeAndLongitude.name,
+                text = stringResource(id = R.string.latitude_and_longitude),
                 selected = searchInputType == SearchInputType.LatitudeAndLongitude,
                 onSelect = { onSearchInputTypeChange(SearchInputType.LatitudeAndLongitude) }
             )

@@ -24,9 +24,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.planyourjourney.R
 import com.example.planyourjourney.feature_planing.domain.model.Location
 
 @Composable
@@ -93,13 +95,13 @@ fun LocationItem(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "Latitude: " + location.coordinates.latitude.toString(),
+                    text = stringResource(id = R.string.latitude_colon) + location.coordinates.latitude.toString(),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimary,
                     maxLines = 1
                 )
                 Text(
-                    text = "Longitude: " + location.coordinates.longitude.toString(),
+                    text = stringResource(id = R.string.longitude_colon) + location.coordinates.longitude.toString(),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimary,
                     maxLines = 1
@@ -112,7 +114,7 @@ fun LocationItem(
         ) {
             Icon(
                 imageVector = Icons.Default.Delete,
-                contentDescription = "Delete location"
+                contentDescription = stringResource(id = R.string.delete_location)
             )
         }
     }

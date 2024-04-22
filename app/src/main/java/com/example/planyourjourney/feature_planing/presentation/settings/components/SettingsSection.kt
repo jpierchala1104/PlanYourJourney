@@ -9,144 +9,174 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.planyourjourney.R
 import com.example.planyourjourney.core.presentation.DefaultRadioButton
 import com.example.planyourjourney.feature_planing.domain.model.Settings
 import com.example.planyourjourney.feature_planing.domain.util.PrecipitationUnits
 import com.example.planyourjourney.feature_planing.domain.util.TemperatureUnits
 import com.example.planyourjourney.feature_planing.domain.util.WindSpeedUnits
-import com.example.planyourjourney.feature_planing.presentation.util.Language
+import com.example.planyourjourney.feature_planing.domain.util.Language
 
 @Composable
 fun SettingsSection(
     modifier: Modifier = Modifier,
     settings: Settings = Settings(),
-    onSettingsSaved: (Settings) -> Unit
-    ) {
-    var newSettings = Settings()
+    onSettingsChanged: (Settings) -> Unit,
+    onSaveSettings: () -> Unit
+) {
     Column(modifier = modifier) {
-        Text(text = "Language", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = stringResource(id = R.string.language),
+            style = MaterialTheme.typography.headlineMedium
+        )
         Row {
             DefaultRadioButton(
                 text = Language.English.name,
-                selected = settings.language == Language.English ,
-                onSelect = { newSettings = newSettings.copy(language = Language.English) }
+                selected = settings.language == Language.English,
+                onSelect = { onSettingsChanged(settings.copy(language = Language.English)) }
             )
             Spacer(modifier = Modifier.width(8.dp))
             DefaultRadioButton(
                 text = Language.Polski.name,
                 selected = settings.language == Language.Polski,
-                onSelect = { newSettings = newSettings.copy(language = Language.Polski) }
+                onSelect = { onSettingsChanged(settings.copy(language = Language.Polski)) }
             )
         }
 
-        Text(text = "Temperature Units", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = stringResource(id = R.string.temperature_units),
+            style = MaterialTheme.typography.headlineMedium
+        )
         Row {
             DefaultRadioButton(
-                text = "${TemperatureUnits.CELSIUS.name} ${TemperatureUnits.CELSIUS.displayUnits}",
-                selected = settings.weatherUnits.temperatureUnits == TemperatureUnits.CELSIUS ,
+                text = "${stringResource(id = R.string.celsius)} ${TemperatureUnits.CELSIUS.displayUnits}",
+                selected = settings.weatherUnits.temperatureUnits == TemperatureUnits.CELSIUS,
                 onSelect = {
-                    newSettings = newSettings.copy(
-                        weatherUnits = newSettings.weatherUnits.copy(
-                            temperatureUnits = TemperatureUnits.CELSIUS
+                    onSettingsChanged(
+                        settings.copy(
+                            weatherUnits = settings.weatherUnits.copy(
+                                temperatureUnits = TemperatureUnits.CELSIUS
+                            )
                         )
                     )
                 }
             )
             Spacer(modifier = Modifier.width(8.dp))
             DefaultRadioButton(
-                text = "${TemperatureUnits.FAHRENHEIT.name} ${TemperatureUnits.FAHRENHEIT.displayUnits}",
+                text = "${stringResource(id = R.string.fahrenheit)} ${TemperatureUnits.FAHRENHEIT.displayUnits}",
                 selected = settings.weatherUnits.temperatureUnits == TemperatureUnits.FAHRENHEIT,
                 onSelect = {
-                    newSettings = newSettings.copy(
-                        weatherUnits = newSettings.weatherUnits.copy(
-                            temperatureUnits = TemperatureUnits.FAHRENHEIT
+                    onSettingsChanged(
+                        settings.copy(
+                            weatherUnits = settings.weatherUnits.copy(
+                                temperatureUnits = TemperatureUnits.FAHRENHEIT
+                            )
                         )
                     )
                 }
             )
         }
 
-        Text(text = "Precipitation Units", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = stringResource(id = R.string.precipitation_units),
+            style = MaterialTheme.typography.headlineMedium
+        )
         Row {
             DefaultRadioButton(
-                text = PrecipitationUnits.MILLIMETERS.name,
-                selected = settings.weatherUnits.precipitationUnits == PrecipitationUnits.MILLIMETERS ,
+                text = stringResource(id = R.string.millimeters),
+                selected = settings.weatherUnits.precipitationUnits == PrecipitationUnits.MILLIMETERS,
                 onSelect = {
-                    newSettings = newSettings.copy(
-                        weatherUnits = newSettings.weatherUnits.copy(
-                            precipitationUnits = PrecipitationUnits.MILLIMETERS
+                    onSettingsChanged(
+                        settings.copy(
+                            weatherUnits = settings.weatherUnits.copy(
+                                precipitationUnits = PrecipitationUnits.MILLIMETERS
+                            )
                         )
                     )
                 }
             )
             Spacer(modifier = Modifier.width(8.dp))
             DefaultRadioButton(
-                text = PrecipitationUnits.INCH.name,
+                text = stringResource(id = R.string.inch),
                 selected = settings.weatherUnits.precipitationUnits == PrecipitationUnits.INCH,
                 onSelect = {
-                    newSettings = newSettings.copy(
-                        weatherUnits = newSettings.weatherUnits.copy(
-                            precipitationUnits = PrecipitationUnits.INCH
+                    onSettingsChanged(
+                        settings.copy(
+                            weatherUnits = settings.weatherUnits.copy(
+                                precipitationUnits = PrecipitationUnits.INCH
+                            )
                         )
                     )
                 }
             )
         }
 
-        Text(text = "Wind Speed Units", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = stringResource(id = R.string.wind_speed_units),
+            style = MaterialTheme.typography.headlineMedium
+        )
         Row {
             DefaultRadioButton(
-                text = WindSpeedUnits.KILOMETERS_PER_HOUR.name,
-                selected = settings.weatherUnits.windSpeedUnits == WindSpeedUnits.KILOMETERS_PER_HOUR ,
+                text = stringResource(id = R.string.kilometers_per_hour),
+                selected = settings.weatherUnits.windSpeedUnits == WindSpeedUnits.KILOMETERS_PER_HOUR,
                 onSelect = {
-                    newSettings = newSettings.copy(
-                        weatherUnits = newSettings.weatherUnits.copy(
-                            windSpeedUnits = WindSpeedUnits.KILOMETERS_PER_HOUR
+                    onSettingsChanged(
+                        settings.copy(
+                            weatherUnits = settings.weatherUnits.copy(
+                                windSpeedUnits = WindSpeedUnits.KILOMETERS_PER_HOUR
+                            )
                         )
                     )
                 }
             )
             Spacer(modifier = Modifier.width(8.dp))
             DefaultRadioButton(
-                text = WindSpeedUnits.METERS_PER_SECOND.name,
+                text = stringResource(id = R.string.meters_per_second),
                 selected = settings.weatherUnits.windSpeedUnits == WindSpeedUnits.METERS_PER_SECOND,
-                        onSelect = {
-                    newSettings = newSettings.copy(
-                        weatherUnits = newSettings.weatherUnits.copy(
-                            windSpeedUnits = WindSpeedUnits.METERS_PER_SECOND
+                onSelect = {
+                    onSettingsChanged(
+                        settings.copy(
+                            weatherUnits = settings.weatherUnits.copy(
+                                windSpeedUnits = WindSpeedUnits.METERS_PER_SECOND
+                            )
                         )
                     )
                 }
             )
             Spacer(modifier = Modifier.width(8.dp))
             DefaultRadioButton(
-                text = WindSpeedUnits.MILES_PER_HOUR.name,
+                text = stringResource(id = R.string.miles_per_hour),
                 selected = settings.weatherUnits.windSpeedUnits == WindSpeedUnits.MILES_PER_HOUR,
                 onSelect = {
-                    newSettings = newSettings.copy(
-                        weatherUnits = newSettings.weatherUnits.copy(
-                            windSpeedUnits = WindSpeedUnits.MILES_PER_HOUR
+                    onSettingsChanged(
+                        settings.copy(
+                            weatherUnits = settings.weatherUnits.copy(
+                                windSpeedUnits = WindSpeedUnits.MILES_PER_HOUR
+                            )
                         )
                     )
                 }
             )
             Spacer(modifier = Modifier.width(8.dp))
             DefaultRadioButton(
-                text = WindSpeedUnits.KNOTS.name,
+                text = stringResource(id = R.string.knots),
                 selected = settings.weatherUnits.windSpeedUnits == WindSpeedUnits.KNOTS,
                 onSelect = {
-                    newSettings = newSettings.copy(
-                        weatherUnits = newSettings.weatherUnits.copy(
-                            windSpeedUnits = WindSpeedUnits.KNOTS
+                    onSettingsChanged(
+                        settings.copy(
+                            weatherUnits = settings.weatherUnits.copy(
+                                windSpeedUnits = WindSpeedUnits.KNOTS
+                            )
                         )
                     )
                 }
             )
         }
         // TODO: style the button and test
-        Button(onClick = { onSettingsSaved(newSettings) }) {
-            Text(text = "Save settings")
+        Button(onClick = { onSaveSettings() }) {
+            Text(text = stringResource(id = R.string.save_settings))
         }
     }
 }

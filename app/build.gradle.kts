@@ -18,6 +18,7 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+        resourceConfigurations.addAll(listOf("en", "pl"))
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -102,6 +103,9 @@ dependencies {
     // Compose Nav Destinations
     implementation("io.github.raamcosta.compose-destinations:core:1.10.2")
     ksp("io.github.raamcosta.compose-destinations:ksp:1.10.2")
+
+    //app compat for language ip-app changes
+    implementation("androidx.appcompat:appcompat:1.6.1")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")

@@ -34,6 +34,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.planyourjourney.R
@@ -42,7 +43,11 @@ import com.example.planyourjourney.feature_planing.domain.model.LocationWeather
 import com.example.planyourjourney.feature_planing.domain.model.WeatherUnits
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
+import java.util.Locale
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -52,7 +57,8 @@ fun WeatherCard(
     locationWeather: LocationWeather,
     weatherUnits: WeatherUnits = WeatherUnits(),
     color: Color = MaterialTheme.colorScheme.primary,
-    cornerRadius: Dp = 10.dp
+    cornerRadius: Dp = 10.dp,
+    locale: Locale
 ) {
     val indexes = locationWeather.hourlyWeatherList.withIndex().filter { hourlyWeather ->
         hourlyWeather.value.time.hour == 0
@@ -118,16 +124,20 @@ fun WeatherCard(
                 state = pagerState
             ) { index ->
                 val currentDayWeather = daysWithWeather[index]
-//            val highestDayTemperature = currentDayWeather.filter { it.time.hour in 8..18 }.maxOf { it.temperature2m }
-//            val lowestNightTemperature = currentDayWeather.filter { it.time.hour in 0..7 && it.time.hour in 18..23 }.minOf { it.temperature2m }
                 val timeOfDayWeather = currentDayWeather.filter {
                     it.time.hour == 8 || it.time.hour == 12 || it.time.hour == 16 || it.time.hour == 20
                 }
                 Column (
                     horizontalAlignment = Alignment.CenterHorizontally
                 ){
+                    if (currentDayWeather.first().time.toLocalDate() == LocalDate.now()){
+                        Text(text = stringResource(id = R.string.today),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
                     Text(
-                        text = currentDayWeather.first().time.dayOfWeek.toString(),
+                        text = currentDayWeather.first().time.dayOfWeek.getDisplayName(TextStyle.FULL, locale).toString(),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onPrimary
                     )

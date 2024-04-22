@@ -3,6 +3,8 @@ package com.example.planyourjourney.feature_planing.presentation.planning.compon
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.example.planyourjourney.R
 
 @Composable
 fun LocationNameInputSection(
@@ -15,7 +17,7 @@ fun LocationNameInputSection(
     ) {
         DefaultTextField(
             text = locationName,
-            label = "Location Name",
+            label = stringResource(id = R.string.location_name),
             onValueChange = { onValueChange(it) }
         )
     }

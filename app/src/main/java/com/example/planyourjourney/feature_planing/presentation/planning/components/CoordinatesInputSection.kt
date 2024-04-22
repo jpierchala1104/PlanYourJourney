@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import com.example.planyourjourney.R
 import com.example.planyourjourney.feature_planing.domain.model.Coordinates
 import com.example.planyourjourney.feature_planing.presentation.util.DecimalFormatter
 
@@ -21,7 +23,7 @@ fun CoordinatesInputSection(
     ) {
         DefaultTextField(
             text = coordinates.latitude.toString(),
-            label = "Latitude",
+            label = stringResource(id = R.string.latitude),
             onValueChange = {
                 val latitude = decimalFormatter
                     .checkLatitudeRange(decimalFormatter.cleanup(it))
@@ -37,7 +39,7 @@ fun CoordinatesInputSection(
         )
         DefaultTextField(
             text = coordinates.longitude.toString(),
-            label = "Longitude",
+            label = stringResource(id = R.string.longitude),
             onValueChange = {
                 val longitude = decimalFormatter
                     .checkLongitudeRange(decimalFormatter.cleanup(it))

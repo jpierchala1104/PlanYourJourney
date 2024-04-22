@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.planyourjourney.R
 import com.example.planyourjourney.feature_planing.domain.model.Coordinates
 import com.example.planyourjourney.feature_planing.domain.model.Location
 import com.example.planyourjourney.feature_planing.domain.use_case.WeatherDetailsUseCases
@@ -15,6 +16,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,13 +24,14 @@ class WeatherDetailsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val weatherDetailsUseCases: WeatherDetailsUseCases
 ) : ViewModel() {
+
     private val _state = mutableStateOf(WeatherDetailsState())
     val state: State<WeatherDetailsState> = _state
 
     private val uiEventChannel = Channel<PlaningViewModel.UiEvent>()
     val uiEvents = uiEventChannel.receiveAsFlow()
 
-    private val chartService = ChartService()
+    private val chartService = ChartService(Locale(_state.value.settings.language.localeCode))
 
     init {
         getSettings()
@@ -104,137 +107,71 @@ class WeatherDetailsViewModel @Inject constructor(
         val hourlyWeatherList = _state.value.locationWeather!!.hourlyWeatherList
         if (_state.value.weatherVariables.isTemperature2mChecked) {
             chartStateList = chartStateList.plus(
-                ChartState(
-                    chartTitle = "Temperature",
-                    modelProducer = chartService.getCartesianLineChartModelProducer(chartSize = hourlyWeatherList.size,
-                        chartDoubleValues = hourlyWeatherList.map { it.temperature2m }),
-                    markerLabelFormatter = chartService.getMarkerLabelFormatter(
-                        hourlyWeather = hourlyWeatherList,
-                        unit = _state.value.settings.weatherUnits.temperatureUnits.displayUnits
-                    ),
-                    startAxisValueFormatter = chartService.getStartAxisFormatter(
-                        unit = _state.value.settings.weatherUnits.temperatureUnits.displayUnits
-                    ),
-                    bottomAxisValueFormatter = chartService.getBottomAxisFormatter(
-                        hourlyWeather = hourlyWeatherList
-                    )
+                chartService.getLineChartState(
+                    chartTitleResourceId = R.string.temperature,
+                    chartValuesList = hourlyWeatherList.map { it.temperature2m },
+                    localDateTimeList = hourlyWeatherList.map { it.time },
+                    unit = _state.value.settings.weatherUnits.temperatureUnits.displayUnits
                 )
             )
         }
         if (_state.value.weatherVariables.isRelativeHumidity2mChecked) {
             chartStateList = chartStateList.plus(
-                ChartState(
-                    chartTitle = "Relative Humidity",
-                    modelProducer = chartService.getCartesianLineChartModelProducer(chartSize = hourlyWeatherList.size,
-                        chartIntValues = hourlyWeatherList.map { it.relativeHumidity2m }),
-                    markerLabelFormatter = chartService.getMarkerLabelFormatter(
-                        hourlyWeather = hourlyWeatherList,
-                        unit = _state.value.settings.weatherUnits.percentageUnits.displayUnits
-                    ),
-                    startAxisValueFormatter = chartService.getStartAxisFormatter(
-                        unit = _state.value.settings.weatherUnits.percentageUnits.displayUnits
-                    ),
-                    bottomAxisValueFormatter = chartService.getBottomAxisFormatter(
-                        hourlyWeather = hourlyWeatherList
-                    )
+                chartService.getLineChartState(
+                    chartTitleResourceId = R.string.relative_humidity,
+                    chartValuesList = hourlyWeatherList.map { it.relativeHumidity2m.toDouble() },
+                    localDateTimeList = hourlyWeatherList.map { it.time },
+                    unit = _state.value.settings.weatherUnits.percentageUnits.displayUnits
                 )
             )
         }
         if (_state.value.weatherVariables.isPrecipitationProbabilityChecked) {
-            chartStateList =
-                chartStateList.plus(
-                    ChartState(
-                        chartTitle = "Precipitation Probability",
-                        modelProducer = chartService.getCartesianLineChartModelProducer(chartSize = hourlyWeatherList.size,
-                            chartIntValues = hourlyWeatherList.map { it.precipitationProbability }),
-                        markerLabelFormatter = chartService.getMarkerLabelFormatter(
-                            hourlyWeather = hourlyWeatherList,
-                            unit = _state.value.settings.weatherUnits.percentageUnits.displayUnits
-                        ),
-                        startAxisValueFormatter = chartService.getStartAxisFormatter(
-                            unit = _state.value.settings.weatherUnits.percentageUnits.displayUnits
-                        ),
-                        bottomAxisValueFormatter = chartService.getBottomAxisFormatter(
-                            hourlyWeather = hourlyWeatherList
-                        )
-                    )
+            chartStateList = chartStateList.plus(
+                chartService.getLineChartState(
+                    chartTitleResourceId = R.string.precipitation_probability,
+                    chartValuesList = hourlyWeatherList.map { it.precipitationProbability.toDouble() },
+                    localDateTimeList = hourlyWeatherList.map { it.time },
+                    unit = _state.value.settings.weatherUnits.precipitationUnits.displayUnits
                 )
+            )
         }
         if (_state.value.weatherVariables.isRainChecked) {
             chartStateList = chartStateList.plus(
-                ChartState(
-                    chartTitle = "Rain",
-                    modelProducer = chartService.getCartesianColumnChartModelProducer(chartSize = hourlyWeatherList.size,
-                        chartDoubleValues = hourlyWeatherList.map { it.rain }),
-                    markerLabelFormatter = chartService.getMarkerLabelFormatter(
-                        hourlyWeather = hourlyWeatherList,
-                        unit = _state.value.settings.weatherUnits.precipitationUnits.displayUnits,
-                        isLineCartesianChart = false
-                    ),
-                    startAxisValueFormatter = chartService.getStartAxisFormatter(
-                        unit = _state.value.settings.weatherUnits.precipitationUnits.displayUnits
-                    ),
-                    bottomAxisValueFormatter = chartService.getBottomAxisFormatter(
-                        hourlyWeather = hourlyWeatherList
-                    )
+                chartService.getColumnChartState(
+                    chartTitleResourceId = R.string.rain,
+                    chartValuesList = hourlyWeatherList.map { it.rain },
+                    localDateTimeList = hourlyWeatherList.map { it.time },
+                    unit = _state.value.settings.weatherUnits.precipitationUnits.displayUnits
                 )
             )
         }
         if (_state.value.weatherVariables.isSnowfallChecked) {
             chartStateList = chartStateList.plus(
-                ChartState(
-                    chartTitle = "Snowfall",
-                    modelProducer = chartService.getCartesianColumnChartModelProducer(chartSize = hourlyWeatherList.size,
-                        chartDoubleValues = hourlyWeatherList.map { it.snowfall }),
-                    markerLabelFormatter = chartService.getMarkerLabelFormatter(
-                        hourlyWeather = hourlyWeatherList,
-                        unit = _state.value.settings.weatherUnits.precipitationUnits.displayUnits,
-                        isLineCartesianChart = false
-                    ),
-                    startAxisValueFormatter = chartService.getStartAxisFormatter(
-                        unit = _state.value.settings.weatherUnits.precipitationUnits.displayUnits
-                    ),
-                    bottomAxisValueFormatter = chartService.getBottomAxisFormatter(
-                        hourlyWeather = hourlyWeatherList
-                    )
+                chartService.getColumnChartState(
+                    chartTitleResourceId = R.string.snowfall,
+                    chartValuesList = hourlyWeatherList.map { it.snowfall },
+                    localDateTimeList = hourlyWeatherList.map { it.time },
+                    unit = _state.value.settings.weatherUnits.precipitationUnits.displayUnits
                 )
             )
         }
         if (_state.value.weatherVariables.isCloudCoverChecked) {
             chartStateList = chartStateList.plus(
-                ChartState(
-                    chartTitle = "Cloud Cover",
-                    modelProducer = chartService.getCartesianLineChartModelProducer(chartSize = hourlyWeatherList.size,
-                        chartIntValues = hourlyWeatherList.map { it.cloudCover }),
-                    markerLabelFormatter = chartService.getMarkerLabelFormatter(
-                        hourlyWeather = hourlyWeatherList,
-                        unit = _state.value.settings.weatherUnits.percentageUnits.displayUnits
-                    ),
-                    startAxisValueFormatter = chartService.getStartAxisFormatter(
-                        unit = _state.value.settings.weatherUnits.percentageUnits.displayUnits
-                    ),
-                    bottomAxisValueFormatter = chartService.getBottomAxisFormatter(
-                        hourlyWeather = hourlyWeatherList
-                    )
+                chartService.getLineChartState(
+                    chartTitleResourceId = R.string.cloud_cover,
+                    chartValuesList = hourlyWeatherList.map { it.cloudCover.toDouble() },
+                    localDateTimeList = hourlyWeatherList.map { it.time },
+                    unit = _state.value.settings.weatherUnits.percentageUnits.displayUnits
                 )
             )
         }
         if (_state.value.weatherVariables.isWindSpeed10mChecked) {
             chartStateList = chartStateList.plus(
-                ChartState(
-                    chartTitle = "Wind Speed at 10 meters",
-                    modelProducer = chartService.getCartesianLineChartModelProducer(chartSize = hourlyWeatherList.size,
-                        chartDoubleValues = hourlyWeatherList.map { it.windSpeed10m }),
-                    markerLabelFormatter = chartService.getMarkerLabelFormatter(
-                        hourlyWeather = hourlyWeatherList,
-                        unit = _state.value.settings.weatherUnits.windSpeedUnits.displayUnits
-                    ),
-                    startAxisValueFormatter = chartService.getStartAxisFormatter(
-                        unit = _state.value.settings.weatherUnits.windSpeedUnits.displayUnits
-                    ),
-                    bottomAxisValueFormatter = chartService.getBottomAxisFormatter(
-                        hourlyWeather = hourlyWeatherList
-                    )
+                chartService.getLineChartState(
+                    chartTitleResourceId = R.string.wind_speed_at_10_m,
+                    chartValuesList = hourlyWeatherList.map { it.windSpeed10m },
+                    localDateTimeList = hourlyWeatherList.map { it.time },
+                    unit = _state.value.settings.weatherUnits.windSpeedUnits.displayUnits
                 )
             )
         }

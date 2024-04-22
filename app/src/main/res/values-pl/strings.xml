@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_location">Dodaj lokalizacje</string>
+    <string name="locations_empty">Brak lokalizacji</string>
+    <string name="location_deleted">Lokalizacja usunięta</string>
+    <string name="undo">Cofnij</string>
+    <string name="temperature">Temperatura</string>
+    <string name="relative_humidity">Wilgotność względna</string>
+    <string name="precipitation_probability">Prawdopodobieństwo opadów</string>
+    <string name="rain">Deszcz</string>
+    <string name="snowfall">Opady śniegu</string>
+    <string name="cloud_cover">Zachmurzenie</string>
+    <string name="wind_speed">Prędkość wiatru</string>
+    <string name="wind_speed_at_10_m">Prędkość wiatru na 10 metrach</string>
+    <string name="pick_weather_variables">Wybierz parametry pogody</string>
+    <string name="today">Dziś</string>
+    <string name="language">Język</string>
+    <string name="temperature_units">Jednostki temperatury</string>
+    <string name="precipitation_units">Jednostki opadów</string>
+    <string name="wind_speed_units">Jednostki prędkości wiatru</string>
+    <string name="save_settings">Zapisz ustawienia</string>
+    <string name="knots">Węzły</string>
+    <string name="miles_per_hour">Mile na godzine</string>
+    <string name="meters_per_second">Metry na sekunde</string>
+    <string name="kilometers_per_hour">Kilometry na godzine</string>
+    <string name="inch">Cale</string>
+    <string name="millimeters">Milimetry</string>
+    <string name="fahrenheit">Fahrenheit</string>
+    <string name="celsius">Celsjusz</string>
+    <string name="search_input_type">Sposób wprowadzenia danych</string>
+    <string name="location_name">Nazwa lokalizacji</string>
+    <string name="latitude_and_longitude">Szerokość i długość geograficzna</string>
+    <string name="latitude_colon">"Szerokość geograficzna: "</string>
+    <string name="longitude_colon">"Długość geograficzna: "</string>
+    <string name="delete_location">Usuń lokalizacje</string>
+    <string name="latitude">Szerokość geograficzna</string>
+    <string name="longitude">Długość geograficzna</string>
+</resources>

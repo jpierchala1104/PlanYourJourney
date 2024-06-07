@@ -11,6 +11,7 @@ import com.example.planyourjourney.feature_planing.domain.repository.SettingsOpe
 import com.example.planyourjourney.feature_planing.domain.repository.WeatherRepository
 import com.example.planyourjourney.feature_planing.domain.use_case.DeleteLocationUseCase
 import com.example.planyourjourney.feature_planing.domain.use_case.DeleteWeatherAtLocationUseCase
+import com.example.planyourjourney.feature_planing.domain.use_case.ClearOldWeatherUseCase
 import com.example.planyourjourney.feature_planing.domain.use_case.FetchWeatherAtLocationUseCase
 import com.example.planyourjourney.feature_planing.domain.use_case.GetLocationsUseCase
 import com.example.planyourjourney.feature_planing.domain.use_case.GetLocationsWithWeatherUseCase
@@ -20,6 +21,7 @@ import com.example.planyourjourney.feature_planing.domain.use_case.InsertLocatio
 import com.example.planyourjourney.feature_planing.domain.use_case.PlaningUseCases
 import com.example.planyourjourney.feature_planing.domain.use_case.SaveSettingsUseCase
 import com.example.planyourjourney.feature_planing.domain.use_case.SettingsUseCases
+import com.example.planyourjourney.feature_planing.domain.use_case.UpdateUnitsUseCase
 import com.example.planyourjourney.feature_planing.domain.use_case.WeatherDetailsUseCases
 import com.example.planyourjourney.feature_planing.domain.use_case.WeatherUseCases
 import dagger.Module
@@ -75,7 +77,8 @@ object AppModule {
             insertLocationUseCase = InsertLocationUseCase(repository),
             deleteLocationUseCase = DeleteLocationUseCase(repository),
             deleteWeatherAtLocationUseCase = DeleteWeatherAtLocationUseCase(repository),
-            getSettingsUseCase = GetSettingsUseCase(repository)
+            getSettingsUseCase = GetSettingsUseCase(repository),
+            clearOldWeatherUseCase = ClearOldWeatherUseCase(repository)
         )
     }
 
@@ -84,7 +87,8 @@ object AppModule {
     fun provideWeatherDetailsUseCases(repository: WeatherRepository): WeatherDetailsUseCases {
         return WeatherDetailsUseCases(
             getWeatherAtLocationUseCase = GetWeatherAtLocationUseCase(repository),
-            getSettingsUseCase = GetSettingsUseCase(repository)
+            getSettingsUseCase = GetSettingsUseCase(repository),
+            saveSettingsUseCase = SaveSettingsUseCase(repository)
         )
     }
 
@@ -93,7 +97,8 @@ object AppModule {
     fun provideSettingsUseCases(repository: WeatherRepository): SettingsUseCases {
         return SettingsUseCases(
             saveSettingsUseCase = SaveSettingsUseCase(repository),
-            getSettingsUseCase = GetSettingsUseCase(repository)
+            getSettingsUseCase = GetSettingsUseCase(repository),
+            updateUnitsUseCase = UpdateUnitsUseCase(repository)
         )
     }
 

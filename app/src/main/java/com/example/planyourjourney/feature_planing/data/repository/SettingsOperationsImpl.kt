@@ -15,7 +15,8 @@ class SettingsOperationsImpl(context: Context) : SettingsOperations {
         dataStore.updateData {
             it.copy(
                 language = settings.language,
-                weatherUnits = settings.weatherUnits
+                weatherUnits = settings.weatherUnits,
+                weatherVariables = settings.weatherVariables
             )
         }
     }

@@ -36,8 +36,7 @@ fun LocationItem(
     location: Location,
     modifier: Modifier = Modifier,
     cornerRadius: Dp = 10.dp,
-    onDeleteClick: () -> Unit,
-    isLoaded: Boolean
+    onDeleteClick: () -> Unit
 ) {
     Box(
         modifier = modifier
@@ -69,21 +68,6 @@ fun LocationItem(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                if (isLoaded) {
-                    Icon(
-                        imageVector = Icons.Filled.Check,
-                        tint = Color.Green,
-                        contentDescription = null
-                    )
-                } else {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .fillMaxHeight(),
-                        strokeWidth = 6.dp,
-                        trackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
-                    )
-                }
             }
             HorizontalDivider(
                 Modifier
@@ -114,7 +98,8 @@ fun LocationItem(
         ) {
             Icon(
                 imageVector = Icons.Default.Delete,
-                contentDescription = stringResource(id = R.string.delete_location)
+                contentDescription = stringResource(id = R.string.delete_location),
+                tint = MaterialTheme.colorScheme.onPrimary
             )
         }
     }

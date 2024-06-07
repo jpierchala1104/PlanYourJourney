@@ -13,12 +13,17 @@ interface WeatherDao {
     suspend fun insertHourlyWeathers(
         hourlyWeatherEntities: List<HourlyWeatherEntity>
     )
+    @Query("SELECT * FROM hourlyweatherentity")
+    suspend fun getHourlyWeathers(): List<HourlyWeatherEntity>
 
     @Query("DELETE FROM hourlyweatherentity")
     suspend fun clearHourlyWeathers()
 
     @Query("DELETE FROM hourlyweatherentity WHERE locationweatherid=:locationId")
     suspend fun clearHourlyWeathersAtLocation(locationId: Int)
+
+    @Query("DELETE FROM hourlyweatherentity WHERE time LIKE '%' || :date || '%'")
+    suspend fun deleteHourlyWeathersWithDate(date: String)
 
     // Location Table
     @Insert(onConflict = OnConflictStrategy.REPLACE)

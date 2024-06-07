@@ -88,7 +88,7 @@ fun WeatherCard(
             LazyRow(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp)
+                    .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
             ) {
                 items(count = daysWithWeather.size) { i ->
                     val weather = daysWithWeather[i]
@@ -120,7 +120,7 @@ fun WeatherCard(
                 pageSize = PageSize.Fill,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
+                    .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp),
                 state = pagerState
             ) { index ->
                 val currentDayWeather = daysWithWeather[index]
@@ -130,15 +130,18 @@ fun WeatherCard(
                 Column (
                     horizontalAlignment = Alignment.CenterHorizontally
                 ){
-                    if (currentDayWeather.first().time.toLocalDate() == LocalDate.now()){
-                        Text(text = stringResource(id = R.string.today),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
-                    }
+                    Text(
+                        text = if (currentDayWeather.first().time.toLocalDate() == LocalDate.now())
+                            stringResource(id = R.string.today)
+                        else
+                            currentDayWeather.first().time
+                                .format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
                     Text(
                         text = currentDayWeather.first().time.dayOfWeek.getDisplayName(TextStyle.FULL, locale).toString(),
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                     Row(
@@ -191,44 +194,41 @@ fun WeatherCard(
 //                                modifier = Modifier.fillMaxSize()
                                 )
                                 Row {
-//                                Image(
-//                                    modifier = Modifier.size(20.dp),
-//                                    painter = painterResource(id = R.drawable.cloudy_100_weather_icon),
-//                                    contentDescription = null,
-//                                )
+                                Image(
+                                    modifier = Modifier.size(20.dp),
+                                    painter = painterResource(id = R.drawable.thermometer_icon),
+                                    contentDescription = null,
+                                )
                                     Text(
                                         text = "${weather.temperature2m}" +
                                                 weatherUnits.temperatureUnits.displayUnits,
-                                        style = MaterialTheme.typography.bodyMedium,
+                                        style = MaterialTheme.typography.bodyLarge,
                                         color = MaterialTheme.colorScheme.onPrimary,
                                     )
                                 }
-                                // TODO: find icons for precipitation -> rain drop
-                                //  temperature -> thermometer
-                                //  cloud cover -> cloud?
                                 Row {
-//                                Image(
-//                                    modifier = Modifier.size(20.dp),
-//                                    painter = painterResource(id = R.drawable.cloudy_100_weather_icon),
-//                                    contentDescription = null,
-//                                )
+                                Image(
+                                    modifier = Modifier.size(20.dp),
+                                    painter = painterResource(id = R.drawable.drop_precipitation_rain_icon),
+                                    contentDescription = null,
+                                )
                                     Text(
                                         text = "${weather.precipitationProbability}" +
                                                 weatherUnits.percentageUnits.displayUnits,
-                                        style = MaterialTheme.typography.bodyMedium,
+                                        style = MaterialTheme.typography.bodyLarge,
                                         color = MaterialTheme.colorScheme.onPrimary,
                                     )
                                 }
                                 Row {
                                     Image(
-                                        modifier = Modifier.size(20.dp),
+                                        modifier = Modifier.size(28.dp),
                                         painter = painterResource(id = R.drawable.cloudy_100_weather_icon),
                                         contentDescription = null,
                                     )
                                     Text(
                                         text = "${weather.cloudCover}" +
                                                 weatherUnits.percentageUnits.displayUnits,
-                                        style = MaterialTheme.typography.bodyMedium,
+                                        style = MaterialTheme.typography.bodyLarge,
                                         color = MaterialTheme.colorScheme.onPrimary,
                                     )
                                 }

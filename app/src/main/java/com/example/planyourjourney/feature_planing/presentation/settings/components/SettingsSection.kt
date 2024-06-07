@@ -3,6 +3,7 @@ package com.example.planyourjourney.feature_planing.presentation.settings.compon
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -117,62 +118,65 @@ fun SettingsSection(
             text = stringResource(id = R.string.wind_speed_units),
             style = MaterialTheme.typography.headlineMedium
         )
-        Row {
-            DefaultRadioButton(
-                text = stringResource(id = R.string.kilometers_per_hour),
-                selected = settings.weatherUnits.windSpeedUnits == WindSpeedUnits.KILOMETERS_PER_HOUR,
-                onSelect = {
-                    onSettingsChanged(
-                        settings.copy(
-                            weatherUnits = settings.weatherUnits.copy(
-                                windSpeedUnits = WindSpeedUnits.KILOMETERS_PER_HOUR
+        Column {
+            Row {
+                DefaultRadioButton(
+                    text = stringResource(id = R.string.kilometers_per_hour),
+                    selected = settings.weatherUnits.windSpeedUnits == WindSpeedUnits.KILOMETERS_PER_HOUR,
+                    onSelect = {
+                        onSettingsChanged(
+                            settings.copy(
+                                weatherUnits = settings.weatherUnits.copy(
+                                    windSpeedUnits = WindSpeedUnits.KILOMETERS_PER_HOUR
+                                )
                             )
                         )
-                    )
-                }
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            DefaultRadioButton(
-                text = stringResource(id = R.string.meters_per_second),
-                selected = settings.weatherUnits.windSpeedUnits == WindSpeedUnits.METERS_PER_SECOND,
-                onSelect = {
-                    onSettingsChanged(
-                        settings.copy(
-                            weatherUnits = settings.weatherUnits.copy(
-                                windSpeedUnits = WindSpeedUnits.METERS_PER_SECOND
+                    }
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                DefaultRadioButton(
+                    text = stringResource(id = R.string.meters_per_second),
+                    selected = settings.weatherUnits.windSpeedUnits == WindSpeedUnits.METERS_PER_SECOND,
+                    onSelect = {
+                        onSettingsChanged(
+                            settings.copy(
+                                weatherUnits = settings.weatherUnits.copy(
+                                    windSpeedUnits = WindSpeedUnits.METERS_PER_SECOND
+                                )
                             )
                         )
-                    )
-                }
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            DefaultRadioButton(
-                text = stringResource(id = R.string.miles_per_hour),
-                selected = settings.weatherUnits.windSpeedUnits == WindSpeedUnits.MILES_PER_HOUR,
-                onSelect = {
-                    onSettingsChanged(
-                        settings.copy(
-                            weatherUnits = settings.weatherUnits.copy(
-                                windSpeedUnits = WindSpeedUnits.MILES_PER_HOUR
+                    }
+                )
+            }
+            Row {
+                DefaultRadioButton(
+                    text = stringResource(id = R.string.miles_per_hour),
+                    selected = settings.weatherUnits.windSpeedUnits == WindSpeedUnits.MILES_PER_HOUR,
+                    onSelect = {
+                        onSettingsChanged(
+                            settings.copy(
+                                weatherUnits = settings.weatherUnits.copy(
+                                    windSpeedUnits = WindSpeedUnits.MILES_PER_HOUR
+                                )
                             )
                         )
-                    )
-                }
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            DefaultRadioButton(
-                text = stringResource(id = R.string.knots),
-                selected = settings.weatherUnits.windSpeedUnits == WindSpeedUnits.KNOTS,
-                onSelect = {
-                    onSettingsChanged(
-                        settings.copy(
-                            weatherUnits = settings.weatherUnits.copy(
-                                windSpeedUnits = WindSpeedUnits.KNOTS
+                    }
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                DefaultRadioButton(
+                    text = stringResource(id = R.string.knots),
+                    selected = settings.weatherUnits.windSpeedUnits == WindSpeedUnits.KNOTS,
+                    onSelect = {
+                        onSettingsChanged(
+                            settings.copy(
+                                weatherUnits = settings.weatherUnits.copy(
+                                    windSpeedUnits = WindSpeedUnits.KNOTS
+                                )
                             )
                         )
-                    )
-                }
-            )
+                    }
+                )
+            }
         }
         // TODO: style the button and test
         Button(onClick = { onSaveSettings() }) {

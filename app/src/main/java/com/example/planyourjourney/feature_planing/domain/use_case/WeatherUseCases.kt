@@ -6,5 +6,6 @@ data class WeatherUseCases(
     val insertLocationUseCase: InsertLocationUseCase,
     val deleteLocationUseCase: DeleteLocationUseCase,
     val deleteWeatherAtLocationUseCase: DeleteWeatherAtLocationUseCase,
-    val getSettingsUseCase: GetSettingsUseCase
+    val getSettingsUseCase: GetSettingsUseCase,
+    val clearOldWeatherUseCase: ClearOldWeatherUseCase
 )

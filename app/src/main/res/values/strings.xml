@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Plan Your Journey</string>
+    <string name="app_name" translatable="false">Plan Your Journey</string>
     <string name="add_location">Add location</string>
     <string name="locations_empty">No location added</string>
     <string name="location_deleted">Location deleted</string>
@@ -35,4 +35,9 @@
     <string name="delete_location">Delete location</string>
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
+    <string name="weather_forecast">Weather forecast</string>
+    <string name="api_request_error_io">Couldn\'t load data - input/output error</string>
+    <string name="api_request_error_http">Couldn\'t load data - no internet connection</string>
+    <string name="api_request_error_else">Couldn\'t load data</string>
+    <string name="dao_request_error">Couldn\'t load data</string>
 </resources>

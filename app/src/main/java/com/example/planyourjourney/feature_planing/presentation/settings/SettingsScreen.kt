@@ -85,8 +85,8 @@ fun SettingsScreen(
         ) {
             SettingsSection(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
+                    .fillMaxSize()
+                    .padding(vertical = 16.dp, horizontal = 8.dp),
                 settings = state.settings,
                 onSettingsChanged = { viewModel.onEvent(SettingsEvent.SettingsChanged(it)) },
                 onSaveSettings = { viewModel.onEvent(SettingsEvent.SaveSettings) }

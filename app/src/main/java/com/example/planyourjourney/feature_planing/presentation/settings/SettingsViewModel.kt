@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.planyourjourney.feature_planing.domain.model.WeatherUnits
 import com.example.planyourjourney.feature_planing.domain.use_case.SettingsUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -18,6 +19,8 @@ class SettingsViewModel @Inject constructor(
     private val _state = mutableStateOf(SettingsState())
     val state: State<SettingsState> = _state
 
+    private var oldWeatherUnits: WeatherUnits = WeatherUnits()
+
     init {
         getSettings()
     }
@@ -25,9 +28,9 @@ class SettingsViewModel @Inject constructor(
     fun onEvent(event: SettingsEvent) {
         when (event) {
             is SettingsEvent.SaveSettings -> {
-                // TODO: either call API if weather units changed, or make a unit converter/calculator
                 viewModelScope.launch {
                     settingsUseCases.saveSettingsUseCase.invoke(_state.value.settings)
+                    settingsUseCases.updateUnitsUseCase.invoke(_state.value.settings, oldWeatherUnits)
                     val appLocale = LocaleListCompat
                         .forLanguageTags(_state.value.settings.language.localeCode)
                     AppCompatDelegate.setApplicationLocales(appLocale)
@@ -50,6 +53,7 @@ class SettingsViewModel @Inject constructor(
                 _state.value = state.value.copy(
                     settings = settings
                 )
+                oldWeatherUnits = settings.weatherUnits
             }
         }
     }

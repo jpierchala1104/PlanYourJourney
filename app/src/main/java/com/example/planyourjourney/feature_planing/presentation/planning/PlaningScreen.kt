@@ -1,5 +1,6 @@
 package com.example.planyourjourney.feature_planing.presentation.planning
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -38,6 +39,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -60,6 +62,7 @@ import com.example.planyourjourney.feature_planing.presentation.planning.compone
 import com.example.planyourjourney.feature_planing.presentation.planning.components.SearchTypeSelectionSection
 import com.example.planyourjourney.feature_planing.presentation.util.DecimalFormatter
 import com.example.planyourjourney.feature_planing.presentation.util.SearchInputType
+import com.example.planyourjourney.feature_planing.presentation.util.UiEvent
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
@@ -134,16 +137,19 @@ fun PlaningScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-//            LaunchedEffect(key1 = context){
-//                viewModel.uiEvents.collect{ event ->
-//                    when(event){
-//                        is PlaningViewModel.UiEvent.LoadingError -> {
-//                            Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
-//                        }
-//                        PlaningViewModel.UiEvent.LocationsLoaded -> TODO()
-//                    }
-//                }
-//            }
+            LaunchedEffect(key1 = context){
+                viewModel.uiEvents.collect{ event ->
+                    when(event){
+                        is UiEvent.LoadingError -> {
+                            Toast.makeText(
+                                context,
+                                context.getString(event.messageResourceId),
+                                Toast.LENGTH_SHORT).show()
+                        }
+                        UiEvent.LocationsLoaded -> {}
+                    }
+                }
+            }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -277,8 +283,7 @@ fun PlaningScreen(
                                                 viewModel.onEvent(PlaningEvent.RestoreLocation)
                                             }
                                         }
-                                    },
-                                    isLoaded = location.isLoaded
+                                    }
                                 )
                             }
                         }

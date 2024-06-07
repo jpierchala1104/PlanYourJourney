@@ -8,12 +8,15 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.planyourjourney.R
 import com.example.planyourjourney.feature_planing.domain.model.Coordinates
 import com.example.planyourjourney.feature_planing.domain.model.Location
 import com.example.planyourjourney.feature_planing.domain.use_case.PlaningUseCases
+import com.example.planyourjourney.feature_planing.domain.util.APIErrorResult
 import com.example.planyourjourney.feature_planing.domain.util.APIFetchResult
 import com.example.planyourjourney.feature_planing.presentation.util.SearchInputType
 import com.example.planyourjourney.feature_planing.domain.util.Resource
+import com.example.planyourjourney.feature_planing.presentation.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -54,13 +57,15 @@ class PlaningViewModel @Inject constructor(
             coordinates = weatherCoordinates.value
         )
         saveLocation(location)
-        fetchFromAPI(location)
         getLocations()
+        fetchFromAPI(location)
     }
-    // TODO: figure out how and when edit/call and save updates from weather API  
-    // TODO: either make DAO queries to edit the weather or delete and insert new weather from api 
+    // TODO: figure out if i need language in settings and how to get localization from
+    //  the app config to get the localization for day names in other languages
 
-    // TODO: can make a unit converter, wouldn't need to call the API for every unit change
+    // TODO: can take localization info from the phone to show date time in localized style
+
+    // TODO: figure out how and when edit/call and save updates from weather API
 
     init {
         getSettings()
@@ -89,8 +94,8 @@ class PlaningViewModel @Inject constructor(
                         coordinates = weatherCoordinates.value
                     )
                     saveLocation(location)
-                    fetchFromAPI(location)
                     getLocations()
+                    fetchFromAPI(location)
                 }
 
                 _state.value = state.value.copy(
@@ -131,9 +136,9 @@ class PlaningViewModel @Inject constructor(
             is PlaningEvent.RestoreLocation -> {
                 viewModelScope.launch {
                     saveLocation(recentlyDeletedLocation ?: return@launch)
+                    getLocations()
                     fetchFromAPI(recentlyDeletedLocation ?: return@launch)
                     recentlyDeletedLocation = null
-                    getLocations()
                 }
             }
 
@@ -176,41 +181,29 @@ class PlaningViewModel @Inject constructor(
             ).collect { result ->
                 when (result) {
                     is APIFetchResult.Success -> {
-                        val locationListCopy = state.value.locationList.toList()
-                        locationListCopy
-                            .first {
-                                it.coordinates.latitude == location.coordinates.latitude &&
-                                        it.coordinates.longitude == location.coordinates.longitude
-                            }.isLoaded = true
-                        _state.value = state.value.copy(
-                            locationList = locationListCopy
-                        )
+                    // TODO: can revisit this problem
                     }
 
                     is APIFetchResult.Error -> {
-                        val locationListCopy = state.value.locationList.toList()
-                        locationListCopy
-                            .first {
-                                it.coordinates.latitude == location.coordinates.latitude &&
-                                        it.coordinates.longitude == location.coordinates.longitude
-                            }.isLoaded = false
-                        _state.value = state.value.copy(
-                            locationList = locationListCopy
-                        )
-                        uiEventChannel.send(UiEvent.LoadingError(result.message!!))
+                        when(result.apiErrorResult){
+                            APIErrorResult.DataLoadError -> {
+                                uiEventChannel.send(UiEvent.LoadingError(R.string.api_request_error_else))
+                            }
+                            APIErrorResult.HttpExceptionError -> {
+                                uiEventChannel.send(UiEvent.LoadingError(R.string.api_request_error_http))
+                            }
+                            APIErrorResult.IOExceptionError -> {
+                                uiEventChannel.send(UiEvent.LoadingError(R.string.api_request_error_io))
+                            }
+                            else -> {
+                                //Would only be if its null, there is no chance of null here
+                            }
+                        }
                     }
 
                     is APIFetchResult.Loading -> {
-                        val locationListCopy = state.value.locationList.toList()
-                        locationListCopy
-                            .first {
-                                it.coordinates.latitude == location.coordinates.latitude &&
-                                        it.coordinates.longitude == location.coordinates.longitude
-                            }.isLoaded = result.isLoading
-                        _state.value = state.value.copy(
-                            locationList = locationListCopy
-                        )
-                    }
+                    // TODO:
+                        }
                 }
             }
         }
@@ -237,7 +230,7 @@ class PlaningViewModel @Inject constructor(
                             _state.value = state.value.copy(
                                 isLocationLoaded = false, isLoading = false
                             )
-                            uiEventChannel.send(UiEvent.LoadingError(result.message!!))
+                            uiEventChannel.send(UiEvent.LoadingError(R.string.dao_request_error))
                         }
 
                         is Resource.Loading -> {
@@ -263,18 +256,13 @@ class PlaningViewModel @Inject constructor(
         }
     }
 
-    private fun getSettings(){
+    private fun getSettings() {
         viewModelScope.launch {
-            planingUseCases.getSettingsUseCase.invoke().collect{ settings ->
+            planingUseCases.getSettingsUseCase.invoke().collect { settings ->
                 _state.value = state.value.copy(
                     settings = settings
                 )
             }
         }
-    }
-
-    sealed class UiEvent {
-        data object LocationsLoaded : UiEvent()
-        data class LoadingError(val message: String) : UiEvent()
     }
 }

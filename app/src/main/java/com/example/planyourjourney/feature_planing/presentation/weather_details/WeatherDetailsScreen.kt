@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -109,7 +110,7 @@ fun WeatherDetailsScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp),
+                    .padding(start = 8.dp,0.dp,0.dp,0.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -145,14 +146,18 @@ fun WeatherDetailsScreen(
                 WeatherVariablesSection(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 16.dp),
-                    weatherVariables = state.weatherVariables,
+                        .padding(8.dp),
+                    weatherVariables = state.settings.weatherVariables,
                     onWeatherVariablesChange = {
                         viewModel.onEvent(WeatherDetailsEvent.WeatherVariablesChanged(it))
                     }
                 )
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            HorizontalDivider(
+                Modifier
+                    .fillMaxWidth()
+                    .size(8.dp)
+            )
             ChartSection(
                 modifier = Modifier,
                 chartStateList = state.chartStateList

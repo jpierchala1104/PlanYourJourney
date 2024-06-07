@@ -12,6 +12,7 @@ import com.example.planyourjourney.feature_planing.domain.use_case.WeatherDetail
 import com.example.planyourjourney.feature_planing.domain.util.Resource
 import com.example.planyourjourney.feature_planing.presentation.planning.PlaningViewModel
 import com.example.planyourjourney.feature_planing.presentation.util.ChartService
+import com.example.planyourjourney.feature_planing.presentation.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -28,7 +29,7 @@ class WeatherDetailsViewModel @Inject constructor(
     private val _state = mutableStateOf(WeatherDetailsState())
     val state: State<WeatherDetailsState> = _state
 
-    private val uiEventChannel = Channel<PlaningViewModel.UiEvent>()
+    private val uiEventChannel = Channel<UiEvent>()
     val uiEvents = uiEventChannel.receiveAsFlow()
 
     private val chartService = ChartService(Locale(_state.value.settings.language.localeCode))
@@ -52,8 +53,10 @@ class WeatherDetailsViewModel @Inject constructor(
             is WeatherDetailsEvent.WeatherVariablesChanged -> {
                 viewModelScope.launch {
                     _state.value = state.value.copy(
-                        weatherVariables = event.weatherVariables
+                        settings = state.value
+                            .settings.copy(weatherVariables = event.weatherVariables)
                     )
+                    weatherDetailsUseCases.saveSettingsUseCase.invoke(_state.value.settings)
                     if (_state.value.isWeatherLoaded)
                         prepareCharts()
                 }
@@ -83,14 +86,14 @@ class WeatherDetailsViewModel @Inject constructor(
 //                            isWeatherLoaded = true, isLoading = false
 //                        )
                         prepareCharts()
-                        uiEventChannel.send(PlaningViewModel.UiEvent.LocationsLoaded)
+                        uiEventChannel.send(UiEvent.LocationsLoaded)
                     }
 
                     is Resource.Error -> {
                         _state.value = state.value.copy(
                             isWeatherLoaded = false, isLoading = false
                         )
-                        uiEventChannel.send(PlaningViewModel.UiEvent.LoadingError(result.message!!))
+                        uiEventChannel.send(UiEvent.LoadingError(R.string.dao_request_error))
                     }
 
                     is Resource.Loading -> {
@@ -105,7 +108,13 @@ class WeatherDetailsViewModel @Inject constructor(
         var chartStateList: List<ChartState> = listOf()
         if (_state.value.locationWeather == null) return
         val hourlyWeatherList = _state.value.locationWeather!!.hourlyWeatherList
-        if (_state.value.weatherVariables.isTemperature2mChecked) {
+        if (hourlyWeatherList.isEmpty()) {
+            _state.value = state.value.copy(
+                isWeatherLoaded = false, isLoading = false
+            )
+            return
+        }
+        if (_state.value.settings.weatherVariables.isTemperature2mChecked) {
             chartStateList = chartStateList.plus(
                 chartService.getLineChartState(
                     chartTitleResourceId = R.string.temperature,
@@ -115,7 +124,7 @@ class WeatherDetailsViewModel @Inject constructor(
                 )
             )
         }
-        if (_state.value.weatherVariables.isRelativeHumidity2mChecked) {
+        if (_state.value.settings.weatherVariables.isRelativeHumidity2mChecked) {
             chartStateList = chartStateList.plus(
                 chartService.getLineChartState(
                     chartTitleResourceId = R.string.relative_humidity,
@@ -125,7 +134,7 @@ class WeatherDetailsViewModel @Inject constructor(
                 )
             )
         }
-        if (_state.value.weatherVariables.isPrecipitationProbabilityChecked) {
+        if (_state.value.settings.weatherVariables.isPrecipitationProbabilityChecked) {
             chartStateList = chartStateList.plus(
                 chartService.getLineChartState(
                     chartTitleResourceId = R.string.precipitation_probability,
@@ -135,7 +144,7 @@ class WeatherDetailsViewModel @Inject constructor(
                 )
             )
         }
-        if (_state.value.weatherVariables.isRainChecked) {
+        if (_state.value.settings.weatherVariables.isRainChecked) {
             chartStateList = chartStateList.plus(
                 chartService.getColumnChartState(
                     chartTitleResourceId = R.string.rain,
@@ -145,7 +154,7 @@ class WeatherDetailsViewModel @Inject constructor(
                 )
             )
         }
-        if (_state.value.weatherVariables.isSnowfallChecked) {
+        if (_state.value.settings.weatherVariables.isSnowfallChecked) {
             chartStateList = chartStateList.plus(
                 chartService.getColumnChartState(
                     chartTitleResourceId = R.string.snowfall,
@@ -155,7 +164,7 @@ class WeatherDetailsViewModel @Inject constructor(
                 )
             )
         }
-        if (_state.value.weatherVariables.isCloudCoverChecked) {
+        if (_state.value.settings.weatherVariables.isCloudCoverChecked) {
             chartStateList = chartStateList.plus(
                 chartService.getLineChartState(
                     chartTitleResourceId = R.string.cloud_cover,
@@ -165,7 +174,7 @@ class WeatherDetailsViewModel @Inject constructor(
                 )
             )
         }
-        if (_state.value.weatherVariables.isWindSpeed10mChecked) {
+        if (_state.value.settings.weatherVariables.isWindSpeed10mChecked) {
             chartStateList = chartStateList.plus(
                 chartService.getLineChartState(
                     chartTitleResourceId = R.string.wind_speed_at_10_m,

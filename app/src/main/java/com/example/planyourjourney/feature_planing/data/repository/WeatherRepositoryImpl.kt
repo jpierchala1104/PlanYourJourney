@@ -13,8 +13,28 @@ import com.example.planyourjourney.feature_planing.domain.model.Settings
 import com.example.planyourjourney.feature_planing.domain.model.WeatherUnits
 import com.example.planyourjourney.feature_planing.domain.repository.SettingsOperations
 import com.example.planyourjourney.feature_planing.domain.repository.WeatherRepository
+import com.example.planyourjourney.feature_planing.domain.util.APIErrorResult
 import com.example.planyourjourney.feature_planing.domain.util.APIFetchResult
+import com.example.planyourjourney.feature_planing.domain.util.PrecipitationUnits
 import com.example.planyourjourney.feature_planing.domain.util.Resource
+import com.example.planyourjourney.feature_planing.domain.util.TemperatureUnits
+import com.example.planyourjourney.feature_planing.domain.util.WindSpeedUnits
+import com.example.planyourjourney.feature_planing.domain.util.celsiusToFahrenheit
+import com.example.planyourjourney.feature_planing.domain.util.fahrenheitToCelsius
+import com.example.planyourjourney.feature_planing.domain.util.inchesToMillimeters
+import com.example.planyourjourney.feature_planing.domain.util.kilometersPerHourToKnots
+import com.example.planyourjourney.feature_planing.domain.util.kilometersPerHourToMetersPerSecond
+import com.example.planyourjourney.feature_planing.domain.util.kilometersPerHourToMilesPerHour
+import com.example.planyourjourney.feature_planing.domain.util.knotsToKilometersPerHour
+import com.example.planyourjourney.feature_planing.domain.util.knotsToMetersPerSecond
+import com.example.planyourjourney.feature_planing.domain.util.knotsToMilesPerHour
+import com.example.planyourjourney.feature_planing.domain.util.metersPerSecondToKilometersPerHour
+import com.example.planyourjourney.feature_planing.domain.util.metersPerSecondToKnots
+import com.example.planyourjourney.feature_planing.domain.util.metersPerSecondToMilesPerHour
+import com.example.planyourjourney.feature_planing.domain.util.milesPerHourToKilometersPerHour
+import com.example.planyourjourney.feature_planing.domain.util.milesPerHourToKnots
+import com.example.planyourjourney.feature_planing.domain.util.milesPerHourToMetersPerSecond
+import com.example.planyourjourney.feature_planing.domain.util.millimetersToInches
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
@@ -31,7 +51,7 @@ class WeatherRepositoryImpl @Inject constructor(
 
     private val dao = db.dao
 
-    // TODO: function to update weather from api to database,
+    // TODO: function to refresh all the weather??
     //  figure out how to fetch from API without spamming it,
     //  also function to convert the units in database?
 
@@ -50,7 +70,10 @@ class WeatherRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun fetchWeatherFromAPI(location: Location, weatherUnits: WeatherUnits) : Flow<APIFetchResult> {
+    override suspend fun fetchWeatherFromAPI(
+        location: Location,
+        weatherUnits: WeatherUnits
+    ): Flow<APIFetchResult> {
         return flow {
             emit(APIFetchResult.Loading())
             val remoteLocationWeather = try {
@@ -63,12 +86,11 @@ class WeatherRepositoryImpl @Inject constructor(
                 ).toLocationWeather()
             } catch (e: IOException) {
                 e.printStackTrace()
-                // TODO: can this text be in other languages
-                emit(APIFetchResult.Error("Couldn't load data"))
+                emit(APIFetchResult.Error(APIErrorResult.IOExceptionError))
                 null
             } catch (e: HttpException) {
                 e.printStackTrace()
-                emit(APIFetchResult.Error("Couldn't load data"))
+                emit(APIFetchResult.Error(APIErrorResult.HttpExceptionError))
                 null
             }
             val locationId = dao.getLocationId(
@@ -76,6 +98,8 @@ class WeatherRepositoryImpl @Inject constructor(
                 longitude = location.coordinates.longitude
             )
             // TODO: if its goes to catch will this still try to insert? - test and fix that
+            // TODO: clear and insert or try to Update?
+            dao.clearHourlyWeathersAtLocation(locationId!!)
             dao.insertHourlyWeathers(remoteLocationWeather!!.hourlyWeatherList.map { hourlyWeather ->
                 // TODO: If the id isn't saved the problem is here!!!
                 hourlyWeather.toHourlyWeatherEntity().copy(locationWeatherId = locationId)
@@ -135,11 +159,173 @@ class WeatherRepositoryImpl @Inject constructor(
         dao.clearHourlyWeathersAtLocation(locationId)
     }
 
+    override suspend fun deleteHourlyWeathersWithDate(date: String) {
+        dao.deleteHourlyWeathersWithDate(date)
+    }
+
     override suspend fun saveSettings(settings: Settings) {
         dataStore.saveSettings(settings)
     }
 
     override suspend fun getSettings(): Flow<Settings> {
         return dataStore.readSettingsState()
+    }
+
+    override suspend fun updateUnits(settings: Settings, oldUnits: WeatherUnits) {
+        if (oldUnits == settings.weatherUnits)
+            return
+        val weatherEntities = dao.getHourlyWeathers()
+        var convertedWeatherEntities = weatherEntities
+        if (oldUnits.temperatureUnits == settings.weatherUnits.temperatureUnits) {
+            return
+        } else {
+            if(oldUnits.temperatureUnits == TemperatureUnits.CELSIUS){
+                convertedWeatherEntities = convertedWeatherEntities.map {
+                    it.copy(temperature2m = it.temperature2m.celsiusToFahrenheit())
+                }
+            } else if (oldUnits.temperatureUnits == TemperatureUnits.FAHRENHEIT){
+                convertedWeatherEntities = convertedWeatherEntities.map {
+                    it.copy(temperature2m = it.temperature2m.fahrenheitToCelsius())
+                }
+            }
+        }
+        if (oldUnits.precipitationUnits == settings.weatherUnits.precipitationUnits){
+            return
+        } else {
+            if(oldUnits.precipitationUnits == PrecipitationUnits.MILLIMETERS){
+                convertedWeatherEntities = convertedWeatherEntities.map {
+                    it.copy(
+                        rain = it.rain.millimetersToInches(),
+                        snowfall = it.snowfall.millimetersToInches()
+                    )
+                }
+            } else if (oldUnits.precipitationUnits == PrecipitationUnits.INCH){
+                convertedWeatherEntities = convertedWeatherEntities.map {
+                    it.copy(
+                        rain = it.rain.inchesToMillimeters(),
+                        snowfall = it.snowfall.inchesToMillimeters()
+                    )
+                }
+            }
+        }
+        if (oldUnits.windSpeedUnits == settings.weatherUnits.windSpeedUnits){
+            return
+        } else {
+            when (oldUnits.windSpeedUnits) {
+                WindSpeedUnits.KILOMETERS_PER_HOUR -> {
+                    when (settings.weatherUnits.windSpeedUnits) {
+                        WindSpeedUnits.METERS_PER_SECOND -> {
+                            convertedWeatherEntities = convertedWeatherEntities.map {
+                                it.copy(
+                                    windSpeed10m = it.windSpeed10m.kilometersPerHourToMetersPerSecond()
+                                )
+                            }
+                        }
+                        WindSpeedUnits.MILES_PER_HOUR -> {
+                            convertedWeatherEntities = convertedWeatherEntities.map {
+                                it.copy(
+                                    windSpeed10m = it.windSpeed10m.kilometersPerHourToMilesPerHour()
+                                )
+                            }
+                        }
+                        WindSpeedUnits.KNOTS -> {
+                            convertedWeatherEntities = convertedWeatherEntities.map {
+                                it.copy(
+                                    windSpeed10m = it.windSpeed10m.kilometersPerHourToKnots()
+                                )
+                            }
+                        }
+                        else -> {
+                            // Do Nothing
+                        }
+                    }
+                }
+                WindSpeedUnits.METERS_PER_SECOND -> {
+                    when (settings.weatherUnits.windSpeedUnits) {
+                        WindSpeedUnits.KILOMETERS_PER_HOUR -> {
+                            convertedWeatherEntities = convertedWeatherEntities.map {
+                                it.copy(
+                                    windSpeed10m = it.windSpeed10m.metersPerSecondToKilometersPerHour()
+                                )
+                            }
+                        }
+                        WindSpeedUnits.MILES_PER_HOUR -> {
+                            convertedWeatherEntities = convertedWeatherEntities.map {
+                                it.copy(
+                                    windSpeed10m = it.windSpeed10m.metersPerSecondToMilesPerHour()
+                                )
+                            }
+                        }
+                        WindSpeedUnits.KNOTS -> {
+                            convertedWeatherEntities = convertedWeatherEntities.map {
+                                it.copy(
+                                    windSpeed10m = it.windSpeed10m.metersPerSecondToKnots()
+                                )
+                            }
+                        }
+                        else -> {
+                            // Do Nothing
+                        }
+                    }
+                }
+                WindSpeedUnits.MILES_PER_HOUR -> {
+                    when (settings.weatherUnits.windSpeedUnits) {
+                        WindSpeedUnits.KILOMETERS_PER_HOUR -> {
+                            convertedWeatherEntities = convertedWeatherEntities.map {
+                                it.copy(
+                                    windSpeed10m = it.windSpeed10m.milesPerHourToKilometersPerHour()
+                                )
+                            }
+                        }
+                        WindSpeedUnits.METERS_PER_SECOND -> {
+                            convertedWeatherEntities = convertedWeatherEntities.map {
+                                it.copy(
+                                    windSpeed10m = it.windSpeed10m.milesPerHourToMetersPerSecond()
+                                )
+                            }
+                        }
+                        WindSpeedUnits.KNOTS -> {
+                            convertedWeatherEntities = convertedWeatherEntities.map {
+                                it.copy(
+                                    windSpeed10m = it.windSpeed10m.milesPerHourToKnots()
+                                )
+                            }
+                        }
+                        else -> {
+                            // Do Nothing
+                        }
+                    }
+                }
+                WindSpeedUnits.KNOTS -> {
+                    when (settings.weatherUnits.windSpeedUnits) {
+                        WindSpeedUnits.KILOMETERS_PER_HOUR -> {
+                            convertedWeatherEntities = convertedWeatherEntities.map {
+                                it.copy(
+                                    windSpeed10m = it.windSpeed10m.knotsToKilometersPerHour()
+                                )
+                            }
+                        }
+                        WindSpeedUnits.METERS_PER_SECOND -> {
+                            convertedWeatherEntities = convertedWeatherEntities.map {
+                                it.copy(
+                                    windSpeed10m = it.windSpeed10m.knotsToMetersPerSecond()
+                                )
+                            }
+                        }
+                        WindSpeedUnits.MILES_PER_HOUR -> {
+                            convertedWeatherEntities = convertedWeatherEntities.map {
+                                it.copy(
+                                    windSpeed10m = it.windSpeed10m.knotsToMilesPerHour()
+                                )
+                            }
+                        }
+                        else -> {
+                            // Do Nothing
+                        }
+                    }
+                }
+            }
+        }
+        dao.insertHourlyWeathers(convertedWeatherEntities)
     }
 }

@@ -2,7 +2,7 @@ package com.example.planyourjourney.feature_planing.presentation.weather_details
 
 import com.example.planyourjourney.feature_planing.domain.model.LocationWeather
 import com.example.planyourjourney.feature_planing.domain.model.Settings
-import com.example.planyourjourney.feature_planing.presentation.util.WeatherVariables
+import com.example.planyourjourney.feature_planing.domain.model.WeatherVariables
 import com.patrykandpatrick.vico.core.axis.AxisPosition
 import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
 import com.patrykandpatrick.vico.core.marker.DefaultMarkerLabelFormatter
@@ -13,15 +13,6 @@ data class WeatherDetailsState(
     val locationWeather: LocationWeather? = null,
     val isLoading: Boolean = false,
     val isWeatherLoaded: Boolean = false,
-    val weatherVariables: WeatherVariables = WeatherVariables(
-        isTemperature2mChecked = true,
-        isRelativeHumidity2mChecked = false,
-        isPrecipitationProbabilityChecked = false,
-        isRainChecked = false,
-        isSnowfallChecked = false,
-        isCloudCoverChecked = false,
-        isWindSpeed10mChecked = false
-    ),
     val isWeatherVariablesSectionVisible: Boolean = false,
     val settings: Settings = Settings(),
     val chartStateList: List<ChartState> = listOf()

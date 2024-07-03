@@ -53,7 +53,6 @@ class WeatherRepositoryImpl @Inject constructor(
 
     // TODO: function to refresh all the weather??
     //  figure out how to fetch from API without spamming it,
-    //  also function to convert the units in database?
 
     override suspend fun getWeatherAtLocation(
         location: Location

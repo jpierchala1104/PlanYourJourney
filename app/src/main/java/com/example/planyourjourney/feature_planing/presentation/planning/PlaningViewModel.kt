@@ -67,6 +67,10 @@ class PlaningViewModel @Inject constructor(
 
     // TODO: figure out how and when edit/call and save updates from weather API
 
+    // TODO: check how to make a widget
+
+    // TODO: Launch app and testing now! 
+
     init {
         getSettings()
         getLocations()

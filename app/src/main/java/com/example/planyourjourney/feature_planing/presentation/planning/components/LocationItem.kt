@@ -41,7 +41,7 @@ fun LocationItem(
     Box(
         modifier = modifier
     ) {
-        val itemColor = MaterialTheme.colorScheme.primary
+        val itemColor = MaterialTheme.colorScheme.tertiary
         Canvas(modifier = Modifier
             .matchParentSize()
             .padding(8.dp)) {
@@ -72,7 +72,8 @@ fun LocationItem(
             HorizontalDivider(
                 Modifier
                     .fillMaxWidth()
-                    .size(20.dp)
+                    .size(20.dp),
+                color = MaterialTheme.colorScheme.onPrimary
             )
             Column(
                 modifier = Modifier

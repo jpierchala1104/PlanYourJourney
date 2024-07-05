@@ -1,5 +1,6 @@
 package com.example.planyourjourney.feature_planing.presentation.settings
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,11 +13,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.planyourjourney.R
 import com.example.planyourjourney.core.presentation.AppToolbar
+import com.example.planyourjourney.feature_planing.domain.model.Settings
 import com.example.planyourjourney.feature_planing.presentation.settings.components.SettingsSection
+import com.example.planyourjourney.ui.theme.PlanYourJourneyTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -43,7 +47,7 @@ fun SettingsScreen(
 //                Icon(
 //                    imageVector = Icons.AutoMirrored.Filled.List,
 //                    contentDescription = null,
-//                    tint = Color.White,
+//                    tint = MaterialTheme.colorScheme.onPrimary,
 //                    modifier = Modifier
 //                        .size(32.dp)
 //                        .clickable {
@@ -56,7 +60,7 @@ fun SettingsScreen(
 //                Icon(
 //                    imageVector = Icons.Filled.Add,
 //                    contentDescription = null,
-//                    tint = Color.White,
+//                    tint = MaterialTheme.colorScheme.onPrimary,
 //                    modifier = Modifier
 //                        .size(32.dp)
 //                        .clickable {
@@ -88,9 +92,82 @@ fun SettingsScreen(
                     .fillMaxSize()
                     .padding(vertical = 16.dp, horizontal = 8.dp),
                 settings = state.settings,
-                onSettingsChanged = { viewModel.onEvent(SettingsEvent.SettingsChanged(it)) },
-                onSaveSettings = { viewModel.onEvent(SettingsEvent.SaveSettings) }
+                onSettingsChanged = {
+                    viewModel.onEvent(SettingsEvent.SettingsChanged(it))
+                },
+                onSaveSettings = {
+                    viewModel.onEvent(SettingsEvent.SaveSettings)
+                }
             )
+        }
+    }
+}
+
+@Composable
+@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun SettingsPreview() {
+    val state = SettingsState(
+        isLoading = false,
+        isSettingsLoaded = true,
+        settings = Settings()
+    )
+    PlanYourJourneyTheme {
+        Scaffold(
+            snackbarHost = {
+
+            },
+            topBar = {
+                AppToolbar(
+                    modifier = Modifier.wrapContentHeight(),
+                    title = stringResource(R.string.app_name)
+                ) {
+//                Icon(
+//                    imageVector = Icons.AutoMirrored.Filled.List,
+//                    contentDescription = null,
+//                    tint = MaterialTheme.colorScheme.onPrimary,
+//                    modifier = Modifier
+//                        .size(32.dp)
+//                        .clickable {
+//                            navigator.navigate(
+//                                WeatherScreenDestination()
+//                            )
+//                        }
+//                )
+//                Spacer(modifier = Modifier.size(8.dp))
+//                Icon(
+//                    imageVector = Icons.Filled.Add,
+//                    contentDescription = null,
+//                    tint = MaterialTheme.colorScheme.onPrimary,
+//                    modifier = Modifier
+//                        .size(32.dp)
+//                        .clickable {
+//                            navigator.navigate(
+//                                PlaningScreenDestination()
+//                            )
+//                        }
+//                )
+                }
+            }
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
+                SettingsSection(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(vertical = 16.dp, horizontal = 8.dp),
+                    settings = state.settings,
+                    onSettingsChanged = {
+
+                    },
+                    onSaveSettings = {
+
+                    }
+                )
+            }
         }
     }
 }

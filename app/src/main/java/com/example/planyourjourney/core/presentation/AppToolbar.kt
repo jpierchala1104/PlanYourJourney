@@ -3,7 +3,9 @@ package com.example.planyourjourney.core.presentation
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
@@ -11,6 +13,7 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,32 +39,38 @@ fun AppToolbar(
     title: String,
     icon: @Composable () -> Unit
 ) {
-    TopAppBar(
-        modifier = modifier,
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            titleContentColor = MaterialTheme.colorScheme.onPrimary
-        ),
-        title = {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
-                textAlign = TextAlign.Start,
-                maxLines = 1
-            )
-        },
-        navigationIcon = {
-            Icon(
-                imageVector = Icons.Filled.Place,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onPrimary
-            )
-        },
-        actions = {
-            icon()
-        }
-    )
+    Column(modifier = modifier) {
+        TopAppBar(
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                titleContentColor = MaterialTheme.colorScheme.onPrimary
+            ),
+            title = {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    textAlign = TextAlign.Start,
+                    maxLines = 1
+                )
+            },
+            navigationIcon = {
+                Icon(
+                    imageVector = Icons.Filled.Place,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
+            },
+            actions = {
+                icon()
+            }
+        )
+        HorizontalDivider(
+            Modifier
+                .fillMaxWidth()
+                .size(1.dp)
+        )
+    }
 }
 
 @Composable

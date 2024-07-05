@@ -40,4 +40,5 @@
     <string name="api_request_error_http">Couldn\'t load data - no internet connection</string>
     <string name="api_request_error_else">Couldn\'t load data</string>
     <string name="dao_request_error">Couldn\'t load data</string>
+    <string name="locations">Locations</string>
 </resources>

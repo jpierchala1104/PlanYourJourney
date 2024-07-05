@@ -40,4 +40,5 @@
     <string name="api_request_error_http">Nie można załadować danych - brak połączenia z internetem</string>
     <string name="api_request_error_else">Nie można załadować danych</string>
     <string name="dao_request_error">Nie można załadować danych</string>
+    <string name="locations">Lokalizacje</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.example.planyourjourney.feature_planing.presentation.planning.components
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -28,10 +29,13 @@ fun AddLocationSection(
     decimalFormatter: DecimalFormatter
 ) {
     Column(
-        modifier.padding(8.dp)
+        modifier
+            .padding(8.dp)
+
     ) {
         when (searchInputType) {
             SearchInputType.LatitudeAndLongitude -> CoordinatesInputSection(
+                modifier = Modifier.fillMaxWidth(),
                 coordinates = weatherCoordinates,
                 onValueChange = {
                     onCoordinatesChanged(it)
@@ -41,6 +45,7 @@ fun AddLocationSection(
             )
 
             SearchInputType.LocationName -> LocationNameInputSection(
+                modifier = Modifier.fillMaxWidth(),
                 locationName = weatherLocationName,
                 onValueChange = {
                     onLocationNameChanged(it)

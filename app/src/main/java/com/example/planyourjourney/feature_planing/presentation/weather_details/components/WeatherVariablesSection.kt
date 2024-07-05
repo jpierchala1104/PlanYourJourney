@@ -12,7 +12,7 @@ import com.example.planyourjourney.core.presentation.DefaultCheckbox
 import com.example.planyourjourney.feature_planing.domain.model.WeatherVariables
 
 @Composable
-fun WeatherVariablesSection(
+fun WeatherVariablesSelectionSection(
     modifier: Modifier = Modifier,
     weatherVariables: WeatherVariables,
     onWeatherVariablesChange: (WeatherVariables) -> Unit

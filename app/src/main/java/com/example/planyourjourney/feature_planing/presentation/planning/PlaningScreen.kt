@@ -223,6 +223,7 @@ fun PlaningScreen(
             )
             // TODO: check if this looks the same
             AddLocationSection(
+                modifier = Modifier.fillMaxWidth(),
                 searchInputType = state.searchInputType,
                 weatherCoordinates = weatherCoordinates,
                 weatherLocationName = weatherLocationName,
@@ -268,7 +269,7 @@ fun PlaningScreen(
             HorizontalDivider(
                 Modifier
                     .fillMaxWidth()
-                    .size(20.dp)
+                    .size(8.dp)
             )
             // TODO: check if this looks the same
             LocationList(
@@ -430,6 +431,7 @@ fun PlaningScreenPreview() {
                         .size(8.dp)
                 )
                 AddLocationSection(
+                    modifier = Modifier.fillMaxWidth(),
                     searchInputType = state.searchInputType,
                     weatherCoordinates = weatherCoordinates,
                     weatherLocationName = weatherLocationName,
@@ -447,7 +449,7 @@ fun PlaningScreenPreview() {
                 HorizontalDivider(
                     Modifier
                         .fillMaxWidth()
-                        .size(20.dp)
+                        .size(8.dp)
                 )
                 LocationList(
                     isLoading = state.isLoading,

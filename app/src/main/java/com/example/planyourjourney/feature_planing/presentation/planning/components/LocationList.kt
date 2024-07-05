@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,45 +31,56 @@ fun LocationList(
     navigator: DestinationsNavigator?
 ) {
     Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = modifier.fillMaxWidth()
     ) {
-        if (isLoading) {
-            CircularProgressIndicator(
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier
-                    .wrapContentSize()
-                    .size(56.dp),
-                strokeWidth = 6.dp,
-                trackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
-            )
-        } else {
-            if (!isLocationLoaded || locationList.isEmpty()) {
-                Text(
-                    text = stringResource(id = R.string.locations_empty)
+        Text(
+            modifier = Modifier.padding(8.dp),
+            text = stringResource(id = R.string.locations),
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            if (isLoading) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .size(56.dp),
+                    strokeWidth = 6.dp,
+                    trackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
                 )
             } else {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    items(count = locationList.size) { i ->
-                        val location = locationList[i]
-                        LocationItem(
-                            location = location,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    navigator!!.navigate(
-                                        com.example.planyourjourney.feature_planing.presentation.destinations.WeatherDetailsScreenDestination(location.locationId!!)
-                                    )
-                                },
-                            //.padding(16.dp)
-                            onDeleteClick = {
-                                // TODO: Maybe change this to confirm delete scaffoldState
-                                //  with no restore option
-                                onDeleteLocation(location)
-                            }
-                        )
+                if (!isLocationLoaded || locationList.isEmpty()) {
+                    Text(
+                        text = stringResource(id = R.string.locations_empty)
+                    )
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(count = locationList.size) { i ->
+                            val location = locationList[i]
+                            LocationItem(
+                                location = location,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        navigator!!.navigate(
+                                            com.example.planyourjourney.feature_planing.presentation.destinations.WeatherDetailsScreenDestination(
+                                                location.locationId!!
+                                            )
+                                        )
+                                    },
+                                //.padding(16.dp)
+                                onDeleteClick = {
+                                    // TODO: Maybe change this to confirm delete scaffoldState
+                                    //  with no restore option
+                                    onDeleteLocation(location)
+                                }
+                            )
+                        }
                     }
                 }
             }

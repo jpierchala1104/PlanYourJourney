@@ -41,6 +41,7 @@ import com.example.planyourjourney.R
 import com.example.planyourjourney.feature_planing.domain.model.HourlyWeather
 import com.example.planyourjourney.feature_planing.domain.model.LocationWeather
 import com.example.planyourjourney.feature_planing.domain.model.WeatherUnits
+import com.example.planyourjourney.ui.theme.CloudBlue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -56,7 +57,7 @@ fun WeatherCard(
     scope: CoroutineScope,
     locationWeather: LocationWeather,
     weatherUnits: WeatherUnits = WeatherUnits(),
-    color: Color = MaterialTheme.colorScheme.primary,
+    color: Color = MaterialTheme.colorScheme.tertiary,
     cornerRadius: Dp = 10.dp,
     locale: Locale
 ) {
@@ -85,42 +86,11 @@ fun WeatherCard(
             )
         }
         Column {
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
-            ) {
-                items(count = daysWithWeather.size) { i ->
-                    val weather = daysWithWeather[i]
-                    Button(
-                        modifier = Modifier.wrapContentHeight(),
-                        colors = ButtonDefaults
-                            .buttonColors(
-                                containerColor = MaterialTheme.colorScheme.onPrimary,
-                                contentColor = Color.Black
-                            ),
-                        shape = RoundedCornerShape(50),
-                        onClick = {
-                            scope.launch {
-                                pagerState.animateScrollToPage(daysWithWeather.indexOf(weather))
-                            }
-                        }
-                    ) {
-                        Text(
-                            text = "${weather.first().time.dayOfWeek}\n" +
-                                    weather.first().time
-                                        .format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
-                            maxLines = 2
-                        )
-                    }
-                    Spacer(modifier = Modifier.size(8.dp))
-                }
-            }
             HorizontalPager(
                 pageSize = PageSize.Fill,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp),
+                    .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp),
                 state = pagerState
             ) { index ->
                 val currentDayWeather = daysWithWeather[index]
@@ -195,20 +165,20 @@ fun WeatherCard(
                                 )
                                 Row {
                                 Image(
-                                    modifier = Modifier.size(20.dp),
+                                    modifier = Modifier.size(28.dp),
                                     painter = painterResource(id = R.drawable.thermometer_icon),
                                     contentDescription = null,
                                 )
                                     Text(
-                                        text = "${weather.temperature2m}" +
+                                        text = String.format("%.1f",weather.temperature2m) +
                                                 weatherUnits.temperatureUnits.displayUnits,
                                         style = MaterialTheme.typography.bodyLarge,
-                                        color = MaterialTheme.colorScheme.onPrimary,
+                                        color = MaterialTheme.colorScheme.onPrimary
                                     )
                                 }
                                 Row {
                                 Image(
-                                    modifier = Modifier.size(20.dp),
+                                    modifier = Modifier.size(28.dp),
                                     painter = painterResource(id = R.drawable.drop_precipitation_rain_icon),
                                     contentDescription = null,
                                 )
@@ -235,6 +205,37 @@ fun WeatherCard(
                             }
                         }
                     }
+                }
+            }
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
+            ) {
+                items(count = daysWithWeather.size) { i ->
+                    val weather = daysWithWeather[i]
+                    Button(
+                        modifier = Modifier.wrapContentHeight(),
+                        colors = ButtonDefaults
+                            .buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            ),
+                        shape = RoundedCornerShape(50),
+                        onClick = {
+                            scope.launch {
+                                pagerState.animateScrollToPage(daysWithWeather.indexOf(weather))
+                            }
+                        }
+                    ) {
+                        Text(
+                            text = "${weather.first().time.dayOfWeek}\n" +
+                                    weather.first().time
+                                        .format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
+                            maxLines = 2
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(8.dp))
                 }
             }
         }

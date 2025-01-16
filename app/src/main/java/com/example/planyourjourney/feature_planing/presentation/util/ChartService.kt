@@ -14,7 +14,11 @@ import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 
-class ChartService (private val locale: Locale){
+class ChartService{
+    private var locale: Locale = Locale(Locale.ENGLISH.language)
+    fun setLocale(newLocale: Locale){
+        locale = newLocale
+    }
     private fun getCartesianLineChartModelProducer(
         chartSize: Int,
         chartValues: List<Double> = arrayListOf()

@@ -54,6 +54,7 @@ fun LocationList(
             } else {
                 if (!isLocationLoaded || locationList.isEmpty()) {
                     Text(
+                        modifier = Modifier.padding(8.dp),
                         text = stringResource(id = R.string.locations_empty)
                     )
                 } else {

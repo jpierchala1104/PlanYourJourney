@@ -43,9 +43,11 @@ fun LocationItem(
         modifier = modifier
     ) {
         val itemColor = MaterialTheme.colorScheme.primary
-        Canvas(modifier = Modifier
-            .matchParentSize()
-            .padding(8.dp)) {
+        Canvas(
+            modifier = Modifier
+                .matchParentSize()
+                .padding(8.dp)
+        ) {
             drawRoundRect(
                 color = itemColor,
                 size = size,
@@ -76,24 +78,18 @@ fun LocationItem(
 //                    .size(20.dp),
 //                color = MaterialTheme.colorScheme.onPrimary
 //            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    text = stringResource(id = R.string.latitude_colon) + location.coordinates.latitude.toString(),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    maxLines = 1
-                )
-                Spacer(modifier = Modifier.size(20.dp))
-                Text(
-                    text = stringResource(id = R.string.longitude_colon) + location.coordinates.longitude.toString(),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    maxLines = 1
-                )
-            }
+            Text(
+                text = stringResource(id = R.string.latitude_colon) + location.coordinates.latitude.toString(),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onPrimary,
+                maxLines = 1
+            )
+            Text(
+                text = stringResource(id = R.string.longitude_colon) + location.coordinates.longitude.toString(),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onPrimary,
+                maxLines = 1
+            )
         }
         IconButton(
             onClick = onDeleteClick,

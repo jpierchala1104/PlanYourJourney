@@ -43,16 +43,19 @@ fun WeatherList(
     localeCode: String,
     navigator: DestinationsNavigator?
 ) {
-    Column (
+    Column(
         modifier = modifier
-    ){
+    ) {
         Text(
             modifier = Modifier.padding(8.dp),
             text = stringResource(R.string.weather_forecast),
             style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.onBackground
         )
-        HorizontalDivider(Modifier.fillMaxWidth().size(8.dp))
+        HorizontalDivider(
+            Modifier
+                .fillMaxWidth()
+                .size(8.dp))
 
         if (isLoading) {
             CircularProgressIndicator(
@@ -85,7 +88,7 @@ fun WeatherList(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(8.dp,0.dp,8.dp,0.dp),
+                                    .padding(8.dp, 0.dp, 8.dp, 0.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -97,17 +100,14 @@ fun WeatherList(
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis
                                     )
-                                    Row {
-                                        Text(
-                                            text = stringResource(id = R.string.latitude_colon) +
-                                                    location.location.coordinates.latitude.toString()
-                                        )
-                                        Spacer(modifier = Modifier.size(20.dp))
-                                        Text(
-                                            text = stringResource(id = R.string.longitude_colon) +
-                                                    location.location.coordinates.longitude.toString()
-                                        )
-                                    }
+                                    Text(
+                                        text = stringResource(id = R.string.latitude_colon) +
+                                                location.location.coordinates.latitude.toString()
+                                    )
+                                    Text(
+                                        text = stringResource(id = R.string.longitude_colon) +
+                                                location.location.coordinates.longitude.toString()
+                                    )
                                 }
                                 Icon(
                                     imageVector = Icons.Default.Refresh,

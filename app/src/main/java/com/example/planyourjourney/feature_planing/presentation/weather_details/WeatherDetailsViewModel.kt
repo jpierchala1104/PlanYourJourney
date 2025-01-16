@@ -32,7 +32,7 @@ class WeatherDetailsViewModel @Inject constructor(
     private val uiEventChannel = Channel<UiEvent>()
     val uiEvents = uiEventChannel.receiveAsFlow()
 
-    private val chartService = ChartService(Locale(_state.value.settings.language.localeCode))
+    private val chartService = ChartService()
 
     init {
         getSettings()
@@ -105,6 +105,8 @@ class WeatherDetailsViewModel @Inject constructor(
     }
 
     private fun prepareCharts() {
+        chartService.setLocale(Locale(_state.value.settings.language.localeCode))
+
         var chartStateList: List<ChartState> = listOf()
         if (_state.value.locationWeather == null) return
         val hourlyWeatherList = _state.value.locationWeather!!.hourlyWeatherList
@@ -124,26 +126,17 @@ class WeatherDetailsViewModel @Inject constructor(
                 )
             )
         }
-        if (_state.value.settings.weatherVariables.isRelativeHumidity2mChecked) {
-            chartStateList = chartStateList.plus(
-                chartService.getLineChartState(
-                    chartTitleResourceId = R.string.relative_humidity,
-                    chartValuesList = hourlyWeatherList.map { it.relativeHumidity2m.toDouble() },
-                    localDateTimeList = hourlyWeatherList.map { it.time },
-                    unit = _state.value.settings.weatherUnits.percentageUnits.displayUnits
-                )
-            )
-        }
         if (_state.value.settings.weatherVariables.isPrecipitationProbabilityChecked) {
             chartStateList = chartStateList.plus(
                 chartService.getLineChartState(
                     chartTitleResourceId = R.string.precipitation_probability,
                     chartValuesList = hourlyWeatherList.map { it.precipitationProbability.toDouble() },
                     localDateTimeList = hourlyWeatherList.map { it.time },
-                    unit = _state.value.settings.weatherUnits.precipitationUnits.displayUnits
+                    unit = _state.value.settings.weatherUnits.percentageUnits.displayUnits
                 )
             )
         }
+        // TODO: Add Precipitation chart here
         if (_state.value.settings.weatherVariables.isRainChecked) {
             chartStateList = chartStateList.plus(
                 chartService.getColumnChartState(
@@ -174,6 +167,16 @@ class WeatherDetailsViewModel @Inject constructor(
                 )
             )
         }
+        if (_state.value.settings.weatherVariables.isRelativeHumidity2mChecked) {
+            chartStateList = chartStateList.plus(
+                chartService.getLineChartState(
+                    chartTitleResourceId = R.string.relative_humidity,
+                    chartValuesList = hourlyWeatherList.map { it.relativeHumidity2m.toDouble() },
+                    localDateTimeList = hourlyWeatherList.map { it.time },
+                    unit = _state.value.settings.weatherUnits.percentageUnits.displayUnits
+                )
+            )
+        }
         if (_state.value.settings.weatherVariables.isWindSpeed10mChecked) {
             chartStateList = chartStateList.plus(
                 chartService.getLineChartState(
@@ -195,6 +198,7 @@ class WeatherDetailsViewModel @Inject constructor(
                 _state.value = state.value.copy(
                     settings = settings
                 )
+                prepareCharts()
             }
         }
     }

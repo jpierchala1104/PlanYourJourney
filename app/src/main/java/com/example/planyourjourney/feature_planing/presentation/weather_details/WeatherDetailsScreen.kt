@@ -196,7 +196,7 @@ fun WeatherDetailsScreen(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun WeatherDetailsPreview() {
     val settings = Settings(
-        language = Language.English,
+        language = Language.Polski,
         weatherUnits = WeatherUnits(),
         weatherVariables = WeatherVariables(
             isTemperature2mChecked = true,
@@ -208,7 +208,8 @@ fun WeatherDetailsPreview() {
             isWindSpeed10mChecked = false
         )
     )
-    val chartService = ChartService(Locale(settings.language.localeCode))
+    val chartService = ChartService()
+    chartService.setLocale(Locale(settings.language.localeCode))
     val today = LocalDateTime.now()
     var listOfHourlyWeatherData = listOf<HourlyWeather>()
     for (i: Int in 1..7) {

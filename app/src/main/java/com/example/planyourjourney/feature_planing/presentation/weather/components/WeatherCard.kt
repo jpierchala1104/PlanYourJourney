@@ -229,7 +229,7 @@ fun WeatherCard(
                         }
                     ) {
                         Text(
-                            text = "${weather.first().time.dayOfWeek}\n" +
+                            text = "${weather.first().time.dayOfWeek.getDisplayName(TextStyle.FULL, locale)}\n" +
                                     weather.first().time
                                         .format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
                             maxLines = 2

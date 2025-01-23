@@ -19,13 +19,15 @@ import com.example.planyourjourney.feature_planing.domain.util.PrecipitationUnit
 import com.example.planyourjourney.feature_planing.domain.util.TemperatureUnits
 import com.example.planyourjourney.feature_planing.domain.util.WindSpeedUnits
 import com.example.planyourjourney.feature_planing.domain.util.Language
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
 fun SettingsSection(
     modifier: Modifier = Modifier,
     settings: Settings = Settings(),
     onSettingsChanged: (Settings) -> Unit,
-    onSaveSettings: () -> Unit
+    //onSaveSettings: () -> Unit,
+    //navigator: DestinationsNavigator?,
 ) {
     Column(modifier = modifier) {
         Text(
@@ -179,8 +181,10 @@ fun SettingsSection(
             }
         }
         // TODO: style the button and test
-        Button(onClick = { onSaveSettings() }) {
-            Text(text = stringResource(id = R.string.save_settings))
-        }
+//        Row {
+//            Button(onClick = { onSaveSettings() }) {
+//                Text(text = stringResource(id = R.string.save_settings))
+//            }
+//        }
     }
 }

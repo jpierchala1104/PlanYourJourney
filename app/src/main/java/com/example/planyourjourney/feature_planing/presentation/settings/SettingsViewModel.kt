@@ -27,21 +27,22 @@ class SettingsViewModel @Inject constructor(
 
     fun onEvent(event: SettingsEvent) {
         when (event) {
-            is SettingsEvent.SaveSettings -> {
-                viewModelScope.launch {
-                    settingsUseCases.saveSettingsUseCase.invoke(_state.value.settings)
-                    settingsUseCases.updateUnitsUseCase.invoke(_state.value.settings, oldWeatherUnits)
-                    val appLocale = LocaleListCompat
-                        .forLanguageTags(_state.value.settings.language.localeCode)
-                    AppCompatDelegate.setApplicationLocales(appLocale)
-                }
-            }
+//            is SettingsEvent.SaveSettings -> {
+//                viewModelScope.launch {
+//
+//                }
+//            }
 
             is SettingsEvent.SettingsChanged -> {
                 viewModelScope.launch {
                     _state.value = state.value.copy(
                         settings = event.settings
                     )
+                    settingsUseCases.saveSettingsUseCase.invoke(_state.value.settings)
+                    settingsUseCases.updateUnitsUseCase.invoke(_state.value.settings, oldWeatherUnits)
+                    val appLocale = LocaleListCompat
+                        .forLanguageTags(_state.value.settings.language.localeCode)
+                    AppCompatDelegate.setApplicationLocales(appLocale)
                 }
             }
         }

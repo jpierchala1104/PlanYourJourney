@@ -171,8 +171,6 @@ class WeatherRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateUnits(settings: Settings, oldUnits: WeatherUnits) {
-        if (oldUnits == settings.weatherUnits)
-            return
         val weatherEntities = dao.getHourlyWeathers()
         var convertedWeatherEntities = weatherEntities
         if (oldUnits.temperatureUnits == settings.weatherUnits.temperatureUnits) {

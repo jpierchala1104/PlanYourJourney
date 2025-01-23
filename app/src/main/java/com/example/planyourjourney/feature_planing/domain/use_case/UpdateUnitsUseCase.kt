@@ -11,6 +11,8 @@ class UpdateUnitsUseCase(
     private val repository: WeatherRepository
 ) {
     suspend operator fun invoke(settings: Settings, oldUnits: WeatherUnits) {
+        if (oldUnits == settings.weatherUnits)
+            return
         return repository.updateUnits(settings, oldUnits)
     }
 }

@@ -1,11 +1,16 @@
 package com.example.planyourjourney.feature_planing.presentation.settings
 
 import android.content.res.Configuration
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -44,18 +49,16 @@ fun SettingsScreen(
                 modifier = Modifier.wrapContentHeight(),
                 title = stringResource(R.string.app_name)
             ) {
-//                Icon(
-//                    imageVector = Icons.AutoMirrored.Filled.List,
-//                    contentDescription = null,
-//                    tint = MaterialTheme.colorScheme.onPrimary,
-//                    modifier = Modifier
-//                        .size(32.dp)
-//                        .clickable {
-//                            navigator.navigate(
-//                                WeatherScreenDestination()
-//                            )
-//                        }
-//                )
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clickable {
+                            navigator.popBackStack()
+                        }
+                )
 //                Spacer(modifier = Modifier.size(8.dp))
 //                Icon(
 //                    imageVector = Icons.Filled.Add,
@@ -95,9 +98,10 @@ fun SettingsScreen(
                 onSettingsChanged = {
                     viewModel.onEvent(SettingsEvent.SettingsChanged(it))
                 },
-                onSaveSettings = {
-                    viewModel.onEvent(SettingsEvent.SaveSettings)
-                }
+//                onSaveSettings = {
+//                    viewModel.onEvent(SettingsEvent.SaveSettings)
+//                },
+//                navigator = navigator
             )
         }
     }
@@ -122,18 +126,16 @@ fun SettingsPreview() {
                     modifier = Modifier.wrapContentHeight(),
                     title = stringResource(R.string.app_name)
                 ) {
-//                Icon(
-//                    imageVector = Icons.AutoMirrored.Filled.List,
-//                    contentDescription = null,
-//                    tint = MaterialTheme.colorScheme.onPrimary,
-//                    modifier = Modifier
-//                        .size(32.dp)
-//                        .clickable {
-//                            navigator.navigate(
-//                                WeatherScreenDestination()
-//                            )
-//                        }
-//                )
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clickable {
+
+                        }
+                )
 //                Spacer(modifier = Modifier.size(8.dp))
 //                Icon(
 //                    imageVector = Icons.Filled.Add,
@@ -163,9 +165,10 @@ fun SettingsPreview() {
                     onSettingsChanged = {
 
                     },
-                    onSaveSettings = {
-
-                    }
+//                    onSaveSettings = {
+//
+//                    },
+//                    navigator = null
                 )
             }
         }

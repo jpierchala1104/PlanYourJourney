@@ -277,6 +277,7 @@ fun PlaningScreen(
                 isLocationLoaded = state.isLocationLoaded,
                 locationList = state.locationList,
                 onDeleteLocation = {
+                    viewModel.onEvent(PlaningEvent.DeleteLocation(it))
                     scope.launch {
                         val result = snackbarHostState.showSnackbar(
                             message = context.getString(R.string.location_deleted),
@@ -350,7 +351,7 @@ fun PlaningScreen(
 }
 
 @Composable
-@Preview
+@Preview(locale = "pl")
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun PlaningScreenPreview() {
     val state = PlanningState(

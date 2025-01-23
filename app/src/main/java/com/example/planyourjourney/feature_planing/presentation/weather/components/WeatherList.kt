@@ -92,7 +92,7 @@ fun WeatherList(
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Column {
+                                Column (modifier = Modifier.fillMaxWidth(0.8f)){
                                     Text(
                                         text = location.location.locationName.orEmpty(),
                                         style = MaterialTheme.typography.headlineMedium,
@@ -102,11 +102,15 @@ fun WeatherList(
                                     )
                                     Text(
                                         text = stringResource(id = R.string.latitude_colon) +
-                                                location.location.coordinates.latitude.toString()
+                                                location.location.coordinates.latitude.toString(),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
                                     )
                                     Text(
                                         text = stringResource(id = R.string.longitude_colon) +
-                                                location.location.coordinates.longitude.toString()
+                                                location.location.coordinates.longitude.toString(),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
                                     )
                                 }
                                 Icon(

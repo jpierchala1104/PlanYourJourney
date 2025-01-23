@@ -19,6 +19,7 @@ import com.example.planyourjourney.feature_planing.domain.util.Resource
 import com.example.planyourjourney.feature_planing.presentation.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -215,6 +216,7 @@ class PlaningViewModel @Inject constructor(
 
     private fun getLocations() {
         viewModelScope.launch {
+            delay(1000)
             planingUseCases.getLocationsUseCase.invoke()
                 .collect { result ->
                     when (result) {

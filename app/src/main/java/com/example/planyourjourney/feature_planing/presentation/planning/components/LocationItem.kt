@@ -82,12 +82,14 @@ fun LocationItem(
                 text = stringResource(id = R.string.latitude_colon) + location.coordinates.latitude.toString(),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
+                overflow = TextOverflow.Ellipsis,
                 maxLines = 1
             )
             Text(
                 text = stringResource(id = R.string.longitude_colon) + location.coordinates.longitude.toString(),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimary,
+                overflow = TextOverflow.Ellipsis,
                 maxLines = 1
             )
         }

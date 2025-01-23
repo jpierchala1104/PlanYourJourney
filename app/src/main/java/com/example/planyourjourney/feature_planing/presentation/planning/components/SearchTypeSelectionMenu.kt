@@ -49,11 +49,13 @@ fun SearchTypeSelectionMenu(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
+                modifier = Modifier.weight(5f),
                 text = stringResource(id = R.string.search_input_type),
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
             IconButton(
+                modifier = Modifier.weight(1f),
                 onClick = {
                     onToggleSearchInputTypeSelection()
                 }

@@ -207,37 +207,38 @@ fun WeatherCard(
                     }
                 }
             }
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
-            ) {
-                items(count = daysWithWeather.size) { i ->
-                    val weather = daysWithWeather[i]
-                    Button(
-                        modifier = Modifier.wrapContentHeight(),
-                        colors = ButtonDefaults
-                            .buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                contentColor = MaterialTheme.colorScheme.onPrimary
-                            ),
-                        shape = RoundedCornerShape(50),
-                        onClick = {
-                            scope.launch {
-                                pagerState.animateScrollToPage(daysWithWeather.indexOf(weather))
-                            }
-                        }
-                    ) {
-                        Text(
-                            text = "${weather.first().time.dayOfWeek.getDisplayName(TextStyle.FULL, locale)}\n" +
-                                    weather.first().time
-                                        .format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
-                            maxLines = 2
-                        )
-                    }
-                    Spacer(modifier = Modifier.size(8.dp))
-                }
-            }
+            //this is the horizontal scroll list with days
+//            LazyRow(
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
+//            ) {
+//                items(count = daysWithWeather.size) { i ->
+//                    val weather = daysWithWeather[i]
+//                    Button(
+//                        modifier = Modifier.wrapContentHeight(),
+//                        colors = ButtonDefaults
+//                            .buttonColors(
+//                                containerColor = MaterialTheme.colorScheme.primary,
+//                                contentColor = MaterialTheme.colorScheme.onPrimary
+//                            ),
+//                        shape = RoundedCornerShape(50),
+//                        onClick = {
+//                            scope.launch {
+//                                pagerState.animateScrollToPage(daysWithWeather.indexOf(weather))
+//                            }
+//                        }
+//                    ) {
+//                        Text(
+//                            text = "${weather.first().time.dayOfWeek.getDisplayName(TextStyle.FULL, locale)}\n" +
+//                                    weather.first().time
+//                                        .format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
+//                            maxLines = 2
+//                        )
+//                    }
+//                }
+//            }
+            Spacer(modifier = Modifier.size(8.dp))
         }
     }
 }

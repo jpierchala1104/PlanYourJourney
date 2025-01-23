@@ -46,6 +46,7 @@ import com.example.planyourjourney.feature_planing.domain.model.HourlyWeather
 import com.example.planyourjourney.feature_planing.domain.model.Location
 import com.example.planyourjourney.feature_planing.domain.model.LocationWeather
 import com.example.planyourjourney.feature_planing.domain.model.Settings
+import com.example.planyourjourney.feature_planing.domain.util.Language
 import com.example.planyourjourney.feature_planing.presentation.destinations.PlaningScreenDestination
 import com.example.planyourjourney.feature_planing.presentation.destinations.SettingsScreenDestination
 import com.example.planyourjourney.feature_planing.presentation.destinations.WeatherDetailsScreenDestination
@@ -240,8 +241,8 @@ fun WeatherScreen(
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(locale = "pl")
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "pl")
 fun WeatherScreenPreview() {
     val today = LocalDateTime.now()
     var listOfHourlyWeatherData = listOf<HourlyWeather>()
@@ -258,10 +259,10 @@ fun WeatherScreenPreview() {
                     ),
                     temperature2m = 15.0 + Random.nextDouble(-5.0, 5.0),
                     relativeHumidity2m = 5 + Random.nextInt(-2, 2),
-                    precipitationProbability = 50 + Random.nextInt(-49, 49),
+                    precipitationProbability = 0 + Random.nextInt(0, 100),
                     rain = 10.0 + Random.nextDouble(-9.0, 9.0),
                     snowfall = 0.0,
-                    cloudCover = 50 + Random.nextInt(-49, 49),
+                    cloudCover = 0 + Random.nextInt(0, 100),
                     windSpeed10m = 7.0 + Random.nextDouble(-6.0, 13.0)
                 )
             )
@@ -272,7 +273,7 @@ fun WeatherScreenPreview() {
             LocationWeather(
                 location = Location(
                     locationName = "Warszawa",
-                    coordinates = Coordinates(0.0, 0.0),
+                    coordinates = Coordinates(45.1234154121, 53.51245),
                     locationId = null
                 ),
                 hourlyWeatherList = listOfHourlyWeatherData
@@ -287,7 +288,9 @@ fun WeatherScreenPreview() {
             )
         ),
         isLoading = false,
-        settings = Settings(),
+        settings = Settings(
+            language = Language.Polski
+        ),
         isWeatherLoaded = true
     )
     val scope = rememberCoroutineScope()

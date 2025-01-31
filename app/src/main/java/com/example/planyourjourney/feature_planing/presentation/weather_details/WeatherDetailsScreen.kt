@@ -200,8 +200,8 @@ fun WeatherDetailsPreview() {
         weatherUnits = WeatherUnits(),
         weatherVariables = WeatherVariables(
             isTemperature2mChecked = true,
-            isPrecipitationProbabilityChecked = true,
-            isRainChecked = false,
+            isPrecipitationProbabilityChecked = false,
+            isRainChecked = true,
             isSnowfallChecked = false,
             isCloudCoverChecked = false,
             isRelativeHumidity2mChecked = false,

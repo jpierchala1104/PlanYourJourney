@@ -25,6 +25,7 @@ import com.patrykandpatrick.vico.compose.chart.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.chart.layer.rememberLineSpec
 import com.patrykandpatrick.vico.compose.chart.layout.fullWidth
 import com.patrykandpatrick.vico.compose.chart.rememberCartesianChart
+import com.patrykandpatrick.vico.compose.component.rememberLineComponent
 import com.patrykandpatrick.vico.compose.component.shape.shader.color
 import com.patrykandpatrick.vico.core.axis.AxisItemPlacer
 import com.patrykandpatrick.vico.core.axis.AxisPosition
@@ -59,7 +60,12 @@ fun DefaultChart(
         CartesianChartHost(
             modifier = Modifier.fillMaxHeight(),
             chart = rememberCartesianChart(
-                rememberColumnCartesianLayer(),
+                rememberColumnCartesianLayer(
+                    spacing = 4.dp,
+                    columns = listOf(rememberLineComponent(
+                        dynamicShader = DynamicShaders.color(MaterialTheme.colorScheme.primary))
+                    )
+                ),
                 rememberLineCartesianLayer(
                     spacing = 8.dp,
                     lines = listOf(rememberLineSpec(DynamicShaders.color(MaterialTheme.colorScheme.primary)))

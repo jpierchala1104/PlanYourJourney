@@ -39,6 +39,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
+import java.net.UnknownHostException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -83,14 +84,16 @@ class WeatherRepositoryImpl @Inject constructor(
                     precipitationUnit = weatherUnits.precipitationUnits.queryUnits,
                     windSpeedUnit = weatherUnits.windSpeedUnits.queryUnits
                 ).toLocationWeather()
-            } catch (e: IOException) {
-                e.printStackTrace()
-                emit(APIFetchResult.Error(APIErrorResult.IOExceptionError))
-                null
             } catch (e: HttpException) {
                 e.printStackTrace()
                 emit(APIFetchResult.Error(APIErrorResult.HttpExceptionError))
-                null
+                emit(APIFetchResult.Loading(false))
+                return@flow
+            } catch (e: IOException) {
+                e.printStackTrace()
+                emit(APIFetchResult.Error(APIErrorResult.IOExceptionError))
+                emit(APIFetchResult.Loading(false))
+                return@flow
             }
             val locationId = dao.getLocationId(
                 latitude = location.coordinates.latitude,
@@ -99,8 +102,7 @@ class WeatherRepositoryImpl @Inject constructor(
             // TODO: if its goes to catch will this still try to insert? - test and fix that
             // TODO: clear and insert or try to Update?
             dao.clearHourlyWeathersAtLocation(locationId!!)
-            dao.insertHourlyWeathers(remoteLocationWeather!!.hourlyWeatherList.map { hourlyWeather ->
-                // TODO: If the id isn't saved the problem is here!!!
+            dao.insertHourlyWeathers(remoteLocationWeather.hourlyWeatherList.map { hourlyWeather ->
                 hourlyWeather.toHourlyWeatherEntity().copy(locationWeatherId = locationId)
             })
             emit(APIFetchResult.Success())
@@ -176,27 +178,27 @@ class WeatherRepositoryImpl @Inject constructor(
         if (oldUnits.temperatureUnits == settings.weatherUnits.temperatureUnits) {
             return
         } else {
-            if(oldUnits.temperatureUnits == TemperatureUnits.CELSIUS){
+            if (oldUnits.temperatureUnits == TemperatureUnits.CELSIUS) {
                 convertedWeatherEntities = convertedWeatherEntities.map {
                     it.copy(temperature2m = it.temperature2m.celsiusToFahrenheit())
                 }
-            } else if (oldUnits.temperatureUnits == TemperatureUnits.FAHRENHEIT){
+            } else if (oldUnits.temperatureUnits == TemperatureUnits.FAHRENHEIT) {
                 convertedWeatherEntities = convertedWeatherEntities.map {
                     it.copy(temperature2m = it.temperature2m.fahrenheitToCelsius())
                 }
             }
         }
-        if (oldUnits.precipitationUnits == settings.weatherUnits.precipitationUnits){
+        if (oldUnits.precipitationUnits == settings.weatherUnits.precipitationUnits) {
             return
         } else {
-            if(oldUnits.precipitationUnits == PrecipitationUnits.MILLIMETERS){
+            if (oldUnits.precipitationUnits == PrecipitationUnits.MILLIMETERS) {
                 convertedWeatherEntities = convertedWeatherEntities.map {
                     it.copy(
                         rain = it.rain.millimetersToInches(),
                         snowfall = it.snowfall.millimetersToInches()
                     )
                 }
-            } else if (oldUnits.precipitationUnits == PrecipitationUnits.INCH){
+            } else if (oldUnits.precipitationUnits == PrecipitationUnits.INCH) {
                 convertedWeatherEntities = convertedWeatherEntities.map {
                     it.copy(
                         rain = it.rain.inchesToMillimeters(),
@@ -205,7 +207,7 @@ class WeatherRepositoryImpl @Inject constructor(
                 }
             }
         }
-        if (oldUnits.windSpeedUnits == settings.weatherUnits.windSpeedUnits){
+        if (oldUnits.windSpeedUnits == settings.weatherUnits.windSpeedUnits) {
             return
         } else {
             when (oldUnits.windSpeedUnits) {
@@ -218,6 +220,7 @@ class WeatherRepositoryImpl @Inject constructor(
                                 )
                             }
                         }
+
                         WindSpeedUnits.MILES_PER_HOUR -> {
                             convertedWeatherEntities = convertedWeatherEntities.map {
                                 it.copy(
@@ -225,6 +228,7 @@ class WeatherRepositoryImpl @Inject constructor(
                                 )
                             }
                         }
+
                         WindSpeedUnits.KNOTS -> {
                             convertedWeatherEntities = convertedWeatherEntities.map {
                                 it.copy(
@@ -232,11 +236,13 @@ class WeatherRepositoryImpl @Inject constructor(
                                 )
                             }
                         }
+
                         else -> {
                             // Do Nothing
                         }
                     }
                 }
+
                 WindSpeedUnits.METERS_PER_SECOND -> {
                     when (settings.weatherUnits.windSpeedUnits) {
                         WindSpeedUnits.KILOMETERS_PER_HOUR -> {
@@ -246,6 +252,7 @@ class WeatherRepositoryImpl @Inject constructor(
                                 )
                             }
                         }
+
                         WindSpeedUnits.MILES_PER_HOUR -> {
                             convertedWeatherEntities = convertedWeatherEntities.map {
                                 it.copy(
@@ -253,6 +260,7 @@ class WeatherRepositoryImpl @Inject constructor(
                                 )
                             }
                         }
+
                         WindSpeedUnits.KNOTS -> {
                             convertedWeatherEntities = convertedWeatherEntities.map {
                                 it.copy(
@@ -260,11 +268,13 @@ class WeatherRepositoryImpl @Inject constructor(
                                 )
                             }
                         }
+
                         else -> {
                             // Do Nothing
                         }
                     }
                 }
+
                 WindSpeedUnits.MILES_PER_HOUR -> {
                     when (settings.weatherUnits.windSpeedUnits) {
                         WindSpeedUnits.KILOMETERS_PER_HOUR -> {
@@ -274,6 +284,7 @@ class WeatherRepositoryImpl @Inject constructor(
                                 )
                             }
                         }
+
                         WindSpeedUnits.METERS_PER_SECOND -> {
                             convertedWeatherEntities = convertedWeatherEntities.map {
                                 it.copy(
@@ -281,6 +292,7 @@ class WeatherRepositoryImpl @Inject constructor(
                                 )
                             }
                         }
+
                         WindSpeedUnits.KNOTS -> {
                             convertedWeatherEntities = convertedWeatherEntities.map {
                                 it.copy(
@@ -288,11 +300,13 @@ class WeatherRepositoryImpl @Inject constructor(
                                 )
                             }
                         }
+
                         else -> {
                             // Do Nothing
                         }
                     }
                 }
+
                 WindSpeedUnits.KNOTS -> {
                     when (settings.weatherUnits.windSpeedUnits) {
                         WindSpeedUnits.KILOMETERS_PER_HOUR -> {
@@ -302,6 +316,7 @@ class WeatherRepositoryImpl @Inject constructor(
                                 )
                             }
                         }
+
                         WindSpeedUnits.METERS_PER_SECOND -> {
                             convertedWeatherEntities = convertedWeatherEntities.map {
                                 it.copy(
@@ -309,6 +324,7 @@ class WeatherRepositoryImpl @Inject constructor(
                                 )
                             }
                         }
+
                         WindSpeedUnits.MILES_PER_HOUR -> {
                             convertedWeatherEntities = convertedWeatherEntities.map {
                                 it.copy(
@@ -316,6 +332,7 @@ class WeatherRepositoryImpl @Inject constructor(
                                 )
                             }
                         }
+
                         else -> {
                             // Do Nothing
                         }

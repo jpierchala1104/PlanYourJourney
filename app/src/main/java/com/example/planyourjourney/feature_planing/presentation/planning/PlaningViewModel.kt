@@ -1,7 +1,10 @@
 package com.example.planyourjourney.feature_planing.presentation.planning
 
 import android.app.Application
+import android.content.Context
 import android.location.Geocoder
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.util.Log
 import androidx.compose.runtime.State
@@ -14,8 +17,8 @@ import com.example.planyourjourney.feature_planing.domain.model.Location
 import com.example.planyourjourney.feature_planing.domain.use_case.PlaningUseCases
 import com.example.planyourjourney.feature_planing.domain.util.APIErrorResult
 import com.example.planyourjourney.feature_planing.domain.util.APIFetchResult
-import com.example.planyourjourney.feature_planing.presentation.util.SearchInputType
 import com.example.planyourjourney.feature_planing.domain.util.Resource
+import com.example.planyourjourney.feature_planing.presentation.util.SearchInputType
 import com.example.planyourjourney.feature_planing.presentation.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -23,6 +26,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 
 @HiltViewModel
 class PlaningViewModel @Inject constructor(
@@ -178,28 +182,55 @@ class PlaningViewModel @Inject constructor(
         }
     }
 
+    private fun isOnline(): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if (capabilities != null) {
+            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+                return true
+            }
+        }
+        return false
+    }
+
     private fun fetchFromAPI(location: Location) {
         viewModelScope.launch {
+            if (!isOnline()) {
+                uiEventChannel.send(UiEvent.LoadingError(R.string.connection_error))
+                return@launch
+            }
             planingUseCases.fetchWeatherAtLocationUseCase.invoke(
                 location,
                 _state.value.settings.weatherUnits
             ).collect { result ->
                 when (result) {
                     is APIFetchResult.Success -> {
-                    // TODO: can revisit this problem
+                        // TODO: can revisit this problem
                     }
 
                     is APIFetchResult.Error -> {
-                        when(result.apiErrorResult){
+                        when (result.apiErrorResult) {
                             APIErrorResult.DataLoadError -> {
                                 uiEventChannel.send(UiEvent.LoadingError(R.string.api_request_error_else))
                             }
+
                             APIErrorResult.HttpExceptionError -> {
                                 uiEventChannel.send(UiEvent.LoadingError(R.string.api_request_error_http))
                             }
+
                             APIErrorResult.IOExceptionError -> {
                                 uiEventChannel.send(UiEvent.LoadingError(R.string.api_request_error_io))
                             }
+
                             else -> {
                                 //Would only be if its null, there is no chance of null here
                             }
@@ -207,8 +238,8 @@ class PlaningViewModel @Inject constructor(
                     }
 
                     is APIFetchResult.Loading -> {
-                    // TODO:
-                        }
+                        // TODO:
+                    }
                 }
             }
         }

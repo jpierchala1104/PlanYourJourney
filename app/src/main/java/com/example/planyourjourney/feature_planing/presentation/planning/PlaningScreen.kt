@@ -154,11 +154,18 @@ fun PlaningScreen(
                             ).show()
                         }
 
+                        is UiEvent.ConnectionError -> {
+                            Toast.makeText(
+                                context,
+                                context.getString(event.messageResourceId),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
                         UiEvent.LocationsLoaded -> {}
                     }
                 }
             }
-            // TODO: check if this looks the same
             SearchTypeSelectionMenu(
                 onToggleSearchInputTypeSelection = {
                     viewModel.onEvent(PlaningEvent.ToggleSearchInputTypeSelection)
@@ -169,59 +176,12 @@ fun PlaningScreen(
                     viewModel.onEvent(PlaningEvent.SearchInputTypeChanged(it))
                 }
             )
-//            Row(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(8.dp, 0.dp, 0.dp, 0.dp)
-//                    .background(MaterialTheme.colorScheme.background),
-//                horizontalArrangement = Arrangement.SpaceBetween,
-//                verticalAlignment = Alignment.CenterVertically
-//            ) {
-//                Text(
-//                    text = stringResource(id = R.string.search_input_type),
-//                    style = MaterialTheme.typography.headlineMedium,
-//                    color = MaterialTheme.colorScheme.onBackground
-//                )
-//                IconButton(
-//                    onClick = {
-//                        viewModel.onEvent(PlaningEvent.ToggleSearchInputTypeSelection)
-//                    }
-//                ) {
-//                    if (state.isSearchInputTypeSelectionSectionVisible)
-//                    {
-//                        Icon(
-//                            imageVector = Icons.Default.KeyboardArrowUp,
-//                            contentDescription = null,
-//                            tint = MaterialTheme.colorScheme.onBackground
-//                        )
-//                    }
-//                    else {
-//                        Icon(
-//                            imageVector = Icons.Default.KeyboardArrowDown,
-//                            contentDescription = null,
-//                            tint = MaterialTheme.colorScheme.onBackground
-//                        )
-//                    }
-//                }
-//            }
-//            AnimatedVisibility(
-//                visible = state.isSearchInputTypeSelectionSectionVisible,
-//                enter = fadeIn() + slideInVertically(),
-//                exit = fadeOut() + slideOutVertically()
-//            ) {
-//                SearchTypeSelectionSection(
-//                    searchInputType = state.searchInputType,
-//                    onSearchInputTypeChange = {
-//                        viewModel.onEvent(PlaningEvent.SearchInputTypeChanged(it))
-//                    }
-//                )
-//            }
+
             HorizontalDivider(
                 Modifier
                     .fillMaxWidth()
                     .size(8.dp)
             )
-            // TODO: check if this looks the same
             AddLocationSection(
                 modifier = Modifier.fillMaxWidth(),
                 searchInputType = state.searchInputType,
@@ -238,40 +198,13 @@ fun PlaningScreen(
                 },
                 decimalFormatter = decimalFormatter
             )
-//            Column(
-//                Modifier.padding(8.dp)
-//            ) {
-//                when (state.searchInputType) {
-//                    SearchInputType.LatitudeAndLongitude -> CoordinatesInputSection(
-//                        coordinates = weatherCoordinates,
-//                        onValueChange = {
-//                            viewModel.onEvent(PlaningEvent.CoordinatesChanged(it))
-//                        },
-//                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-//                        decimalFormatter = decimalFormatter
-//                    )
-//
-//                    SearchInputType.LocationName -> LocationNameInputSection(
-//                        locationName = weatherLocationName,
-//                        onValueChange = {
-//                            viewModel.onEvent(PlaningEvent.LocationNameChanged(it))
-//                        }
-//                    )
-//                    //SearchInputType.Map -> Map(viewModel, Modifier.fillMaxSize())
-//                }
-//
-//                Button(onClick = {
-//                    viewModel.onEvent(PlaningEvent.AddLocation)
-//                }) {
-//                    Text(text = stringResource(id = R.string.add_location))
-//                }
-//            }
+
             HorizontalDivider(
                 Modifier
                     .fillMaxWidth()
                     .size(8.dp)
             )
-            // TODO: check if this looks the same
+
             LocationList(
                 isLoading = state.isLoading,
                 isLocationLoaded = state.isLocationLoaded,
@@ -291,61 +224,6 @@ fun PlaningScreen(
                 },
                 navigator = navigator
             )
-//            Column(
-//                modifier = Modifier.fillMaxWidth(),
-//                horizontalAlignment = Alignment.CenterHorizontally
-//            ) {
-//                if (state.isLoading) {
-//                    CircularProgressIndicator(
-//                        color = MaterialTheme.colorScheme.primary,
-//                        modifier = Modifier
-//                            .wrapContentSize()
-//                            .size(56.dp),
-//                        strokeWidth = 6.dp,
-//                        trackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
-//                    )
-//                } else {
-//                    if (!state.isLocationLoaded || state.locationList.isEmpty()) {
-//                        Text(
-//                            text = stringResource(id = R.string.locations_empty)
-//                        )
-//                    } else {
-//                        LazyColumn(
-//                            modifier = Modifier.fillMaxSize()
-//                        ) {
-//                            items(count = state.locationList.size) { i ->
-//                                val location = state.locationList[i]
-//                                LocationItem(
-//                                    location = location,
-//                                    modifier = Modifier
-//                                        .fillMaxWidth()
-//                                        .clickable {
-//                                            navigator.navigate(
-//                                                WeatherDetailsScreenDestination(location.locationId!!)
-//                                            )
-//                                        },
-//                                    //.padding(16.dp)
-//                                    onDeleteClick = {
-//                                        // TODO: Maybe change this to confirm delete scaffoldState
-//                                        //  with no restore option
-//                                        viewModel.onEvent(PlaningEvent.DeleteLocation(location))
-//                                        scope.launch {
-//                                            val result = snackbarHostState.showSnackbar(
-//                                                message = context.getString(R.string.location_deleted),
-//                                                actionLabel = context.getString(R.string.undo),
-//                                                duration = SnackbarDuration.Long
-//                                            )
-//                                            if (result == SnackbarResult.ActionPerformed) {
-//                                                viewModel.onEvent(PlaningEvent.RestoreLocation)
-//                                            }
-//                                        }
-//                                    }
-//                                )
-//                            }
-//                        }
-//                    }
-//                }
-//            }
         }
     }
 }

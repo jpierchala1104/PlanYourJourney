@@ -141,6 +141,14 @@ fun WeatherScreen(
                             ).show()
                         }
 
+                        is UiEvent.ConnectionError -> {
+                            Toast.makeText(
+                                context,
+                                context.getString(event.messageResourceId),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
                         UiEvent.LocationsLoaded -> {}
                     }
                 }
@@ -246,8 +254,8 @@ fun WeatherScreen(
 fun WeatherScreenPreview() {
     val today = LocalDateTime.now()
     var listOfHourlyWeatherData = listOf<HourlyWeather>()
-    for(i: Int in 1 .. 7){
-        for (j: Int in 0 until 24){
+    for (i: Int in 1..7) {
+        for (j: Int in 0 until 24) {
             listOfHourlyWeatherData = listOfHourlyWeatherData.plus(
                 HourlyWeather(
                     time = LocalDateTime.of(

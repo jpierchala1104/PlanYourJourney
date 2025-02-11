@@ -42,4 +42,6 @@
     <string name="dao_request_error">Nie można załadować danych</string>
     <string name="connection_error">Brak Internetu</string>
     <string name="locations">Lokalizacje</string>
+    <string name="precipitation">Opady</string>
+    <string name="add_location_label">Dodaj nazwe lokalizacji</string>
 </resources>

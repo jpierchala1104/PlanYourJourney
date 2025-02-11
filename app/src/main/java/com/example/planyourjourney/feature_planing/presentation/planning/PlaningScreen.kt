@@ -50,7 +50,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
 
 @Composable
-@Destination(start = true)
+@Destination
 fun PlaningScreen(
     navigator: DestinationsNavigator,
     viewModel: PlaningViewModel = hiltViewModel()
@@ -141,22 +141,24 @@ fun PlaningScreen(
                     }
                 }
             }
-            SearchTypeSelectionMenu(
-                onToggleSearchInputTypeSelection = {
-                    viewModel.onEvent(PlaningEvent.ToggleSearchInputTypeSelection)
-                },
-                isSearchInputTypeSelectionSectionVisible = state.isSearchInputTypeSelectionSectionVisible,
-                searchInputType = state.searchInputType,
-                onSearchInputTypeChange = {
-                    viewModel.onEvent(PlaningEvent.SearchInputTypeChanged(it))
-                }
-            )
+            // TODO: doesn't look great, for now its commented
+//            SearchTypeSelectionMenu(
+//                onToggleSearchInputTypeSelection = {
+//                    viewModel.onEvent(PlaningEvent.ToggleSearchInputTypeSelection)
+//                },
+//                isSearchInputTypeSelectionSectionVisible = state.isSearchInputTypeSelectionSectionVisible,
+//                searchInputType = state.searchInputType,
+//                onSearchInputTypeChange = {
+//                    viewModel.onEvent(PlaningEvent.SearchInputTypeChanged(it))
+//                }
+//            )
+//
+//            HorizontalDivider(
+//                Modifier
+//                    .fillMaxWidth()
+//                    .size(8.dp)
+//            )
 
-            HorizontalDivider(
-                Modifier
-                    .fillMaxWidth()
-                    .size(8.dp)
-            )
             AddLocationSection(
                 modifier = Modifier.fillMaxWidth(),
                 searchInputType = state.searchInputType,
@@ -269,21 +271,21 @@ fun PlaningScreenPreview() {
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
-                SearchTypeSelectionMenu(
-                    onToggleSearchInputTypeSelection = {
-
-                    },
-                    isSearchInputTypeSelectionSectionVisible = state.isSearchInputTypeSelectionSectionVisible,
-                    searchInputType = state.searchInputType,
-                    onSearchInputTypeChange = {
-
-                    }
-                )
-                HorizontalDivider(
-                    Modifier
-                        .fillMaxWidth()
-                        .size(8.dp)
-                )
+//                SearchTypeSelectionMenu(
+//                    onToggleSearchInputTypeSelection = {
+//
+//                    },
+//                    isSearchInputTypeSelectionSectionVisible = state.isSearchInputTypeSelectionSectionVisible,
+//                    searchInputType = state.searchInputType,
+//                    onSearchInputTypeChange = {
+//
+//                    }
+//                )
+//                HorizontalDivider(
+//                    Modifier
+//                        .fillMaxWidth()
+//                        .size(8.dp)
+//                )
                 AddLocationSection(
                     modifier = Modifier.fillMaxWidth(),
                     searchInputType = state.searchInputType,

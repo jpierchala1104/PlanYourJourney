@@ -194,6 +194,7 @@ class WeatherRepositoryImpl @Inject constructor(
             if (oldUnits.precipitationUnits == PrecipitationUnits.MILLIMETERS) {
                 convertedWeatherEntities = convertedWeatherEntities.map {
                     it.copy(
+                        precipitation = it.precipitation.millimetersToInches(),
                         rain = it.rain.millimetersToInches(),
                         snowfall = it.snowfall.millimetersToInches()
                     )
@@ -201,6 +202,7 @@ class WeatherRepositoryImpl @Inject constructor(
             } else if (oldUnits.precipitationUnits == PrecipitationUnits.INCH) {
                 convertedWeatherEntities = convertedWeatherEntities.map {
                     it.copy(
+                        precipitation = it.precipitation.inchesToMillimeters(),
                         rain = it.rain.inchesToMillimeters(),
                         snowfall = it.snowfall.inchesToMillimeters()
                     )

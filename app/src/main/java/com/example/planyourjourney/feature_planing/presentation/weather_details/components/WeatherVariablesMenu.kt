@@ -77,5 +77,4 @@ fun WeatherVariablesMenu(
             }
         )
     }
-
 }

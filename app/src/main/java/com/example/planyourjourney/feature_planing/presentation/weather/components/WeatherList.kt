@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -68,7 +69,21 @@ fun WeatherList(
             )
         } else {
             if (locationWeatherList.isEmpty()) {
-                Text(text = stringResource(R.string.locations_empty))
+                Text(
+                    modifier = Modifier.padding(8.dp),
+                    text = stringResource(R.string.locations_empty),
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Button(
+                    modifier = Modifier.padding(8.dp),
+                    onClick = {
+                    navigator!!.navigate(
+                        com.example.planyourjourney.feature_planing.presentation.destinations.PlaningScreenDestination()
+                    )
+                }) {
+                    Text(text = stringResource(id = R.string.add_location))
+                }
             } else {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(count = locationWeatherList.size) { i ->

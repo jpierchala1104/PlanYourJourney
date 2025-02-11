@@ -9,7 +9,7 @@ interface OpenMeteoAPI {
     suspend fun getWeather(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
-        @Query("hourly") parameters: String = "temperature_2m,relative_humidity_2m,precipitation_probability,rain,snowfall,cloud_cover,wind_speed_10m",
+        @Query("hourly") parameters: String = "temperature_2m,relative_humidity_2m,precipitation_probability,precipitation,rain,snowfall,cloud_cover,wind_speed_10m",
         @Query("temperature_unit") temperatureUnit: String = "celsius",
         @Query("precipitation_unit") precipitationUnit: String = "mm",
         @Query("wind_speed_unit") windSpeedUnit: String = "kmh",

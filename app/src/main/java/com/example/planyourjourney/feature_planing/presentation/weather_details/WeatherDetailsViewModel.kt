@@ -136,7 +136,16 @@ class WeatherDetailsViewModel @Inject constructor(
                 )
             )
         }
-        // TODO: Add Precipitation chart here
+        if (_state.value.settings.weatherVariables.isPrecipitationChecked) {
+            chartStateList = chartStateList.plus(
+                chartService.getColumnChartState(
+                    chartTitleResourceId = R.string.precipitation,
+                    chartValuesList = hourlyWeatherList.map { it.precipitation },
+                    localDateTimeList = hourlyWeatherList.map { it.time },
+                    unit = _state.value.settings.weatherUnits.precipitationUnits.displayUnits
+                )
+            )
+        }
         if (_state.value.settings.weatherVariables.isRainChecked) {
             chartStateList = chartStateList.plus(
                 chartService.getColumnChartState(

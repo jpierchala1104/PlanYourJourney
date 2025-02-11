@@ -8,6 +8,7 @@ data class HourlyWeather(
     val temperature2m: Double,
     val relativeHumidity2m: Int,
     val precipitationProbability: Int,
+    val precipitation: Double,
     val rain: Double,
     val snowfall: Double,
     val cloudCover: Int,

@@ -187,6 +187,7 @@ fun WeatherDetailsPreview() {
         weatherVariables = WeatherVariables(
             isTemperature2mChecked = true,
             isPrecipitationProbabilityChecked = false,
+            isPrecipitationChecked = true,
             isRainChecked = true,
             isSnowfallChecked = false,
             isCloudCoverChecked = false,
@@ -212,6 +213,7 @@ fun WeatherDetailsPreview() {
                     temperature2m = 15.0 + Random.nextDouble(-5.0, 5.0),
                     relativeHumidity2m = 5 + Random.nextInt(-2, 2),
                     precipitationProbability = 50 + Random.nextInt(-49, 49),
+                    precipitation = 10.0 + Random.nextDouble(-9.0, 9.0),
                     rain = 10.0 + Random.nextDouble(-9.0, 9.0),
                     snowfall = 0.0,
                     cloudCover = 50 + Random.nextInt(-49, 49),

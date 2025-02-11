@@ -247,7 +247,6 @@ class PlaningViewModel @Inject constructor(
 
     private fun getLocations() {
         viewModelScope.launch {
-            delay(1000)
             planingUseCases.getLocationsUseCase.invoke()
                 .collect { result ->
                     when (result) {

@@ -42,4 +42,6 @@
     <string name="dao_request_error">Couldn\'t load data</string>
     <string name="connection_error">No internet connection</string>
     <string name="locations">Locations</string>
+    <string name="precipitation">Precipitation</string>
+    <string name="add_location_label">Add location name</string>
 </resources>

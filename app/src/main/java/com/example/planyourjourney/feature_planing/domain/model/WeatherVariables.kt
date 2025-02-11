@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 data class WeatherVariables(
     val isTemperature2mChecked: Boolean = true,
     val isPrecipitationProbabilityChecked: Boolean = true,
+    val isPrecipitationChecked: Boolean = true,
     val isRainChecked: Boolean = false,
     val isSnowfallChecked: Boolean = false,
     val isCloudCoverChecked: Boolean = false,

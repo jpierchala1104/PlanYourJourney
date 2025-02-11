@@ -35,6 +35,13 @@ fun WeatherVariablesSelectionSection(
             })
         Spacer(modifier = Modifier.width(8.dp))
         DefaultCheckbox(
+            text = stringResource(id = R.string.precipitation),
+            checked = weatherVariables.isPrecipitationChecked,
+            onCheck = {
+                onWeatherVariablesChange(weatherVariables.copy(isPrecipitationChecked = it))
+            })
+        Spacer(modifier = Modifier.width(8.dp))
+        DefaultCheckbox(
             text = stringResource(id = R.string.rain),
             checked = weatherVariables.isRainChecked,
             onCheck = {

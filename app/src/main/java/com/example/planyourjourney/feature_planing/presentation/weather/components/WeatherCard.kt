@@ -97,9 +97,9 @@ fun WeatherCard(
                 val timeOfDayWeather = currentDayWeather.filter {
                     it.time.hour == 8 || it.time.hour == 12 || it.time.hour == 16 || it.time.hour == 20
                 }
-                Column (
+                Column(
                     horizontalAlignment = Alignment.CenterHorizontally
-                ){
+                ) {
                     Text(
                         text = if (currentDayWeather.first().time.toLocalDate() == LocalDate.now())
                             stringResource(id = R.string.today)
@@ -110,7 +110,10 @@ fun WeatherCard(
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                     Text(
-                        text = currentDayWeather.first().time.dayOfWeek.getDisplayName(TextStyle.FULL, locale).toString(),
+                        text = currentDayWeather.first().time.dayOfWeek.getDisplayName(
+                            TextStyle.FULL,
+                            locale
+                        ).toString(),
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onPrimary
                     )
@@ -123,17 +126,26 @@ fun WeatherCard(
                             var weatherIconResourceInt = R.drawable.sunny_weather_icon
                             when (weather.cloudCover) {
                                 in 0..25 -> {
-                                    weatherIconResourceInt = R.drawable.sunny_weather_icon
+                                    weatherIconResourceInt = if (weather.time.hour > 17)
+                                        R.drawable.moon_weather_icon
+                                    else
+                                        R.drawable.sunny_weather_icon
                                 }
 
                                 in 26..50 -> {
-                                    weatherIconResourceInt =
+                                    weatherIconResourceInt = if (weather.time.hour > 17)
+                                        R.drawable.moon_cloudy_weather_icon
+                                    else
                                         R.drawable.cloudy_sun_25_50_weather_icon
+
                                 }
 
                                 in 51..75 -> {
-                                    weatherIconResourceInt =
+                                    weatherIconResourceInt = if (weather.time.hour > 17)
+                                        R.drawable.moon_cloudy_weather_icon
+                                    else
                                         R.drawable.cloudy_sun_50_75_weather_icon
+
                                 }
 
                                 in 76..100 -> {
@@ -164,24 +176,24 @@ fun WeatherCard(
 //                                modifier = Modifier.fillMaxSize()
                                 )
                                 Row {
-                                Image(
-                                    modifier = Modifier.size(28.dp),
-                                    painter = painterResource(id = R.drawable.thermometer_icon),
-                                    contentDescription = null,
-                                )
+                                    Image(
+                                        modifier = Modifier.size(28.dp),
+                                        painter = painterResource(id = R.drawable.thermometer_icon),
+                                        contentDescription = null,
+                                    )
                                     Text(
-                                        text = String.format("%.1f",weather.temperature2m) +
+                                        text = String.format("%.1f", weather.temperature2m) +
                                                 weatherUnits.temperatureUnits.displayUnits,
                                         style = MaterialTheme.typography.bodyLarge,
                                         color = MaterialTheme.colorScheme.onPrimary
                                     )
                                 }
                                 Row {
-                                Image(
-                                    modifier = Modifier.size(28.dp),
-                                    painter = painterResource(id = R.drawable.drop_precipitation_rain_icon),
-                                    contentDescription = null,
-                                )
+                                    Image(
+                                        modifier = Modifier.size(28.dp),
+                                        painter = painterResource(id = R.drawable.drop_precipitation_rain_icon),
+                                        contentDescription = null,
+                                    )
                                     Text(
                                         text = "${weather.precipitationProbability}" +
                                                 weatherUnits.percentageUnits.displayUnits,

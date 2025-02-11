@@ -48,7 +48,7 @@ import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-@Destination
+@Destination(start = true)
 fun WeatherScreen(
     navigator: DestinationsNavigator,
     viewModel: WeatherViewModel = hiltViewModel()
@@ -111,9 +111,7 @@ fun WeatherScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .padding(innerPadding)
         ) {
             LaunchedEffect(key1 = context) {
                 viewModel.uiEvents.collect { event ->
@@ -253,6 +251,7 @@ fun WeatherScreenPreview() {
                     temperature2m = 15.0 + Random.nextDouble(-5.0, 5.0),
                     relativeHumidity2m = 5 + Random.nextInt(-2, 2),
                     precipitationProbability = 0 + Random.nextInt(0, 100),
+                    precipitation = 10.0 + Random.nextDouble(-9.0, 9.0),
                     rain = 10.0 + Random.nextDouble(-9.0, 9.0),
                     snowfall = 0.0,
                     cloudCover = 0 + Random.nextInt(0, 100),
@@ -263,22 +262,22 @@ fun WeatherScreenPreview() {
     }
     val state = WeatherState(
         locationWeatherList = listOf(
-            LocationWeather(
-                location = Location(
-                    locationName = "Warszawa",
-                    coordinates = Coordinates(45.1234154121, 53.51245),
-                    locationId = null
-                ),
-                hourlyWeatherList = listOfHourlyWeatherData
-            ),
-            LocationWeather(
-                location = Location(
-                    locationName = "Cieszyn",
-                    coordinates = Coordinates(1.0, 2.0),
-                    locationId = null
-                ),
-                hourlyWeatherList = listOfHourlyWeatherData
-            )
+//            LocationWeather(
+//                location = Location(
+//                    locationName = "Warszawa",
+//                    coordinates = Coordinates(45.1234154121, 53.51245),
+//                    locationId = null
+//                ),
+//                hourlyWeatherList = listOfHourlyWeatherData
+//            ),
+//            LocationWeather(
+//                location = Location(
+//                    locationName = "Cieszyn",
+//                    coordinates = Coordinates(1.0, 2.0),
+//                    locationId = null
+//                ),
+//                hourlyWeatherList = listOfHourlyWeatherData
+//            )
         ),
         isLoading = false,
         settings = Settings(
@@ -322,9 +321,7 @@ fun WeatherScreenPreview() {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                    .padding(innerPadding)
             ) {
                 // TODO: check if its the same
                 WeatherList(

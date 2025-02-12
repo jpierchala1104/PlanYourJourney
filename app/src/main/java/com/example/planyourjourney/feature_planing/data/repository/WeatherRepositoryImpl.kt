@@ -99,8 +99,6 @@ class WeatherRepositoryImpl @Inject constructor(
                 latitude = location.coordinates.latitude,
                 longitude = location.coordinates.longitude
             )
-            // TODO: if its goes to catch will this still try to insert? - test and fix that
-            // TODO: clear and insert or try to Update?
             dao.clearHourlyWeathersAtLocation(locationId!!)
             dao.insertHourlyWeathers(remoteLocationWeather.hourlyWeatherList.map { hourlyWeather ->
                 hourlyWeather.toHourlyWeatherEntity().copy(locationWeatherId = locationId)

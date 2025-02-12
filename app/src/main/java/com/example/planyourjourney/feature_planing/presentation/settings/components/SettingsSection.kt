@@ -180,11 +180,5 @@ fun SettingsSection(
                 )
             }
         }
-        // TODO: style the button and test
-//        Row {
-//            Button(onClick = { onSaveSettings() }) {
-//                Text(text = stringResource(id = R.string.save_settings))
-//            }
-//        }
     }
 }

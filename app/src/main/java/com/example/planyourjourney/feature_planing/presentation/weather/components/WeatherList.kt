@@ -115,18 +115,18 @@ fun WeatherList(
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis
                                     )
-                                    Text(
-                                        text = stringResource(id = R.string.latitude_colon) +
-                                                location.location.coordinates.latitude.toString(),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                    Text(
-                                        text = stringResource(id = R.string.longitude_colon) +
-                                                location.location.coordinates.longitude.toString(),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
+//                                    Text(
+//                                        text = stringResource(id = R.string.latitude_colon) +
+//                                                location.location.coordinates.latitude.toString(),
+//                                        maxLines = 1,
+//                                        overflow = TextOverflow.Ellipsis
+//                                    )
+//                                    Text(
+//                                        text = stringResource(id = R.string.longitude_colon) +
+//                                                location.location.coordinates.longitude.toString(),
+//                                        maxLines = 1,
+//                                        overflow = TextOverflow.Ellipsis
+//                                    )
                                 }
                                 Icon(
                                     imageVector = Icons.Default.Refresh,

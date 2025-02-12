@@ -65,16 +65,12 @@ class PlaningViewModel @Inject constructor(
         getLocations()
         fetchFromAPI(location)
     }
-    // TODO: figure out if i need language in settings and how to get localization from
-    //  the app config to get the localization for day names in other languages
 
     // TODO: can take localization info from the phone to show date time in localized style
 
     // TODO: figure out how and when edit/call and save updates from weather API
 
     // TODO: check how to make a widget
-
-    // TODO: Launch app and testing now! 
 
     init {
         getSettings()
@@ -214,7 +210,7 @@ class PlaningViewModel @Inject constructor(
             ).collect { result ->
                 when (result) {
                     is APIFetchResult.Success -> {
-                        // TODO: can revisit this problem
+
                     }
 
                     is APIFetchResult.Error -> {
@@ -238,7 +234,7 @@ class PlaningViewModel @Inject constructor(
                     }
 
                     is APIFetchResult.Loading -> {
-                        // TODO:
+
                     }
                 }
             }

@@ -136,7 +136,7 @@ fun WeatherScreen(
                     }
                 }
             }
-            // TODO: check if its the same
+
             WeatherList(
                 locationWeatherList = state.locationWeatherList,
                 isLoading = state.isLoading,
@@ -148,85 +148,6 @@ fun WeatherScreen(
                 localeCode = state.settings.language.localeCode,
                 navigator = navigator
             )
-//            Text(text = stringResource(R.string.weather_forecast))
-//            HorizontalDivider(Modifier.size(8.dp))
-//
-//            if (state.isLoading) {
-//                CircularProgressIndicator(
-//                    color = MaterialTheme.colorScheme.primary,
-//                    modifier = Modifier
-//                        .wrapContentSize()
-//                        .size(72.dp),
-//                    strokeWidth = 6.dp,
-//                    trackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
-//                )
-//            } else {
-//                if (state.locationWeatherList.isEmpty()) {
-//                    Text(text = stringResource(R.string.locations_empty))
-//                } else {
-//                    LazyColumn(modifier = Modifier.fillMaxSize()) {
-//                        items(count = state.locationWeatherList.size) { i ->
-//                            val location = state.locationWeatherList[i]
-//                            Column(
-//                                modifier = Modifier
-//                                    .padding(8.dp)
-//                                    .fillMaxSize()
-//                                    .clickable {
-//                                        navigator.navigate(
-//                                            WeatherDetailsScreenDestination(location.location.locationId!!)
-//                                        )
-//                                    }
-//                            ) {
-//                                Row(
-//                                    modifier = Modifier.fillMaxWidth(),
-//                                    horizontalArrangement = Arrangement.SpaceBetween
-//                                )
-//                                {
-//                                    Column {
-//                                        Text(
-//                                            text = location.location.locationName.orEmpty(),
-//                                            style = MaterialTheme.typography.headlineMedium,
-//                                            color = MaterialTheme.colorScheme.onSurface,
-//                                            maxLines = 1,
-//                                            overflow = TextOverflow.Ellipsis
-//                                        )
-//                                        Column {
-//                                            Text(
-//                                                text = stringResource(id = R.string.latitude_colon) +
-//                                                        location.location.coordinates.latitude.toString()
-//                                            )
-//                                            Text(
-//                                                text = stringResource(id = R.string.longitude_colon) +
-//                                                        location.location.coordinates.longitude.toString()
-//                                            )
-//                                        }
-//                                    }
-//                                    Icon(
-//                                        imageVector = Icons.Default.Refresh,
-//                                        contentDescription = null,
-//                                        tint = MaterialTheme.colorScheme.onBackground,
-//                                        modifier = Modifier
-//                                            .size(32.dp)
-//                                            .clickable {
-//                                                viewModel.onEvent(
-//                                                    WeatherEvent.RefreshLocationWeather(
-//                                                        location.location
-//                                                    )
-//                                                )
-//                                            }
-//                                    )
-//                                }
-//                                WeatherCard(
-//                                    scope = scope,
-//                                    locationWeather = location,
-//                                    weatherUnits = state.settings.weatherUnits,
-//                                    locale = Locale(state.settings.language.localeCode)
-//                                )
-//                            }
-//                        }
-//                    }
-//                }
-//            }
         }
     }
 }
@@ -262,22 +183,22 @@ fun WeatherScreenPreview() {
     }
     val state = WeatherState(
         locationWeatherList = listOf(
-//            LocationWeather(
-//                location = Location(
-//                    locationName = "Warszawa",
-//                    coordinates = Coordinates(45.1234154121, 53.51245),
-//                    locationId = null
-//                ),
-//                hourlyWeatherList = listOfHourlyWeatherData
-//            ),
-//            LocationWeather(
-//                location = Location(
-//                    locationName = "Cieszyn",
-//                    coordinates = Coordinates(1.0, 2.0),
-//                    locationId = null
-//                ),
-//                hourlyWeatherList = listOfHourlyWeatherData
-//            )
+            LocationWeather(
+                location = Location(
+                    locationName = "Warszawa",
+                    coordinates = Coordinates(45.1234154121, 53.51245),
+                    locationId = null
+                ),
+                hourlyWeatherList = listOfHourlyWeatherData
+            ),
+            LocationWeather(
+                location = Location(
+                    locationName = "Cieszyn",
+                    coordinates = Coordinates(1.0, 2.0),
+                    locationId = null
+                ),
+                hourlyWeatherList = listOfHourlyWeatherData
+            )
         ),
         isLoading = false,
         settings = Settings(
@@ -323,7 +244,6 @@ fun WeatherScreenPreview() {
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
-                // TODO: check if its the same
                 WeatherList(
                     locationWeatherList = state.locationWeatherList,
                     isLoading = state.isLoading,

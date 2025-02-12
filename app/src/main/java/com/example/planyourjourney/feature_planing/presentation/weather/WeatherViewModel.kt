@@ -143,8 +143,6 @@ class WeatherViewModel @Inject constructor(
             ).collect { result ->
                 when (result) {
                     is APIFetchResult.Success -> {
-                        // TODO: can revisit this problem
-
                         // Refresh LocationWeather list on success
                         getLocationsWithWeather()
                     }
@@ -170,7 +168,7 @@ class WeatherViewModel @Inject constructor(
                     }
 
                     is APIFetchResult.Loading -> {
-                        // TODO:
+
                     }
                 }
             }

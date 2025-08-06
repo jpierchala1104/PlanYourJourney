@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.planyourjourney.R
 import com.example.planyourjourney.core.presentation.AppToolbar
+import com.example.planyourjourney.feature_planing.domain.model.Coordinates
+import com.example.planyourjourney.feature_planing.domain.model.Location
 import com.example.planyourjourney.feature_planing.domain.model.Settings
 import com.example.planyourjourney.feature_planing.presentation.settings.components.SettingsSection
 import com.example.planyourjourney.ui.theme.PlanYourJourneyTheme
@@ -98,6 +100,7 @@ fun SettingsScreen(
                 onSettingsChanged = {
                     viewModel.onEvent(SettingsEvent.SettingsChanged(it))
                 },
+                locationList = state.locationList
 //                onSaveSettings = {
 //                    viewModel.onEvent(SettingsEvent.SaveSettings)
 //                },
@@ -165,6 +168,16 @@ fun SettingsPreview() {
                     onSettingsChanged = {
 
                     },
+                    locationList = listOf(Location(
+                        locationId = null,
+                        locationName = "Cieszyn",
+                        coordinates = Coordinates(0.0, 0.0)
+                        ),
+                        Location(
+                            locationId = null,
+                            locationName = "Warszawa",
+                            coordinates = Coordinates(0.0, 0.0)
+                        ) )
 //                    onSaveSettings = {
 //
 //                    },

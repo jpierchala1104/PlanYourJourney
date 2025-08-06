@@ -3,14 +3,12 @@ package com.example.planyourjourney.feature_planing.presentation.weather_details
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -43,7 +41,7 @@ import com.example.planyourjourney.feature_planing.presentation.weather_details.
 import com.example.planyourjourney.ui.theme.PlanYourJourneyTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import java.time.LocalDateTime
+import kotlinx.datetime.LocalDateTime
 import java.util.Locale
 import kotlin.random.Random
 
@@ -66,17 +64,6 @@ fun WeatherDetailsScreen(
                 modifier = Modifier.wrapContentHeight(),
                 title = stringResource(R.string.app_name)
             ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.List,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clickable {
-                            navigator.popBackStack()
-                        }
-                )
-                Spacer(modifier = Modifier.size(8.dp))
                 Icon(
                     //imageVector = ImageVector.vectorResource(id = R.drawable.cloudy_100_weather_icon),
                     imageVector = Icons.Default.Settings,
@@ -197,13 +184,13 @@ fun WeatherDetailsPreview() {
     )
     val chartService = ChartService()
     chartService.setLocale(Locale(settings.language.localeCode))
-    val today = LocalDateTime.now()
+    val today = java.time.LocalDateTime.now()
     var listOfHourlyWeatherData = listOf<HourlyWeather>()
     for (i: Int in 1..7) {
         for (j: Int in 0 until 24) {
             listOfHourlyWeatherData = listOfHourlyWeatherData.plus(
                 HourlyWeather(
-                    time = LocalDateTime.of(
+                    time = LocalDateTime(
                         today.year,
                         today.month,
                         i,
@@ -315,17 +302,6 @@ fun WeatherDetailsPreview() {
                     modifier = Modifier.wrapContentHeight(),
                     title = stringResource(R.string.app_name)
                 ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.List,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier
-                            .size(32.dp)
-                            .clickable {
-
-                            }
-                    )
-                    Spacer(modifier = Modifier.size(8.dp))
                     Icon(
                         //imageVector = ImageVector.vectorResource(id = R.drawable.cloudy_100_weather_icon),
                         imageVector = Icons.Default.Settings,

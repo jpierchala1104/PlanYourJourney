@@ -108,6 +108,10 @@ dependencies {
     //app compat for language ip-app changes
     implementation("androidx.appcompat:appcompat:1.6.1")
 
+    //widget glance
+    implementation("androidx.glance:glance-appwidget:1.1.1")
+    implementation("androidx.glance:glance-material3:1.1.1")
+
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
@@ -122,6 +126,7 @@ dependencies {
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
 }
 
 kapt {

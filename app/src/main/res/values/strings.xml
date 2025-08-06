@@ -44,4 +44,11 @@
     <string name="locations">Locations</string>
     <string name="precipitation">Precipitation</string>
     <string name="add_location_label">Add location name</string>
+    <string name="add_locations">Add Locations</string>
+    <string name="weather">Weather</string>
+    <string name="widget_description">A widget for PlanYourJourney app</string>
+    <string name="widget_location">Location in Widget</string>
+    <string name="no_name">Location name empty</string>
+    <string name="no_location_selected">Location not selected or empty</string>
+    <string name="refresh">Refresh</string>
 </resources>

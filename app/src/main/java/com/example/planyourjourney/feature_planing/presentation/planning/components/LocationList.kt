@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.planyourjourney.R
 import com.example.planyourjourney.feature_planing.domain.model.Location
-import com.example.planyourjourney.feature_planing.presentation.planning.PlaningEvent
+import com.example.planyourjourney.feature_planing.presentation.destinations.WeatherDetailsScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
@@ -69,7 +69,7 @@ fun LocationList(
                                     .fillMaxWidth()
                                     .clickable {
                                         navigator!!.navigate(
-                                            com.example.planyourjourney.feature_planing.presentation.destinations.WeatherDetailsScreenDestination(
+                                            WeatherDetailsScreenDestination(
                                                 location.locationId!!
                                             )
                                         )

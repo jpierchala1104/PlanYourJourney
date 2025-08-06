@@ -13,18 +13,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
@@ -41,11 +31,10 @@ import com.example.planyourjourney.R
 import com.example.planyourjourney.feature_planing.domain.model.HourlyWeather
 import com.example.planyourjourney.feature_planing.domain.model.LocationWeather
 import com.example.planyourjourney.feature_planing.domain.model.WeatherUnits
-import com.example.planyourjourney.ui.theme.CloudBlue
+import com.example.planyourjourney.feature_planing.domain.util.toKotlinLocalDate
+import com.example.planyourjourney.feature_planing.domain.util.toLocalDate
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.LocalDateTime
+import kotlinx.datetime.toJavaLocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
@@ -101,10 +90,10 @@ fun WeatherCard(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = if (currentDayWeather.first().time.toLocalDate() == LocalDate.now())
+                        text = if (currentDayWeather.first().time.toLocalDate() == java.time.LocalDate.now().toKotlinLocalDate())
                             stringResource(id = R.string.today)
                         else
-                            currentDayWeather.first().time
+                            currentDayWeather.first().time.toJavaLocalDateTime()
                                 .format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onPrimary

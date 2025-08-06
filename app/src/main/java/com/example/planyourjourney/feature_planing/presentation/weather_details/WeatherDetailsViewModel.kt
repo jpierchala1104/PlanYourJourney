@@ -10,7 +10,6 @@ import com.example.planyourjourney.feature_planing.domain.model.Coordinates
 import com.example.planyourjourney.feature_planing.domain.model.Location
 import com.example.planyourjourney.feature_planing.domain.use_case.WeatherDetailsUseCases
 import com.example.planyourjourney.feature_planing.domain.util.Resource
-import com.example.planyourjourney.feature_planing.presentation.planning.PlaningViewModel
 import com.example.planyourjourney.feature_planing.presentation.util.ChartService
 import com.example.planyourjourney.feature_planing.presentation.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel

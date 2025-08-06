@@ -5,7 +5,6 @@ import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,6 +16,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,30 +24,33 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.planyourjourney.R
 import com.example.planyourjourney.core.presentation.AppToolbar
+import com.example.planyourjourney.core.presentation.BottomNavigationMenu
 import com.example.planyourjourney.feature_planing.domain.model.Coordinates
 import com.example.planyourjourney.feature_planing.domain.model.HourlyWeather
 import com.example.planyourjourney.feature_planing.domain.model.Location
 import com.example.planyourjourney.feature_planing.domain.model.LocationWeather
 import com.example.planyourjourney.feature_planing.domain.model.Settings
 import com.example.planyourjourney.feature_planing.domain.util.Language
-import com.example.planyourjourney.feature_planing.presentation.destinations.PlaningScreenDestination
+import com.example.planyourjourney.feature_planing.presentation.destinations.PlanningScreenDestination
 import com.example.planyourjourney.feature_planing.presentation.destinations.SettingsScreenDestination
 import com.example.planyourjourney.feature_planing.presentation.util.UiEvent
 import com.example.planyourjourney.feature_planing.presentation.weather.components.WeatherList
 import com.example.planyourjourney.ui.theme.PlanYourJourneyTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import java.time.LocalDateTime
+import kotlinx.datetime.LocalDateTime
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+//@RootNavGraph(start = true)
 @Destination(start = true)
 fun WeatherScreen(
     navigator: DestinationsNavigator,
@@ -69,19 +72,6 @@ fun WeatherScreen(
                 modifier = Modifier.wrapContentHeight(),
                 title = stringResource(R.string.app_name)
             ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clickable {
-                            navigator.navigate(
-                                PlaningScreenDestination()
-                            )
-                        }
-                )
-                Spacer(modifier = Modifier.size(8.dp))
                 Icon(
                     //painter = painterResource(id = R.drawable.cloudy_100_weather_icon) -> this is in Image,
                     imageVector = Icons.Default.Settings,
@@ -138,6 +128,7 @@ fun WeatherScreen(
             }
 
             WeatherList(
+                modifier = Modifier.weight(1f),
                 locationWeatherList = state.locationWeatherList,
                 isLoading = state.isLoading,
                 onRefreshLocation = {
@@ -148,6 +139,57 @@ fun WeatherScreen(
                 localeCode = state.settings.language.localeCode,
                 navigator = navigator
             )
+            BottomNavigationMenu{
+                Column(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clickable {
+                                navigator
+                                    .navigate(
+                                        PlanningScreenDestination()
+                                    )
+                            }
+                    )
+                    Text(
+                        text = stringResource(R.string.add_locations),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.sunny_weather_icon),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.secondary,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clickable {
+                                // current screen
+                            }
+                    )
+                    Text(
+                        text = stringResource(R.string.weather),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.secondary,
+                    )
+                }
+            }
         }
     }
 }
@@ -156,13 +198,13 @@ fun WeatherScreen(
 @Preview(locale = "pl")
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "pl")
 fun WeatherScreenPreview() {
-    val today = LocalDateTime.now()
+    val today = java.time.LocalDateTime.now()
     var listOfHourlyWeatherData = listOf<HourlyWeather>()
     for (i: Int in 1..7) {
         for (j: Int in 0 until 24) {
             listOfHourlyWeatherData = listOfHourlyWeatherData.plus(
                 HourlyWeather(
-                    time = LocalDateTime.of(
+                    time = LocalDateTime(
                         today.year,
                         today.month,
                         i,
@@ -215,17 +257,6 @@ fun WeatherScreenPreview() {
                     title = stringResource(R.string.app_name)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier
-                            .size(32.dp)
-                            .clickable {
-
-                            }
-                    )
-                    Spacer(modifier = Modifier.size(8.dp))
-                    Icon(
                         //painter = painterResource(id = R.drawable.cloudy_100_weather_icon) -> this is in Image,
                         imageVector = Icons.Default.Settings,
                         contentDescription = null,
@@ -245,6 +276,7 @@ fun WeatherScreenPreview() {
                     .padding(innerPadding)
             ) {
                 WeatherList(
+                    modifier = Modifier.weight(1f),
                     locationWeatherList = state.locationWeatherList,
                     isLoading = state.isLoading,
                     onRefreshLocation = {
@@ -255,6 +287,54 @@ fun WeatherScreenPreview() {
                     localeCode = state.settings.language.localeCode,
                     navigator = null
                 )
+                BottomNavigationMenu{
+                    Column(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier
+                                .size(32.dp)
+                                .clickable {
+                                    //current screen
+                                }
+                        )
+                        Text(
+                            text = stringResource(R.string.add_locations),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
+                    Column(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.sunny_weather_icon),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier
+                                .size(32.dp)
+                                .clickable {
+
+                                }
+                        )
+                        Text(
+                            text = stringResource(R.string.weather),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.secondary,
+                        )
+                    }
+                }
             }
         }
     }

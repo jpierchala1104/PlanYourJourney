@@ -6,4 +6,5 @@ import kotlinx.coroutines.flow.Flow
 interface SettingsOperations {
     suspend fun saveSettings(settings: Settings)
     fun readSettingsState(): Flow<Settings>
+    suspend fun readSettingsInWidget(): Settings
 }

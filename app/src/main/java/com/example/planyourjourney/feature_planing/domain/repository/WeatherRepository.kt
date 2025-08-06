@@ -23,6 +23,7 @@ interface WeatherRepository {
     suspend fun deleteHourlyWeathersAtLocation(locationId: Int)
     suspend fun saveSettings(settings: Settings)
     suspend fun getSettings(): Flow<Settings>
+    suspend fun preloadWidgetData(locationWeather: LocationWeather)
     suspend fun deleteHourlyWeathersWithDate(date: String)
     suspend fun updateUnits(settings: Settings, oldUnits: WeatherUnits)
 }

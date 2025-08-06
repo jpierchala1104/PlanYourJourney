@@ -1,7 +1,6 @@
 package com.example.planyourjourney.feature_planing.presentation.weather
 
 import com.example.planyourjourney.feature_planing.domain.model.Location
-import com.example.planyourjourney.feature_planing.presentation.planning.PlaningEvent
 
 sealed class WeatherEvent{
     data class DeleteLocation(val location: Location) : WeatherEvent()

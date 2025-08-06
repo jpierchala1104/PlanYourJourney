@@ -44,4 +44,11 @@
     <string name="locations">Lokalizacje</string>
     <string name="precipitation">Opady</string>
     <string name="add_location_label">Dodaj nazwe lokalizacji</string>
+    <string name="add_locations">Dodaj Lokalizacje</string>
+    <string name="weather">Pogoda</string>
+    <string name="widget_description">Widżet dla aplikacji PlanYourJourney</string>
+    <string name="widget_location">Lokalizacja w widżecie</string>
+    <string name="no_name">Brak nazwy lokalizacji</string>
+    <string name="no_location_selected">Lokalizacja niewybrana lub brak lokalizacji</string>
+    <string name="refresh">Odświeź</string>
 </resources>

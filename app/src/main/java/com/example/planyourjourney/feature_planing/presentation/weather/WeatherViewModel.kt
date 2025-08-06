@@ -8,8 +8,8 @@ import android.net.NetworkCapabilities
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.glance.appwidget.updateAll
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.planyourjourney.R
 import com.example.planyourjourney.feature_planing.domain.model.Location
@@ -17,12 +17,10 @@ import com.example.planyourjourney.feature_planing.domain.use_case.WeatherUseCas
 import com.example.planyourjourney.feature_planing.domain.util.APIErrorResult
 import com.example.planyourjourney.feature_planing.domain.util.APIFetchResult
 import com.example.planyourjourney.feature_planing.domain.util.Resource
-import com.example.planyourjourney.feature_planing.presentation.planning.PlaningViewModel
 import com.example.planyourjourney.feature_planing.presentation.util.UiEvent
+import com.example.planyourjourney.feature_planing.presentation.widget.WeatherWidget
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -46,6 +44,8 @@ class WeatherViewModel @Inject constructor(
         getSettings()
         getLocationsWithWeather()
     }
+
+    // TODO: change so it shows the closes hour for the weather in app and widget
 
     fun onEvent(event: WeatherEvent) {
         when (event) {
@@ -92,6 +92,15 @@ class WeatherViewModel @Inject constructor(
                                 _state.value = state.value.copy(
                                     locationWeatherList = weather
                                 )
+                            }
+                            if (state.value.settings.widgetLocation != null)
+                            {
+                                weatherUseCases.preloadWidgetDataUseCase.invoke(
+                                        locationWeather = state.value.locationWeatherList
+                                            .first{ locationWeather ->
+                                            locationWeather.location.locationId == state.value.settings.widgetLocation!!.locationId
+                                })
+                                WeatherWidget().updateAll(context)
                             }
                             //uiEventChannel.send(UiEvent.WeatherLoaded)
                         }

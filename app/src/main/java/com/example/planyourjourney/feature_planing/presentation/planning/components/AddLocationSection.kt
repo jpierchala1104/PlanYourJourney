@@ -13,7 +13,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.planyourjourney.R
 import com.example.planyourjourney.feature_planing.domain.model.Coordinates
-import com.example.planyourjourney.feature_planing.presentation.planning.PlaningEvent
 import com.example.planyourjourney.feature_planing.presentation.util.DecimalFormatter
 import com.example.planyourjourney.feature_planing.presentation.util.SearchInputType
 

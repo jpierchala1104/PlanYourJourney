@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.planyourjourney.R
 import com.example.planyourjourney.core.presentation.DefaultRadioButton
+import com.example.planyourjourney.feature_planing.domain.model.Location
 import com.example.planyourjourney.feature_planing.domain.model.Settings
 import com.example.planyourjourney.feature_planing.domain.util.PrecipitationUnits
 import com.example.planyourjourney.feature_planing.domain.util.TemperatureUnits
@@ -26,10 +27,28 @@ fun SettingsSection(
     modifier: Modifier = Modifier,
     settings: Settings = Settings(),
     onSettingsChanged: (Settings) -> Unit,
+    locationList: List<Location>,
     //onSaveSettings: () -> Unit,
     //navigator: DestinationsNavigator?,
 ) {
     Column(modifier = modifier) {
+        // TODO: another list or something for picking widgetLocation
+        Text(
+            text = stringResource(id = R.string.widget_location),
+            style = MaterialTheme.typography.headlineMedium
+        )
+        Column (
+            // TODO: modifier and max lines
+        ){
+            locationList.forEach {
+                DefaultRadioButton(
+                    text = it.locationName ?: stringResource(id = R.string.no_name),
+                    selected = settings.widgetLocation == it,
+                    onSelect = { onSettingsChanged(settings.copy(widgetLocation = it)) }
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+            }
+        }
         Text(
             text = stringResource(id = R.string.language),
             style = MaterialTheme.typography.headlineMedium

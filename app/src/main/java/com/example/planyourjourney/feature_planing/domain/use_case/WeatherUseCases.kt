@@ -7,5 +7,6 @@ data class WeatherUseCases(
     val deleteLocationUseCase: DeleteLocationUseCase,
     val deleteWeatherAtLocationUseCase: DeleteWeatherAtLocationUseCase,
     val getSettingsUseCase: GetSettingsUseCase,
-    val clearOldWeatherUseCase: ClearOldWeatherUseCase
+    val clearOldWeatherUseCase: ClearOldWeatherUseCase,
+    val preloadWidgetDataUseCase: PreloadWidgetDataUseCase
 )

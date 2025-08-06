@@ -1,8 +1,10 @@
 package com.example.planyourjourney.feature_planing.domain.model
 
-import java.time.LocalDateTime
+import kotlinx.datetime.LocalDateTime
+import kotlinx.serialization.Serializable
 
 
+@Serializable
 data class HourlyWeather(
     val time: LocalDateTime,
     val temperature2m: Double,

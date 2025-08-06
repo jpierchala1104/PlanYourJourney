@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -79,7 +78,7 @@ fun WeatherList(
                     modifier = Modifier.padding(8.dp),
                     onClick = {
                     navigator!!.navigate(
-                        com.example.planyourjourney.feature_planing.presentation.destinations.PlaningScreenDestination()
+                        com.example.planyourjourney.feature_planing.presentation.destinations.PlanningScreenDestination()
                     )
                 }) {
                     Text(text = stringResource(id = R.string.add_location))

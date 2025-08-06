@@ -6,8 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.planyourjourney.R
 import com.example.planyourjourney.feature_planing.domain.model.WeatherUnits
 import com.example.planyourjourney.feature_planing.domain.use_case.SettingsUseCases
+import com.example.planyourjourney.feature_planing.domain.util.Resource
+import com.example.planyourjourney.feature_planing.presentation.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,6 +26,7 @@ class SettingsViewModel @Inject constructor(
 
     init {
         getSettings()
+        getLocations()
     }
 
     fun onEvent(event: SettingsEvent) {
@@ -56,6 +60,36 @@ class SettingsViewModel @Inject constructor(
                 )
                 oldWeatherUnits = settings.weatherUnits
             }
+        }
+    }
+
+    private fun getLocations() {
+        viewModelScope.launch {
+            settingsUseCases.getLocationsUseCase.invoke()
+                .collect { result ->
+                    when (result) {
+                        is Resource.Success -> {
+                            result.data?.let { locations ->
+                                _state.value = state.value.copy(
+                                    locationList = locations
+                                )
+                            }
+                            _state.value = state.value.copy(
+                                isSettingsLoaded = true, isLoading = false
+                            )
+                        }
+
+                        is Resource.Error -> {
+                            _state.value = state.value.copy(
+                                isSettingsLoaded = false, isLoading = false
+                            )
+                        }
+
+                        is Resource.Loading -> {
+                            _state.value = state.value.copy(isLoading = result.isLoading)
+                        }
+                    }
+                }
         }
     }
 }

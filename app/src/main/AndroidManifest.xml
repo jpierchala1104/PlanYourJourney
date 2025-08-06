@@ -17,7 +17,7 @@
         android:theme="@style/Theme.PlanYourJourney"
         tools:targetApi="31">
         <activity
-            android:name=".feature_planing.presentation.PlaningActivity"
+            android:name=".feature_planing.presentation.PlanningActivity"
             android:exported="true"
             android:theme="@style/Theme.PlanYourJourney">
             <intent-filter>
@@ -34,6 +34,18 @@
                 android:name="autoStoreLocales"
                 android:value="true" />
         </service>
+        <receiver
+            android:name=".feature_planing.presentation.widget.WeatherWidgetReceiver"
+            android:exported="true"
+            android:label="Weather">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/weather_widget_info"/>
+        </receiver>
     </application>
 
 </manifest>

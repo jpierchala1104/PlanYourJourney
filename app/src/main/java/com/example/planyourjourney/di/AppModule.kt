@@ -7,23 +7,31 @@ import com.example.planyourjourney.feature_planing.data.local.WeatherDatabase
 import com.example.planyourjourney.feature_planing.data.remote.OpenMeteoAPI
 import com.example.planyourjourney.feature_planing.data.repository.SettingsOperationsImpl
 import com.example.planyourjourney.feature_planing.data.repository.WeatherRepositoryImpl
+import com.example.planyourjourney.feature_planing.data.repository.WidgetPreloadOperationsImpl
+import com.example.planyourjourney.feature_planing.data.repository.WidgetRepositoryImpl
 import com.example.planyourjourney.feature_planing.domain.repository.SettingsOperations
 import com.example.planyourjourney.feature_planing.domain.repository.WeatherRepository
+import com.example.planyourjourney.feature_planing.domain.repository.WidgetPreloadOperations
+import com.example.planyourjourney.feature_planing.domain.repository.WidgetRepository
+import com.example.planyourjourney.feature_planing.domain.use_case.ClearOldWeatherUseCase
 import com.example.planyourjourney.feature_planing.domain.use_case.DeleteLocationUseCase
 import com.example.planyourjourney.feature_planing.domain.use_case.DeleteWeatherAtLocationUseCase
-import com.example.planyourjourney.feature_planing.domain.use_case.ClearOldWeatherUseCase
 import com.example.planyourjourney.feature_planing.domain.use_case.FetchWeatherAtLocationUseCase
 import com.example.planyourjourney.feature_planing.domain.use_case.GetLocationsUseCase
 import com.example.planyourjourney.feature_planing.domain.use_case.GetLocationsWithWeatherUseCase
+import com.example.planyourjourney.feature_planing.domain.use_case.GetPreloadedWidgetDataUseCase
+import com.example.planyourjourney.feature_planing.domain.use_case.GetSettingsForWidgetUseCase
 import com.example.planyourjourney.feature_planing.domain.use_case.GetSettingsUseCase
 import com.example.planyourjourney.feature_planing.domain.use_case.GetWeatherAtLocationUseCase
 import com.example.planyourjourney.feature_planing.domain.use_case.InsertLocationUseCase
 import com.example.planyourjourney.feature_planing.domain.use_case.PlaningUseCases
+import com.example.planyourjourney.feature_planing.domain.use_case.PreloadWidgetDataUseCase
 import com.example.planyourjourney.feature_planing.domain.use_case.SaveSettingsUseCase
 import com.example.planyourjourney.feature_planing.domain.use_case.SettingsUseCases
 import com.example.planyourjourney.feature_planing.domain.use_case.UpdateUnitsUseCase
 import com.example.planyourjourney.feature_planing.domain.use_case.WeatherDetailsUseCases
 import com.example.planyourjourney.feature_planing.domain.use_case.WeatherUseCases
+import com.example.planyourjourney.feature_planing.domain.use_case.WeatherWidgetUseCases
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -78,7 +86,8 @@ object AppModule {
             deleteLocationUseCase = DeleteLocationUseCase(repository),
             deleteWeatherAtLocationUseCase = DeleteWeatherAtLocationUseCase(repository),
             getSettingsUseCase = GetSettingsUseCase(repository),
-            clearOldWeatherUseCase = ClearOldWeatherUseCase(repository)
+            clearOldWeatherUseCase = ClearOldWeatherUseCase(repository),
+            preloadWidgetDataUseCase = PreloadWidgetDataUseCase(repository)
         )
     }
 
@@ -98,7 +107,17 @@ object AppModule {
         return SettingsUseCases(
             saveSettingsUseCase = SaveSettingsUseCase(repository),
             getSettingsUseCase = GetSettingsUseCase(repository),
-            updateUnitsUseCase = UpdateUnitsUseCase(repository)
+            updateUnitsUseCase = UpdateUnitsUseCase(repository),
+            getLocationsUseCase = GetLocationsUseCase(repository)
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideWeatherWidgetUseCases(repository: WidgetRepository): WeatherWidgetUseCases {
+        return WeatherWidgetUseCases(
+            getSettingsForWidgetUseCase = GetSettingsForWidgetUseCase(repository),
+            getPreloadedWidgetDataUseCase = GetPreloadedWidgetDataUseCase(repository)
         )
     }
 
@@ -114,13 +133,33 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideDataStoreOperation(
+    fun provideSettingsDataStoreOperation(
         @ApplicationContext context: Context
     ): SettingsOperations = SettingsOperationsImpl(context = context)
 
     @Provides
     @Singleton
-    fun provideWeatherRepository(api: OpenMeteoAPI, db: WeatherDatabase, dataStore: SettingsOperations): WeatherRepository {
-        return WeatherRepositoryImpl(api, db, dataStore)
+    fun provideWidgetPreloadDataStoreOperation(
+        @ApplicationContext context: Context
+    ): WidgetPreloadOperations = WidgetPreloadOperationsImpl(context = context)
+
+    @Provides
+    @Singleton
+    fun provideWeatherRepository(
+        api: OpenMeteoAPI,
+        db: WeatherDatabase,
+        settingsDataStore: SettingsOperations,
+        widgetPreloadDataStore: WidgetPreloadOperations
+    ): WeatherRepository {
+        return WeatherRepositoryImpl(api, db, settingsDataStore, widgetPreloadDataStore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideWidgetRepository(
+        settingsDataStore: SettingsOperations,
+        widgetPreloadDataStore: WidgetPreloadOperations
+    ) : WidgetRepository {
+        return WidgetRepositoryImpl(settingsDataStore, widgetPreloadDataStore)
     }
 }

@@ -9,7 +9,8 @@ import com.patrykandpatrick.vico.core.model.ColumnCartesianLayerModel
 import com.patrykandpatrick.vico.core.model.LineCartesianLayerModel
 import com.patrykandpatrick.vico.core.model.columnSeries
 import com.patrykandpatrick.vico.core.model.lineSeries
-import java.time.LocalDateTime
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.toJavaLocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
@@ -78,7 +79,7 @@ class ChartService{
             val markedEntryTime = localDateTimeList[markedEntries.first().entry.x.toInt()]
             //formatted output
             "${markedEntryTime.dayOfWeek.getDisplayName(TextStyle.FULL, locale)}\n" +
-            "${markedEntryTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))} ${markedEntryTime.hour}:00\n" +
+            "${markedEntryTime.toJavaLocalDateTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))} ${markedEntryTime.hour}:00\n" +
             if(isLineCartesianChart){
                 "${(markedEntries.first().entry as LineCartesianLayerModel.Entry).y}$unit"
             } else {

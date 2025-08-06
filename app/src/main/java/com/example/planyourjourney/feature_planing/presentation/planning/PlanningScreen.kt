@@ -3,6 +3,7 @@ package com.example.planyourjourney.feature_planing.presentation.planning
 import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -21,18 +23,22 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.planyourjourney.R
 import com.example.planyourjourney.core.presentation.AppToolbar
+import com.example.planyourjourney.core.presentation.BottomNavigationMenu
 import com.example.planyourjourney.feature_planing.domain.model.Coordinates
 import com.example.planyourjourney.feature_planing.domain.model.Location
 import com.example.planyourjourney.feature_planing.domain.model.Settings
@@ -40,7 +46,6 @@ import com.example.planyourjourney.feature_planing.presentation.destinations.Set
 import com.example.planyourjourney.feature_planing.presentation.destinations.WeatherScreenDestination
 import com.example.planyourjourney.feature_planing.presentation.planning.components.AddLocationSection
 import com.example.planyourjourney.feature_planing.presentation.planning.components.LocationList
-import com.example.planyourjourney.feature_planing.presentation.planning.components.SearchTypeSelectionMenu
 import com.example.planyourjourney.feature_planing.presentation.util.DecimalFormatter
 import com.example.planyourjourney.feature_planing.presentation.util.SearchInputType
 import com.example.planyourjourney.feature_planing.presentation.util.UiEvent
@@ -51,9 +56,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 @Destination
-fun PlaningScreen(
+fun PlanningScreen(
     navigator: DestinationsNavigator,
-    viewModel: PlaningViewModel = hiltViewModel()
+    viewModel: PlanningViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
     val weatherCoordinates = viewModel.weatherCoordinates.value
@@ -75,19 +80,6 @@ fun PlaningScreen(
                 modifier = Modifier.wrapContentHeight(),
                 title = stringResource(R.string.app_name)
             ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.List,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clickable {
-                            navigator.navigate(
-                                WeatherScreenDestination()
-                            )
-                        }
-                )
-                Spacer(modifier = Modifier.size(8.dp))
                 Icon(
                     imageVector = Icons.Filled.Settings,
                     contentDescription = null,
@@ -165,13 +157,13 @@ fun PlaningScreen(
                 weatherCoordinates = weatherCoordinates,
                 weatherLocationName = weatherLocationName,
                 onCoordinatesChanged = {
-                    viewModel.onEvent(PlaningEvent.CoordinatesChanged(it))
+                    viewModel.onEvent(PlanningEvent.CoordinatesChanged(it))
                 },
                 onLocationNameChanged = {
-                    viewModel.onEvent(PlaningEvent.LocationNameChanged(it))
+                    viewModel.onEvent(PlanningEvent.LocationNameChanged(it))
                 },
                 onAddLocation = {
-                    viewModel.onEvent(PlaningEvent.AddLocation)
+                    viewModel.onEvent(PlanningEvent.AddLocation)
                 },
                 decimalFormatter = decimalFormatter
             )
@@ -183,11 +175,12 @@ fun PlaningScreen(
             )
 
             LocationList(
+                modifier = Modifier.weight(1f),
                 isLoading = state.isLoading,
                 isLocationLoaded = state.isLocationLoaded,
                 locationList = state.locationList,
                 onDeleteLocation = {
-                    viewModel.onEvent(PlaningEvent.DeleteLocation(it))
+                    viewModel.onEvent(PlanningEvent.DeleteLocation(it))
                     scope.launch {
                         val result = snackbarHostState.showSnackbar(
                             message = context.getString(R.string.location_deleted),
@@ -195,12 +188,63 @@ fun PlaningScreen(
                             duration = SnackbarDuration.Long
                         )
                         if (result == SnackbarResult.ActionPerformed) {
-                            viewModel.onEvent(PlaningEvent.RestoreLocation)
+                            viewModel.onEvent(PlanningEvent.RestoreLocation)
                         }
                     }
                 },
                 navigator = navigator
             )
+            BottomNavigationMenu{
+                Column(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.secondary,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clickable {
+                                //current screen
+                            }
+                    )
+                    Text(
+                        text = stringResource(R.string.add_locations),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.secondary,
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.sunny_weather_icon),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clickable {
+                                navigator
+                                    .navigate(
+                                    WeatherScreenDestination()
+                                )
+                            }
+                    )
+                    Text(
+                        text = stringResource(R.string.weather),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
+            }
         }
     }
 }
@@ -242,17 +286,6 @@ fun PlaningScreenPreview() {
                     modifier = Modifier.wrapContentHeight(),
                     title = stringResource(R.string.app_name)
                 ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.List,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier
-                            .size(32.dp)
-                            .clickable {
-
-                            }
-                    )
-                    Spacer(modifier = Modifier.size(8.dp))
                     Icon(
                         imageVector = Icons.Filled.Settings,
                         contentDescription = null,
@@ -308,6 +341,7 @@ fun PlaningScreenPreview() {
                         .size(8.dp)
                 )
                 LocationList(
+                    modifier = Modifier.weight(1f),
                     isLoading = state.isLoading,
                     isLocationLoaded = state.isLocationLoaded,
                     locationList = state.locationList,
@@ -316,6 +350,54 @@ fun PlaningScreenPreview() {
                     },
                     navigator = null
                 )
+                BottomNavigationMenu{
+                    Column(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier
+                                .size(32.dp)
+                                .clickable {
+
+                                }
+                        )
+                        Text(
+                            text = stringResource(R.string.add_locations),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.secondary,
+                        )
+                    }
+                    Column(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.sunny_weather_icon),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier
+                                .size(32.dp)
+                                .clickable {
+
+                                }
+                        )
+                        Text(
+                            text = stringResource(R.string.weather),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
+                }
             }
         }
     }

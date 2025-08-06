@@ -3,6 +3,10 @@ package com.example.planyourjourney.feature_planing.domain.use_case
 import com.example.planyourjourney.feature_planing.domain.model.LocationWeather
 import com.example.planyourjourney.feature_planing.domain.repository.WeatherRepository
 import com.example.planyourjourney.feature_planing.domain.util.Resource
+import com.example.planyourjourney.feature_planing.domain.util.toKotlinLocalDate
+import com.example.planyourjourney.feature_planing.domain.util.toLocalDate
+
+
 import java.time.LocalDate
 
 class ClearOldWeatherUseCase (
@@ -23,7 +27,7 @@ class ClearOldWeatherUseCase (
         }
         if (locationWeather.isEmpty()) return
 
-        val yesterdayDate = LocalDate.now().minusDays(1)
+        val yesterdayDate = LocalDate.now().minusDays(1).toKotlinLocalDate()
 
         val daysInDbToClear = locationWeather.first().hourlyWeatherList.filter { hourlyWeather ->
             hourlyWeather.time.hour == 0 && hourlyWeather.time.toLocalDate() < yesterdayDate

@@ -7,5 +7,6 @@ import kotlinx.serialization.Serializable
 data class Settings(
     val language: Language = Language.English,
     val weatherUnits: WeatherUnits = WeatherUnits(),
-    val weatherVariables: WeatherVariables = WeatherVariables()
+    val weatherVariables: WeatherVariables = WeatherVariables(),
+    val widgetLocation: Location? = null
 )

@@ -8,7 +8,7 @@ import com.example.planyourjourney.feature_planing.domain.model.Coordinates
 import com.example.planyourjourney.feature_planing.domain.model.HourlyWeather
 import com.example.planyourjourney.feature_planing.domain.model.Location
 import com.example.planyourjourney.feature_planing.domain.model.LocationWeather
-import java.time.LocalDateTime
+import kotlinx.datetime.LocalDateTime
 
 fun OpenMeteoAPIEntity.toHourlyWeatherList(): List<HourlyWeather> {
     var hourlyWeatherList: List<HourlyWeather> = listOf()

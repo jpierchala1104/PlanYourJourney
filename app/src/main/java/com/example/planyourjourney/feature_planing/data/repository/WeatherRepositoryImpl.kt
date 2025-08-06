@@ -4,8 +4,8 @@ import com.example.planyourjourney.feature_planing.data.local.WeatherDatabase
 import com.example.planyourjourney.feature_planing.data.mapper.toHourlyWeatherEntity
 import com.example.planyourjourney.feature_planing.data.mapper.toLocation
 import com.example.planyourjourney.feature_planing.data.mapper.toLocationEntity
-import com.example.planyourjourney.feature_planing.data.remote.OpenMeteoAPI
 import com.example.planyourjourney.feature_planing.data.mapper.toLocationWeather
+import com.example.planyourjourney.feature_planing.data.remote.OpenMeteoAPI
 import com.example.planyourjourney.feature_planing.domain.model.HourlyWeather
 import com.example.planyourjourney.feature_planing.domain.model.Location
 import com.example.planyourjourney.feature_planing.domain.model.LocationWeather
@@ -13,6 +13,7 @@ import com.example.planyourjourney.feature_planing.domain.model.Settings
 import com.example.planyourjourney.feature_planing.domain.model.WeatherUnits
 import com.example.planyourjourney.feature_planing.domain.repository.SettingsOperations
 import com.example.planyourjourney.feature_planing.domain.repository.WeatherRepository
+import com.example.planyourjourney.feature_planing.domain.repository.WidgetPreloadOperations
 import com.example.planyourjourney.feature_planing.domain.util.APIErrorResult
 import com.example.planyourjourney.feature_planing.domain.util.APIFetchResult
 import com.example.planyourjourney.feature_planing.domain.util.PrecipitationUnits
@@ -39,7 +40,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
-import java.net.UnknownHostException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -47,7 +47,8 @@ import javax.inject.Singleton
 class WeatherRepositoryImpl @Inject constructor(
     private val api: OpenMeteoAPI,
     db: WeatherDatabase,
-    private val dataStore: SettingsOperations
+    private val settingsDataStore: SettingsOperations,
+    private val widgetPreloadDataStore: WidgetPreloadOperations
 ) : WeatherRepository {
 
     private val dao = db.dao
@@ -163,11 +164,15 @@ class WeatherRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveSettings(settings: Settings) {
-        dataStore.saveSettings(settings)
+        settingsDataStore.saveSettings(settings)
     }
 
     override suspend fun getSettings(): Flow<Settings> {
-        return dataStore.readSettingsState()
+        return settingsDataStore.readSettingsState()
+    }
+
+    override suspend fun preloadWidgetData(locationWeather: LocationWeather) {
+        widgetPreloadDataStore.saveData(locationWeather)
     }
 
     override suspend fun updateUnits(settings: Settings, oldUnits: WeatherUnits) {

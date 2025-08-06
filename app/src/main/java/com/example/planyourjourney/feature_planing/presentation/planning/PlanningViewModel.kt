@@ -22,14 +22,13 @@ import com.example.planyourjourney.feature_planing.presentation.util.SearchInput
 import com.example.planyourjourney.feature_planing.presentation.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 @HiltViewModel
-class PlaningViewModel @Inject constructor(
+class PlanningViewModel @Inject constructor(
     private val planingUseCases: PlaningUseCases,
     application: Application
 ) : AndroidViewModel(application) {
@@ -70,16 +69,15 @@ class PlaningViewModel @Inject constructor(
 
     // TODO: figure out how and when edit/call and save updates from weather API
 
-    // TODO: check how to make a widget
 
     init {
         getSettings()
         getLocations()
     }
 
-    fun onEvent(event: PlaningEvent) {
+    fun onEvent(event: PlanningEvent) {
         when (event) {
-            is PlaningEvent.AddLocation -> {
+            is PlanningEvent.AddLocation -> {
                 if (!_state.value.isCoordinatesValueOrLocationNameChanged) return
 
                 _state.value = state.value.copy(
@@ -108,7 +106,7 @@ class PlaningViewModel @Inject constructor(
                 )
             }
 
-            is PlaningEvent.CoordinatesChanged -> {
+            is PlanningEvent.CoordinatesChanged -> {
                 viewModelScope.launch {
                     _weatherCoordinates.value = weatherCoordinates.value.copy(
                         latitude = event.newCoordinates.latitude,
@@ -120,7 +118,7 @@ class PlaningViewModel @Inject constructor(
                 }
             }
 
-            is PlaningEvent.LocationNameChanged -> {
+            is PlanningEvent.LocationNameChanged -> {
                 viewModelScope.launch {
                     _weatherLocationName.value = event.newLocationNameText
                     _state.value = state.value.copy(
@@ -129,7 +127,7 @@ class PlaningViewModel @Inject constructor(
                 }
             }
 
-            is PlaningEvent.DeleteLocation -> {
+            is PlanningEvent.DeleteLocation -> {
                 viewModelScope.launch {
                     planingUseCases.deleteWeatherAtLocationUseCase(event.location)
                     planingUseCases.deleteLocationUseCase(event.location)
@@ -138,7 +136,7 @@ class PlaningViewModel @Inject constructor(
                 }
             }
 
-            is PlaningEvent.RestoreLocation -> {
+            is PlanningEvent.RestoreLocation -> {
                 viewModelScope.launch {
                     saveLocation(recentlyDeletedLocation ?: return@launch)
                     getLocations()
@@ -147,7 +145,7 @@ class PlaningViewModel @Inject constructor(
                 }
             }
 
-            is PlaningEvent.SearchInputTypeChanged -> {
+            is PlanningEvent.SearchInputTypeChanged -> {
                 viewModelScope.launch {
                     _state.value = state.value.copy(
                         searchInputType = event.searchInputType
@@ -155,7 +153,7 @@ class PlaningViewModel @Inject constructor(
                 }
             }
 
-            PlaningEvent.ToggleSearchInputTypeSelection -> {
+            PlanningEvent.ToggleSearchInputTypeSelection -> {
                 _state.value = state.value.copy(
                     isSearchInputTypeSelectionSectionVisible = !state.value
                         .isSearchInputTypeSelectionSectionVisible

@@ -15,6 +15,8 @@ val textColorDark = Color(0xFF2B2B2B)
 
 val PastelGreen = Color(0xFF6DDB78)
 val DarkGreen = Color(0xFF0F4F35)
+val LightTextGreen = Color(0xFF4EBA5B)
+val DarkTextGreen = Color(0xFF146A46)
 val LightGreen = Color(0xFF99FF9F)
 val CloudBlue = Color(0xFF1AB5ED)
 val LightBlue = Color(0xFF42E4E5)

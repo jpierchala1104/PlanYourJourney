@@ -110,6 +110,7 @@ class WeatherViewModel @Inject constructor(
                                 isWeatherLoaded = false, isLoading = false
                             )
                             uiEventChannel.send(UiEvent.LoadingError(R.string.dao_request_error))
+                            WeatherWidget().updateAll(context)
                         }
 
                         is Resource.Loading -> {

@@ -6,11 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.planyourjourney.R
 import com.example.planyourjourney.feature_planing.domain.model.WeatherUnits
 import com.example.planyourjourney.feature_planing.domain.use_case.SettingsUseCases
 import com.example.planyourjourney.feature_planing.domain.util.Resource
-import com.example.planyourjourney.feature_planing.presentation.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

@@ -27,10 +27,10 @@ class ClearOldWeatherUseCase (
         }
         if (locationWeather.isEmpty()) return
 
-        val yesterdayDate = LocalDate.now().minusDays(1).toKotlinLocalDate()
+        val todayDate = LocalDate.now().toKotlinLocalDate()
 
         val daysInDbToClear = locationWeather.first().hourlyWeatherList.filter { hourlyWeather ->
-            hourlyWeather.time.hour == 0 && hourlyWeather.time.toLocalDate() < yesterdayDate
+            hourlyWeather.time.hour == 0 && hourlyWeather.time.toLocalDate() < todayDate
         }.map { it.time.toLocalDate() }
 
         daysInDbToClear.forEach { day ->

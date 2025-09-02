@@ -36,6 +36,8 @@ class WeatherWidget : GlanceAppWidget() {
             }
             // TODO: edit the widget, change the day (and maybe closest time because you don't need
             // TODO: the weather at 8 am if its already 1 pm 
+            // TODO: clicking on the widget should open the app 
+            // TODO: the update widget doesn't work 
             provideContent {
                 GlanceTheme {
                     WeatherWidgetScreen(

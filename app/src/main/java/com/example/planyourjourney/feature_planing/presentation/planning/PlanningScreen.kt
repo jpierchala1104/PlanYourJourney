@@ -5,14 +5,12 @@ import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.HorizontalDivider
@@ -88,7 +86,13 @@ fun PlanningScreen(
                         .size(32.dp)
                         .clickable {
                             navigator.navigate(
-                                SettingsScreenDestination()
+                                direction = SettingsScreenDestination(),
+                                builder = {
+                                    popUpTo(route = SettingsScreenDestination.route) {
+                                        inclusive = true
+                                    }
+                                    launchSingleTop = true
+                                }
                             )
                         }
                 )
@@ -185,7 +189,7 @@ fun PlanningScreen(
                         val result = snackbarHostState.showSnackbar(
                             message = context.getString(R.string.location_deleted),
                             actionLabel = context.getString(R.string.undo),
-                            duration = SnackbarDuration.Long
+                            duration = SnackbarDuration.Short
                         )
                         if (result == SnackbarResult.ActionPerformed) {
                             viewModel.onEvent(PlanningEvent.RestoreLocation)
@@ -198,7 +202,10 @@ fun PlanningScreen(
                 Column(
                     modifier = Modifier
                         .padding(8.dp)
-                        .weight(1f),
+                        .weight(1f)
+                        .clickable {
+                            //current screen
+                        },
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -208,9 +215,6 @@ fun PlanningScreen(
                         tint = MaterialTheme.colorScheme.secondary,
                         modifier = Modifier
                             .size(32.dp)
-                            .clickable {
-                                //current screen
-                            }
                     )
                     Text(
                         text = stringResource(R.string.add_locations),
@@ -221,7 +225,18 @@ fun PlanningScreen(
                 Column(
                     modifier = Modifier
                         .padding(8.dp)
-                        .weight(1f),
+                        .weight(1f)
+                        .clickable {
+                            navigator.navigate(
+                                direction = WeatherScreenDestination(),
+                                builder = {
+                                    popUpTo(route = WeatherScreenDestination.route) {
+                                        inclusive = true
+                                    }
+                                    launchSingleTop = true
+                                }
+                            )
+                        },
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -231,12 +246,7 @@ fun PlanningScreen(
                         tint = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier
                             .size(32.dp)
-                            .clickable {
-                                navigator
-                                    .navigate(
-                                    WeatherScreenDestination()
-                                )
-                            }
+
                     )
                     Text(
                         text = stringResource(R.string.weather),

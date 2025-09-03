@@ -28,6 +28,7 @@ import com.example.planyourjourney.R
 import com.example.planyourjourney.feature_planing.domain.model.Location
 import com.example.planyourjourney.feature_planing.domain.model.LocationWeather
 import com.example.planyourjourney.feature_planing.domain.model.WeatherUnits
+import com.example.planyourjourney.feature_planing.presentation.destinations.WeatherDetailsScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.CoroutineScope
 import java.util.Locale
@@ -93,7 +94,7 @@ fun WeatherList(
                                 .fillMaxSize()
                                 .clickable {
                                     navigator!!.navigate(
-                                        com.example.planyourjourney.feature_planing.presentation.destinations.WeatherDetailsScreenDestination(
+                                        WeatherDetailsScreenDestination(
                                             location.location.locationId!!
                                         )
                                     )

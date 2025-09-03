@@ -44,14 +44,15 @@ import com.example.planyourjourney.feature_planing.presentation.util.UiEvent
 import com.example.planyourjourney.feature_planing.presentation.weather.components.WeatherList
 import com.example.planyourjourney.ui.theme.PlanYourJourneyTheme
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.datetime.LocalDateTime
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-//@RootNavGraph(start = true)
-@Destination(start = true)
+@RootNavGraph(start = true)
+@Destination
 fun WeatherScreen(
     navigator: DestinationsNavigator,
     viewModel: WeatherViewModel = hiltViewModel()
@@ -60,11 +61,6 @@ fun WeatherScreen(
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState()
     val context = LocalContext.current
-
-    // TODO: add delete button to the weather card list item,
-    //  make a refresh action? either a button so it doesn't try to refresh by accident?
-    //  maybe a checker when was the weather last updated and set it to ... or something,
-
 
     Scaffold(
         topBar = {
@@ -81,7 +77,13 @@ fun WeatherScreen(
                         .size(32.dp)
                         .clickable {
                             navigator.navigate(
-                                SettingsScreenDestination()
+                                direction = SettingsScreenDestination(),
+                                builder = {
+                                    popUpTo(route = SettingsScreenDestination.route) {
+                                        inclusive = true
+                                    }
+                                    launchSingleTop = true
+                                }
                             )
                         }
                 )
@@ -98,34 +100,34 @@ fun WeatherScreen(
 //            }
 //        }
     ) { innerPadding ->
+        LaunchedEffect(key1 = context) {
+            viewModel.uiEvents.collect { event ->
+                when (event) {
+                    is UiEvent.LoadingError -> {
+                        Toast.makeText(
+                            context,
+                            context.getString(event.messageResourceId),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    is UiEvent.ConnectionError -> {
+                        Toast.makeText(
+                            context,
+                            context.getString(event.messageResourceId),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    UiEvent.LocationsLoaded -> {}
+                }
+            }
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            LaunchedEffect(key1 = context) {
-                viewModel.uiEvents.collect { event ->
-                    when (event) {
-                        is UiEvent.LoadingError -> {
-                            Toast.makeText(
-                                context,
-                                context.getString(event.messageResourceId),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-
-                        is UiEvent.ConnectionError -> {
-                            Toast.makeText(
-                                context,
-                                context.getString(event.messageResourceId),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-
-                        UiEvent.LocationsLoaded -> {}
-                    }
-                }
-            }
 
             WeatherList(
                 modifier = Modifier.weight(1f),
@@ -143,7 +145,18 @@ fun WeatherScreen(
                 Column(
                     modifier = Modifier
                         .padding(8.dp)
-                        .weight(1f),
+                        .weight(1f)
+                        .clickable {
+                            navigator.navigate(
+                                direction = PlanningScreenDestination(),
+                                builder = {
+                                    popUpTo(route = PlanningScreenDestination.route) {
+                                        inclusive = true
+                                    }
+                                    launchSingleTop = true
+                                }
+                            )
+                        },
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -153,12 +166,6 @@ fun WeatherScreen(
                         tint = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier
                             .size(32.dp)
-                            .clickable {
-                                navigator
-                                    .navigate(
-                                        PlanningScreenDestination()
-                                    )
-                            }
                     )
                     Text(
                         text = stringResource(R.string.add_locations),
@@ -169,7 +176,10 @@ fun WeatherScreen(
                 Column(
                     modifier = Modifier
                         .padding(8.dp)
-                        .weight(1f),
+                        .weight(1f)
+                        .clickable {
+                            // current screen
+                        },
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -179,9 +189,6 @@ fun WeatherScreen(
                         tint = MaterialTheme.colorScheme.secondary,
                         modifier = Modifier
                             .size(32.dp)
-                            .clickable {
-                                // current screen
-                            }
                     )
                     Text(
                         text = stringResource(R.string.weather),

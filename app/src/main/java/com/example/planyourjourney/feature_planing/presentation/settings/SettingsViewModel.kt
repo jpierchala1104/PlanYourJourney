@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.planyourjourney.feature_planing.domain.model.WeatherUnits
 import com.example.planyourjourney.feature_planing.domain.use_case.SettingsUseCases
 import com.example.planyourjourney.feature_planing.domain.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,8 +18,6 @@ class SettingsViewModel @Inject constructor(
 ) : ViewModel() {
     private val _state = mutableStateOf(SettingsState())
     val state: State<SettingsState> = _state
-
-    private var oldWeatherUnits: WeatherUnits = WeatherUnits()
 
     init {
         getSettings()
@@ -37,6 +34,7 @@ class SettingsViewModel @Inject constructor(
 
             is SettingsEvent.SettingsChanged -> {
                 viewModelScope.launch {
+                    val oldWeatherUnits = _state.value.settings.weatherUnits
                     _state.value = state.value.copy(
                         settings = event.settings
                     )
@@ -56,7 +54,6 @@ class SettingsViewModel @Inject constructor(
                 _state.value = state.value.copy(
                     settings = settings
                 )
-                oldWeatherUnits = settings.weatherUnits
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.example.planyourjourney.feature_planing.presentation.settings
 
 import android.content.res.Configuration
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,6 +27,7 @@ import com.example.planyourjourney.core.presentation.AppToolbar
 import com.example.planyourjourney.feature_planing.domain.model.Coordinates
 import com.example.planyourjourney.feature_planing.domain.model.Location
 import com.example.planyourjourney.feature_planing.domain.model.Settings
+import com.example.planyourjourney.feature_planing.presentation.destinations.WeatherScreenDestination
 import com.example.planyourjourney.feature_planing.presentation.settings.components.SettingsSection
 import com.example.planyourjourney.ui.theme.PlanYourJourneyTheme
 import com.ramcosta.composedestinations.annotation.Destination
@@ -39,6 +41,18 @@ fun SettingsScreen(
 ) {
     val state = viewModel.state.value
     val snackbarHostState = remember { SnackbarHostState() }
+
+    BackHandler(enabled = true) {
+        navigator.navigate(
+            direction = WeatherScreenDestination(),
+            builder = {
+                popUpTo(route = WeatherScreenDestination.route) {
+                    inclusive = true
+                }
+                launchSingleTop = true
+            }
+        )
+    }
 
     Scaffold(
         snackbarHost = {
@@ -58,7 +72,15 @@ fun SettingsScreen(
                     modifier = Modifier
                         .size(32.dp)
                         .clickable {
-                            navigator.popBackStack()
+                            navigator.navigate(
+                                direction = WeatherScreenDestination(),
+                                builder = {
+                                    popUpTo(route = WeatherScreenDestination.route) {
+                                        inclusive = true
+                                    }
+                                    launchSingleTop = true
+                                }
+                            )
                         }
                 )
 //                Spacer(modifier = Modifier.size(8.dp))

@@ -8,7 +8,6 @@ import android.net.NetworkCapabilities
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.glance.appwidget.updateAll
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.planyourjourney.R
@@ -18,7 +17,7 @@ import com.example.planyourjourney.feature_planing.domain.util.APIErrorResult
 import com.example.planyourjourney.feature_planing.domain.util.APIFetchResult
 import com.example.planyourjourney.feature_planing.domain.util.Resource
 import com.example.planyourjourney.feature_planing.presentation.util.UiEvent
-import com.example.planyourjourney.feature_planing.presentation.widget.WeatherWidget
+import com.example.planyourjourney.feature_planing.presentation.widget.WeatherWidgetUpdater
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -43,6 +42,7 @@ class WeatherViewModel @Inject constructor(
         clearOldWeather()
         getSettings()
         getLocationsWithWeather()
+        WeatherWidgetUpdater.updateWeatherWidget(context)
     }
 
     // TODO: change so it shows the closes hour for the weather in app and widget
@@ -66,6 +66,11 @@ class WeatherViewModel @Inject constructor(
                 viewModelScope.launch {
                     weatherUseCases
                         .insertLocationUseCase(location = recentlyDeletedLocation ?: return@launch)
+                    //this is suppressed only because we don't really need to show the
+                    //information of the fetch when its only restoring the location
+                    // TODO: could make it so it saves the data for a few sec so we don't need to
+                    // delete and fetch it again
+                    @Suppress("UnusedFlow")
                     weatherUseCases
                         .fetchWeatherAtLocationUseCase(
                             location = recentlyDeletedLocation ?: return@launch,
@@ -100,8 +105,8 @@ class WeatherViewModel @Inject constructor(
                                             .first{ locationWeather ->
                                             locationWeather.location.locationId == state.value.settings.widgetLocation!!.locationId
                                 })
-                                WeatherWidget().updateAll(context)
                             }
+                            WeatherWidgetUpdater.updateWeatherWidget(context)
                             //uiEventChannel.send(UiEvent.WeatherLoaded)
                         }
 
@@ -110,7 +115,7 @@ class WeatherViewModel @Inject constructor(
                                 isWeatherLoaded = false, isLoading = false
                             )
                             uiEventChannel.send(UiEvent.LoadingError(R.string.dao_request_error))
-                            WeatherWidget().updateAll(context)
+                            WeatherWidgetUpdater.updateWeatherWidget(context)
                         }
 
                         is Resource.Loading -> {

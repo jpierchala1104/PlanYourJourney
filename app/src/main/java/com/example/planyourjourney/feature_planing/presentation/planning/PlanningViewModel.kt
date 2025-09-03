@@ -97,8 +97,8 @@ class PlanningViewModel @Inject constructor(
                         coordinates = weatherCoordinates.value
                     )
                     saveLocation(location)
-                    getLocations()
                     fetchFromAPI(location)
+                    getLocations()
                 }
 
                 _state.value = state.value.copy(
@@ -139,8 +139,8 @@ class PlanningViewModel @Inject constructor(
             is PlanningEvent.RestoreLocation -> {
                 viewModelScope.launch {
                     saveLocation(recentlyDeletedLocation ?: return@launch)
-                    getLocations()
                     fetchFromAPI(recentlyDeletedLocation ?: return@launch)
+                    getLocations()
                     recentlyDeletedLocation = null
                 }
             }

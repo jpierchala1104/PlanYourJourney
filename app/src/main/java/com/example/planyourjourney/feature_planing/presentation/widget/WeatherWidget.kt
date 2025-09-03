@@ -6,7 +6,6 @@ import androidx.glance.GlanceId
 import androidx.glance.GlanceTheme
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.provideContent
-import androidx.glance.appwidget.updateAll
 import com.example.planyourjourney.di.WidgetEntryPoint
 import com.example.planyourjourney.feature_planing.domain.model.LocationWeather
 import com.example.planyourjourney.feature_planing.domain.use_case.WeatherWidgetUseCases
@@ -31,13 +30,10 @@ class WeatherWidget : GlanceAppWidget() {
             if (widgetSettings.widgetLocation != null) {
                 if (widgetSettings.widgetLocation.locationId != null) {
                     widgetWeather = weatherWidgetUseCases.getPreloadedWidgetDataUseCase.invoke()
-                    WeatherWidget().updateAll(context)
                 }
             }
             // TODO: edit the widget, change the day (and maybe closest time because you don't need
             // TODO: the weather at 8 am if its already 1 pm 
-            // TODO: clicking on the widget should open the app 
-            // TODO: the update widget doesn't work 
             provideContent {
                 GlanceTheme {
                     WeatherWidgetScreen(

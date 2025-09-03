@@ -179,7 +179,7 @@ class WeatherRepositoryImpl @Inject constructor(
         val weatherEntities = dao.getHourlyWeathers()
         var convertedWeatherEntities = weatherEntities
         if (oldUnits.temperatureUnits == settings.weatherUnits.temperatureUnits) {
-            return
+            //do nothing
         } else {
             if (oldUnits.temperatureUnits == TemperatureUnits.CELSIUS) {
                 convertedWeatherEntities = convertedWeatherEntities.map {
@@ -192,7 +192,7 @@ class WeatherRepositoryImpl @Inject constructor(
             }
         }
         if (oldUnits.precipitationUnits == settings.weatherUnits.precipitationUnits) {
-            return
+            //do nothing
         } else {
             if (oldUnits.precipitationUnits == PrecipitationUnits.MILLIMETERS) {
                 convertedWeatherEntities = convertedWeatherEntities.map {
@@ -213,7 +213,7 @@ class WeatherRepositoryImpl @Inject constructor(
             }
         }
         if (oldUnits.windSpeedUnits == settings.weatherUnits.windSpeedUnits) {
-            return
+            //do nothing
         } else {
             when (oldUnits.windSpeedUnits) {
                 WindSpeedUnits.KILOMETERS_PER_HOUR -> {
@@ -345,6 +345,8 @@ class WeatherRepositoryImpl @Inject constructor(
                 }
             }
         }
+        if (convertedWeatherEntities == weatherEntities)
+            return
         dao.insertHourlyWeathers(convertedWeatherEntities)
     }
 }
